@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Système train d'engrenages</title>
+
+    
+
+
+    <style>
+        /* Make the iframe take up the full screen */
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden; /* Prevent scrolling on the main page */
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none; /* Remove iframe border */
+        }
+    </style>
+
+<script>
+    // Add an event listener for the 'beforeunload' event
+    window.addEventListener('beforeunload', function (event) {
+        // Set a message for the warning (some browsers ignore this and use a default message)
+        event.preventDefault(); // Necessary for some browsers
+        event.returnValue = 'Attention, vous allez fermer cette page !'; // Chrome requires returnValue to be set
+    });
+</script>
+</head>
+<body>
+    <!-- Embed the local page using an iframe -->
+    <iframe src="lien_train_d_engrenages.html"></iframe>
+    <!-- Replace 'embedded-page.html' with the relative path of your page -->
+</body>
+</html>

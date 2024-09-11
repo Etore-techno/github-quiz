@@ -1,0 +1,495 @@
+:root {
+  --main-color: initial; /* Pas de valeur initiale */
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+
+  margin: 0;
+  touch-action: none;
+}
+
+.total-container {
+  width: 90%;
+  height: 95%;
+  background-color: black;
+  border: 10px solid var(--main-color);
+  border-radius: 10px;
+  text-align: center;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden; /* Assurez-vous que le conteneur ne déborde pas */
+
+}
+
+.haut-container {
+  width: 100%;
+  height:5%;
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--main-color);
+  color: white;
+
+  box-sizing: border-box;
+}
+
+.titre {
+ 
+padding: 0px 20px;
+box-sizing: border-box;
+font-weight: bold;
+}
+
+.numeroquestion {
+
+padding: 0px 20px;
+box-sizing: border-box;
+font-weight: bold;
+} 
+
+.quiz-container {
+  height: 100%;
+  width: 100%;
+  padding: 0em;
+  background-color: black;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  text-align: center;
+  box-sizing: border-box;
+  max-width: 100%;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  
+}
+
+.quiz-container2 {
+  background-image: none;
+  min-height: 87%;
+  height: 87%;
+  width: 100%;
+  padding: 0.5em 1em;
+  background-color: white;
+  text-align: center;
+  box-sizing: border-box;
+  max-width: 100%;
+ 
+  display: flex;
+  flex-direction: column;
+  
+}
+
+.question-container {
+  font-size: 1.6em;
+  margin-bottom: 10px;
+  text-align: left;
+  color: black;
+  font-weight: bold;
+  height: auto;
+  min-height : 3.4em;
+  overflow: hidden;
+  display: flex;            /* Utilisation de Flexbox */
+  flex-direction: column;   /* Alignement vertical */
+  
+  overflow-y: auto;
+}
+
+
+.centre-container {
+  width: 100%;
+  display: flex;
+  height: 100%;
+  
+  box-sizing: border-box;
+  flex-direction: row; /* Positionner les éléments en ligne */
+  align-items:  stretch; /* Aligner verticalement les enfants */
+  overflow: hidden; /* Empêche le défilement horizontal de la conteneur principal */
+}
+
+
+
+
+
+
+
+/* Style de base pour le conteneur d'options */
+.options {
+  background-color: white;
+  flex-grow: 2;
+  flex-shrink: 0;
+  flex-basis: 60%;
+  padding: 1em;
+  padding-bottom: 0em;
+  box-sizing: border-box;
+  text-align: center;
+  display: flex;
+  flex-direction: column;   /* Par défaut vertical */
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1.5em;
+  overflow-y: auto;
+  height: 100%;
+}
+
+/* Classe pour l'alignement horizontal */
+.options.horizontal {
+  flex-direction: row;       /* Disposer les éléments en ligne */
+  flex-wrap: wrap;           /* Permet le retour à la ligne si nécessaire */
+  justify-content: center;   /* Centrer les éléments horizontalement */
+  align-items: center;       /* Centrer les éléments verticalement */
+  align-content: center;     /* Centre les lignes de flex-wrap si plusieurs lignes */
+}
+
+/* Classe pour l'alignement vertical */
+.options.vertical {
+  flex-direction: column;    /* Alignement vertical */
+  align-items: flex-start;   /* Aligner les éléments au début du conteneur */
+  justify-content: flex-start; /* S'assurer que les éléments commencent en haut */
+  text-align: left;
+
+  width: 100%; /* Assurez-vous que le conteneur prend toute la largeur */
+}
+
+.option-row {
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  gap: 2.5em;
+  height: 3em;
+  padding: 0.5em;
+}
+
+.option-button {
+  background-color: white;
+  color: black;
+  border: 5px solid var(--main-color);
+  border-radius: 5px;
+
+  font-size: 1.4em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  flex: 0 0 calc(100% / 6);
+  width: calc(100% / 6); /* Assure que la largeur maximale est fixée */
+   box-sizing: border-box;
+  text-align: center; /* Centrer le texte à l'intérieur du bouton */
+}
+
+
+.option-button.selected {
+  background-color: var(--main-color);
+  color: white;
+}
+
+.option-button.disabled {
+  background-color: #666;
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+
+/* Style de base pour la case à cocher */
+.checkbox-option {
+  background-color: white;
+  color: black;
+  font-size: 1.5em;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  margin: 0;   /* Réinitialiser les marges */
+  padding: 0;  /* Réinitialiser les paddings */
+}
+
+/* Conteneur pour les options de type vertical */
+.options-container.vertical {
+  display: flex;
+  flex-direction: column; /* Disposer les éléments en colonne */
+  align-items: flex-start; /* Aligner les éléments au début du conteneur */
+  margin: 0; /* Supprimer les marges qui pourraient perturber la mise en page */
+  padding: 0; /* Supprimer le padding pour éviter les décalages */
+}
+
+
+/* Conteneur pour les options de type horizontal */
+.options-container.horizontal {
+  display: flex;
+  flex-direction: row; /* Disposer les éléments en ligne */
+  flex-wrap: wrap; /* Autoriser le retour à la ligne si nécessaire */
+  align-items: flex-start; /* Aligner les éléments au début du conteneur */
+  margin: 0; /* Supprimer les marges qui pourraient perturber la mise en page */
+  padding: 0; /* Supprimer le padding pour éviter les décalages */
+}
+
+/* Style pour la case à cocher elle-même */
+.checkbox-option input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none; /* Nécessaire pour certains navigateurs */
+  background-color: white;
+  border: 2px solid var(--main-color);
+  padding: 10px;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px; /* Pour arrondir les coins, 50% pour un cercle */
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+/* Style pour l'état coché */
+.checkbox-option input[type="checkbox"]:checked {
+  background-color: var(--main-color);
+  border-color: var(--main-color);
+  position: relative;
+}
+
+/* Style pour ajouter une coche quand la case est cochée */
+.checkbox-option input[type="checkbox"]:checked::after {
+  content: '\2714'; /* Symbole de la coche */
+  font-size: 18px;
+  color: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Style pour changer la couleur au survol */
+.checkbox-option input[type="checkbox"]:hover {
+  border-color: var(--main-color);
+}
+
+/* Style pour le texte à côté de la case */
+.checkbox-option label {
+  margin-left: 5px;
+}
+
+.photobloc {
+  margin-left: 1em; 
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  text-align: center;
+  flex-grow: 1; /* Prend moins de place que les options */
+  flex-shrink: 0;
+  flex-basis: 40%;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%; /* S'assurer que la hauteur du conteneur est définie */
+  width: 100%;  /* S'assurer que la largeur du conteneur est définie */
+  cursor: zoom-in;
+}
+
+.photofull {
+  display: none; /* Masqué par défaut */
+  position: fixed; /* Position fixe pour occuper toute la fenêtre */
+  top: 0;
+  left: 0;
+  width: 100vw; /* Largeur 100% de la fenêtre du navigateur */
+  height: 100vh; /* Hauteur 100% de la fenêtre du navigateur */
+  background-color: rgba(0, 0, 0, 0.8); /* Fond semi-transparent pour un effet de superposition */
+  background-size: contain; /* Conserve les proportions de l'image */
+  background-repeat: no-repeat; /* Évite la répétition de l'image */
+  background-position: center center; /* Centre l'image */
+  cursor: zoom-out; /* Curseur pointer pour indiquer que c'est cliquable */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.feedback {
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+  flex-grow: 1; /* Chaque colonne prendra autant d'espace disponible que possible */
+  flex-shrink: 0; /* Empêche les colonnes de rétrécir */
+  flex-basis: 33.33%; /* Fixe la largeur de chaque colonne à 1/3 de la largeur du conteneur */
+  box-sizing: border-box; /* Inclut la bordure dans la largeur totale de la colonne */
+  text-align: center; /* Centre le texte à l'intérieur de chaque colonne */
+  padding-top: 20px;
+}
+
+.score-container {
+  width: 100%;
+  height :8%;
+  display: flex;
+  background-color: var(--main-color);
+  color: white;
+  box-sizing: border-box;
+}
+
+.scoreclass {
+  font-size: 18px;
+  font-weight: bold;
+  width: auto; /* Ajuster à la taille du texte */
+  margin: auto;
+  flex-grow: 1; /* Chaque colonne prendra autant d'espace disponible que possible */
+  flex-shrink: 0; /* Empêche les colonnes de rétrécir */
+  flex-basis: 33.33%; /* Fixe la largeur de chaque colonne à 1/3 de la largeur du conteneur */
+  padding-top: 20px;
+  padding-bottom: 10px;
+  box-sizing: border-box; /* Inclut la bordure dans la largeur totale de la colonne */
+  text-align: center; /* Centre le texte à l'intérieur de chaque colonne */
+  
+}
+
+.button-container {
+  text-align: center;
+  flex-grow: 1; /* Chaque colonne prendra autant d'espace disponible que possible */
+  flex-shrink: 0; /* Empêche les colonnes de rétrécir */
+  flex-basis: 33.33%; /* Fixe la largeur de chaque colonne à 1/3 de la largeur du conteneur */
+  padding-top: 10px;
+  box-sizing: border-box; /* Inclut la bordure dans la largeur totale de la colonne */
+  
+  text-align: center; /* Centre le texte à l'intérieur de chaque colonne */
+  display: flex;
+  justify-content: flex-end; /* Place l'élément à droite de la colonne */
+  align-items: center; /* Centre verticalement l'élément */
+}
+
+
+.fixed-number {
+  width: 30px; /* Largeur fixe pour le numéro */
+  margin-right: 1em;
+  text-align: right;
+  font-weight: bold;
+  color:black;
+}
+
+.draggable-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0em; /* Réduire l'espacement entre les lignes */
+
+}
+
+.draggable-option {
+  flex-grow: 1;
+  font-size: 1.2em;
+font-weight: bold;
+  margin: 0px; /* Réduire la marge autour des options */
+  padding: 5px 10px; /* Réduire l'espacement intérieur pour compacter les lignes */
+  background-color: white;
+  color: black;
+  border: 2px solid var(--main-color);
+  border-radius: 5px;
+  cursor: grab;
+  user-select: none;
+}
+
+.draggable-option.dragging {
+  opacity: 0.5;
+  cursor: grabbing;
+}
+
+.draggable-option:active {
+  cursor: grabbing;
+}
+
+.draggable-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.1em;
+}
+
+#submitCocher,
+#submitMultiple,
+#submitGlisser,
+#next,
+#demarrer {
+  background-color: white;
+  color: var(--main-color);
+  font-weight: bold;
+  border: 2px solid white;
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  display: inline-block; /* Ajuster la largeur automatiquement */
+  width: auto; /* S'adapter à la taille du texte */
+}
+
+#submitCocher:hover,
+#submitMultiple:hover,
+#submitGlisser:hover,
+#next:hover,
+#demarrer:hover {
+  background-color: var(--main-color);
+  color: white;
+}
+
+/* Media queries pour adapter le contenu à différentes tailles d'écran */
+@media (max-width: 600px) {
+  .question {
+    font-size: 20px;
+  }
+
+  .option-button {
+    font-size: 16px;
+    padding: 8px;
+  }
+
+  .feedback {
+    font-size: 16px;
+  }
+
+  .score {
+    font-size: 20px;
+    padding: 8px;
+  }
+
+
+  #submitMultiple,
+  #next {
+    font-size: 16px;
+    padding: 8px;
+  }
+}
+
+@media (max-width: 400px) {
+  .question {
+    font-size: 18px;
+  }
+
+  .option-button {
+    font-size: 14px;
+    padding: 6px;
+  }
+
+  .feedback {
+    font-size: 14px;
+  }
+
+  .score {
+    font-size: 18px;
+    padding: 6px;
+  }
+
+
+  #submitMultiple,
+  #next {
+    font-size: 14px;
+    padding: 6px;
+  }
+}

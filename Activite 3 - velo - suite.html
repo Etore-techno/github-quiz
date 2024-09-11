@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+
+  <title></title>
+  <link rel="stylesheet" href="data/styles.css">
+
+  <script>
+    // Add an event listener for the 'beforeunload' event
+    window.addEventListener('beforeunload', function (event) {
+        // Set a message for the warning (some browsers ignore this and use a default message)
+        event.preventDefault(); // Necessary for some browsers
+        event.returnValue = 'Attention, vous allez fermer cette page !'; // Chrome requires returnValue to be set
+    });
+</script>
+
+
+</head>
+<body>
+  <div class="total-container" id="totalContainer">
+  <div class="haut-container" id="hautContainer">
+    <div class="titre" id="titrequiz"></div>
+    <div class="numeroquestion" id="blocnumquestion" style="display: none;">Question : <span id="numeroquestion">0</span> sur <span id="nombrequestions">0</span> </div>
+  </div>
+
+<div class="quiz-container" id="quizcontainer">
+  <div class="photofull" id="photofull" style="display: none;"></div>
+ 
+  <div class="question-container" id="questionContainer" style="display: none;">
+    <!-- La question sera ajoutée dynamiquement ici -->
+  </div>
+  <div id="barre" style="display: none;">
+    <hr style="width: 100%; height: 3px; background-color: #1B76AD; border: none; margin-left: 0;">
+  </div>
+
+      <div class="centre-container" id="centrecontainer" style="display: none;">  
+    <div class="options" id="options"></div>
+    <div class="photobloc" id="photobloc"></div>  
+  </div>
+</div>
+   
+<div class="score-container">
+    <div class="feedback" id="feedback"></div>
+    <div class="scoreclass" id="blocscore" style="display: none;">Score : <span id="score">0</span> sur <span id="scorepossible">0</span></div>
+    <div class="button-container">
+    <button  id="demarrer">Démarrer</button>
+    <button  id="submitCocher" style="display: none;">Valider</button>
+    <button  id="submitMultiple" style="display: none;">Valider</button>
+    <button  id="submitGlisser" style="display: none;">Valider</button>
+    <button  id="next" style="display: none;">Suivant</button>
+    </div>
+</div>
+</div>
+<script src="data/script/data_3_suite.js"></script>
+<script src="data/script/script.js"></script>
+<script src="data/script/cocher.js"></script>
+<script src="data/script/glisser.js"></script>
+<script src="data/script/multiple.js"></script>
+
+</body>
+</html>
