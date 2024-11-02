@@ -1,4 +1,4 @@
-function showCocherOptions(answers) {
+function afficherCocherReponses(answers) {
   const optionsContainer = document.getElementById('options');
   optionsContainer.innerHTML = '';
 
@@ -40,18 +40,29 @@ function showCocherOptions(answers) {
 
       // Afficher le bouton "Valider" uniquement si le bon nombre de cases sont cochées
       if (selectedCheckboxes.length === correctAnswersCount) {
+      
+        validerButton.style.display = 'inline-block';
+/*
         submitCocherButton.style.display = 'inline-block';
+        */
       } else {
+
+        validerButton.style.display = 'none';
+
+/*
         submitCocherButton.style.display = 'none';
+*/
       }
     });
   });
 }
 
-function submitCocherAnswer() {
+function verifCocherAnswer() {
   isWaiting = true;
-  disableButtons();
-  hideSubmitButton();
+  desactiverButtons();
+  cacherValiderButton();
+  cacherPasserButton();
+
   const checkboxes = document.querySelectorAll('.checkbox-option input[type="checkbox"]');
   const selectedAnswers = [];
   checkboxes.forEach(checkbox => {
@@ -59,28 +70,21 @@ function submitCocherAnswer() {
   });
 
   const currentQuestion = questions[currentQuestionIndex];
-  const isCorrect = arraysEqual(selectedAnswers, currentQuestion.correctAnswers);
 
-      if (isCorrect) {
-    handleCorrectAnswer();
-    setTimeout(() => {
-      showNextButton();
-    }, 2000);
-  } else {
-    attemptsLeft--;
-    if (attemptsLeft > 0) {
-    feedbackElement.textContent = `Incorrect. Il vous reste ${attemptsLeft} essai${attemptsLeft === 1 ? '' : 's'}.`;
-  } else {
-    feedbackElement.textContent = `Incorrect. Vous avez utilisé tous vos essais.`;
-  }
-    setTimeout(() => {
-     feedbackElement.textContent = '';
-     const inputs = optionsElement.querySelectorAll('input[type="checkbox"], input[type="radio"]');
-     inputs.forEach(input => { input.checked = false; });
-     enableButtons();
-     isWaiting = false;
-    }, 5000);
+// Normaliser les réponses sélectionnées et correctes (supprimer les accents, mettre en minuscules)
+const normalizeString = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   
+const normalizedSelectedAnswers = selectedAnswers.map(answer => normalizeString(answer));
+const normalizedCorrectAnswers = currentQuestion.correctAnswers.map(answer => normalizeString(answer));
+
+// Vérifier si toutes les réponses sélectionnées sont correctes
+const isCorrect = normalizedSelectedAnswers.every(answer => normalizedCorrectAnswers.includes(answer));
+
+  if (isCorrect && normalizedSelectedAnswers.length === normalizedCorrectAnswers.length) {
+    gestionReponseCorrecte();
+    
+  } else {
+    gestionReponseFausse();
 }
 }
 

@@ -1,5 +1,5 @@
 
-function showMultipleOptions(answers) {
+function afficherMultipleReponses(answers) {
   const currentQuestion = questions[currentQuestionIndex];
   const numItems = currentQuestion.answers.length;
   const optionsContainer = document.getElementById('options');
@@ -123,31 +123,29 @@ function calculateButtonWidth(itemsInRow) {
     const currentQuestion = questions[currentQuestionIndex];
     const numberOfCorrectAnswers = currentQuestion.correctAnswers.length;
 
-    console.log("Réponses sélectionnées : ", selectedButtons);
-  console.log("Nombre de réponses correctes : ", numberOfCorrectAnswers);
 
-    submitButtonMultiple.style.display = selectedButtons.length === numberOfCorrectAnswers ? 'inline-block' : 'none';
-    
+  validerButton.style.display = selectedButtons.length === numberOfCorrectAnswers ? 'inline-block' : 'none';
+
   }
 
   
-  function submitMultipleAnswer() {
+  function verifMultipleAnswer() {
     isWaiting = true;
-    disableButtons();
+    desactiverButtons();
     const selectedButtons = Array.from(optionsElement.querySelectorAll('.selected'));
     const currentQuestion = questions[currentQuestionIndex];
     const numberOfCorrectAnswers = currentQuestion.correctAnswers.length;
     if (selectedButtons.length !== numberOfCorrectAnswers) return;
-    hideSubmitButton();
+    cacherValiderButton();
+    cacherPasserButton();
     const selectedAnswers = selectedButtons.map(btn => btn.textContent.trim()).sort();
     const correctAnswers = currentQuestion.correctAnswers.map(answer => answer.toString().trim()).sort();
     
     if (arraysEqual(selectedAnswers, correctAnswers)) {
-      handleCorrectAnswer();
-      setTimeout(() => {
-        showNextButton();
-      }, 2000);
+      gestionReponseCorrecte();
+      
     } else {
-      handleIncorrectAnswer();
+      gestionReponseFausse();
+
     }
   }

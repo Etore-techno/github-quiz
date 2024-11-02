@@ -13,22 +13,20 @@ const root = document.documentElement;
         root.style.setProperty('--main-color', couleur);
 
 
-var questionElement, optionsElement, submitCocherButton, submitButtonMultiple, 
-    submitGlisserButton, nextButton, demarrerButton, feedbackElement, 
+var questionElement, optionsElement, suivantButton, validerButton, passerButton, demarrerButton, messageElement, 
     blocscoreElement, scoreElement, nombrequestionsElement, 
     numeroquestionElement, scorepossibleElement, blocnumquestionElement, 
     questionContainerElement, centrecontainerElement, currentQuestionIndex = 0, 
-    score = 0, attemptsLeft = 4, answeredCorrectly = false, isWaiting = false, pauseTimeout;
+    score = 0, tentativesRestantes = 4, reponseCorrecte = false, isWaiting = false, pauseTimeout;
 
-document.addEventListener('DOMContentLoaded', function() {
+    window.addEventListener('DOMContentLoaded', function() {
   questionElement = document.getElementById('questionContainer');
   optionsElement = document.getElementById('options');
-  submitCocherButton = document.getElementById('submitCocher');
-  submitButtonMultiple = document.getElementById('submitMultiple');
-  submitGlisserButton = document.getElementById('submitGlisser');
-  nextButton = document.getElementById('next');
+ validerButton = document.getElementById('valider-button');
+ passerButton = document.getElementById('passer-button');
+  suivantButton = document.getElementById('next');
   demarrerButton = document.getElementById('demarrer');
-  feedbackElement = document.getElementById('feedback');
+  messageElement = document.getElementById('message');
   blocscoreElement = document.getElementById('blocscore');
   scoreElement = document.getElementById('score');
   nombrequestionsElement = document.getElementById('nombrequestions');
@@ -46,43 +44,62 @@ document.addEventListener('DOMContentLoaded', function() {
     demarrerButton.addEventListener('click', () => {
        if (isWaiting) return;   
        cacherintro();
-       showQuestion();
-       showGrille();checkScrollBar();
-       
+       afficherQuestion();
+       afficherReponses();checkScrollBar();
        finPlacement();
     });      
 
-    submitCocherButton.addEventListener('click', () => {
+    validerButton.addEventListener('click', () => {
       if (isWaiting) return;
-      submitCocherAnswer();
-    });
 
-    submitGlisserButton.addEventListener('click', () => {
-      if (isWaiting) return;
-      submitGlisserAnswer();
-    });
 
-    submitButtonMultiple.addEventListener('click', () => {
-      if (isWaiting) return;
-      submitMultipleAnswer();
-    });
+      if (questions[currentQuestionIndex].type === 'glisse') {
+          verifGlisserAnswer(); // Call the drag-and-drop submit function
 
-    nextButton.addEventListener('click', () => {
-      if (currentQuestionIndex < questions.length - 1) {
-        currentQuestionIndex++;
-        attemptsLeft = 4;
-        answeredCorrectly = false;
-        feedbackElement.textContent = '';
-        clearTimeout(pauseTimeout);
-        showQuestion();
-        showGrille();checkScrollBar();
-        finPlacement();
-        enableButtons();
-      } else {
-        endQuiz();
-      }
+      } else if (questions[currentQuestionIndex].type === 'multiple') {
+          verifMultipleAnswer(); // Call the multiple-choice submit function
+      } else if (questions[currentQuestionIndex].type === 'cocher') {
+        verifCocherAnswer(); // Call the cocher-choice submit function
+    }
+  });
+
+  passerButton.addEventListener('click', () => {
+    if (isWaiting) return;
+    var confirmation = confirm("Es-tu sûr de vouloir passer cette question ? Tu n'obtiendras aucun point !");
+    if (confirmation) {
+      questionsuivante();
+    } else {
+        alert("Action annulée !");
+        // Code si l'utilisateur annule l'action
+    }
+});
+
+
+    suivantButton.addEventListener('click', () => {
+     questionsuivante();
+     
     });
   }
+
+function questionsuivante() {
+  cacherSuivantButton();
+  if (currentQuestionIndex < questions.length - 1) {
+    currentQuestionIndex++;
+    tentativesRestantes = 4;
+    reponseCorrecte = false;
+    messageElement.textContent = '';
+    clearTimeout(pauseTimeout);
+    afficherQuestion();
+    afficherReponses();
+    checkScrollBar();
+    activerButtons();
+    finPlacement();
+
+  } else {
+    finQuiz();
+  }
+
+}
 
 function cacherintro() {
     isWaiting = true;
@@ -96,7 +113,7 @@ function cacherintro() {
 }
 
 
-function showQuestion() {
+function afficherQuestion() {
   const currentQuestion = questions[currentQuestionIndex];
   questionElement.innerHTML = currentQuestion.question;
   optionsElement.innerHTML = '';
@@ -106,26 +123,22 @@ function showQuestion() {
   nombrequestionsElement.textContent = questions.length;
   scorepossibleElement.textContent = questions.length*4;
 
-  if (currentQuestion.type === 'glisse') {
-      submitGlisserButton.style.display = 'inline-block';
-      submitButtonMultiple.style.display = 'none';
-      submitCocherButton.style.display = 'none';
-    } else if (currentQuestion.type === 'cocher') {
-      submitCocherButton.style.display = 'inline-block';
-      submitButtonMultiple.style.display = 'none';
-      submitGlisserButton.style.display = 'none';
-    } else {
-      submitGlisserButton.style.display = 'none';
-      submitButtonMultiple.style.display = 'inline-block';
-      submitCocherButton.style.display = 'none';
-    }
+
+// Afficher ou masquer le bouton "passer"
+if (tentativesRestantes < 0) {
+  montrerPasserButton();
+} else {
+  cacherPasserButton();
+}
+
+
 }
 
 
 // Declare a variable to keep a reference to the opened window
 let openedWindow = null;
 
-function showGrille() {
+function afficherReponses() {
   const currentQuestion = questions[currentQuestionIndex];
 
   // Select the elements
@@ -179,11 +192,13 @@ function showGrille() {
 
   // Display options based on the question type
   if (currentQuestion.type === 'glisse') {
-    showDraggableOptions(currentQuestion.answers);
+    afficherGlisseReponses(currentQuestion.answers);
+activerButtons();
+
   } else if (currentQuestion.type === 'cocher') {
-    showCocherOptions(currentQuestion.answers);
+    afficherCocherReponses(currentQuestion.answers);
   } else if (currentQuestion.type === 'multiple') {
-    showMultipleOptions(currentQuestion.answers);
+    afficherMultipleReponses(currentQuestion.answers);
   }
 }
 
@@ -207,41 +222,18 @@ checkScrollBar();
 
 
 window.finPlacement = function() {
-  submitButtonMultiple.style.display = 'none';
-submitCocherButton.style.display = 'none';
-  nextButton.style.display = 'none';
   isWaiting = false;
 }
 
-
-
-
-  
-  
-
-
-  function startPause() {
-    pauseTimeout = setTimeout(() => {
-      endPause();
-    }, 5000);
-  }
-
-  function endPause() {
-    optionsElement.querySelectorAll('.option-button').forEach(btn => btn.classList.remove('selected'));
-    feedbackElement.textContent = '';
-    enableButtons();
-    isWaiting = false;
-  }
-
-  window.handleCorrectAnswer = function() {
-    answeredCorrectly = true;
-    if (attemptsLeft > 0) {
-    score += attemptsLeft;
+  window.gestionReponseCorrecte = function() {
+    reponseCorrecte = true;
+    if (tentativesRestantes > 0) {
+    score += tentativesRestantes;
     } else {
       score += 1;
     }
-    let usedAttempts = 4 - attemptsLeft + 1;
-    feedbackElement.textContent = `Correct ! Vous avez utilisé ${usedAttempts} essai${usedAttempts === 1 ? '' : 's'}.`;
+    let usedAttempts = 4 - tentativesRestantes + 1;
+    messageElement.textContent = `Correct ! Vous avez utilisé ${usedAttempts} essai${usedAttempts === 1 ? '' : 's'}.`;
     scoreElement.textContent = score;
     const currentQuestion = questions[currentQuestionIndex];
     if ('photo2' in currentQuestion) {
@@ -251,50 +243,74 @@ const element = document.getElementById('photobloc');
 
 // Changez l'image de fond avec celle de 'photo2' de la question courante
 element.style.backgroundImage = `url('data/images/${currentQuestion.photo2}')`;
-  }}
+  }
+  setTimeout(() => {
+    montrerSuivantButton();
+  }, 2000);
+}
 
-  window.handleIncorrectAnswer = function() {
-    attemptsLeft--;
-    if (attemptsLeft > 0) {
-      feedbackElement.textContent = `Incorrect. Il vous reste ${attemptsLeft} essai${attemptsLeft === 1 ? '' : 's'}.`;
-    } else {
-      feedbackElement.textContent = `Incorrect, vous avez utilisé tous vos essais.`;
-    }
-      startPause();
+window.gestionReponseFausse = function() {
+  const currentQuestion = questions[currentQuestionIndex];
+
+  tentativesRestantes--;
+      if (tentativesRestantes > 0) {
+          messageElement.textContent = `Incorrect. Il vous reste ${tentativesRestantes} essai${tentativesRestantes === 1 ? '' : 's'}.`;
+        } else {
+          messageElement.textContent = `Incorrect. Vous avez utilisé tous vos essais.`;
+        }
+          
+          setTimeout(() => {
+              messageElement.textContent = '';
+              if (currentQuestion.type === 'glisse') {
+              afficherGlisseReponses(currentQuestion.answers);
+              } else if (currentQuestion.type === 'cocher') {
+                const inputs = optionsElement.querySelectorAll('input[type="checkbox"], input[type="radio"]');
+                inputs.forEach(input => { input.checked = false; });
+              } else if (currentQuestion.type === 'multiple') {
+                optionsElement.querySelectorAll('.option-button').forEach(btn => btn.classList.remove('selected'));
+              }
+              activerButtons();
+
+
+              if (tentativesRestantes > 0) {
+                cacherPasserButton(); 
+              } else {
+                montrerPasserButton();              }
+
+              isWaiting = false;
+          }, 5000);
+}
   
-  }
-  
- 
-
-  window.showSubmitButton = function() {
-    const currentQuestion = questions[currentQuestionIndex];
-    if (currentQuestion.type === 'multiple') {
-      submitButtonMultiple.style.display = 'inline-block';
-      submitGlisserButton.style.display = 'none';
-      submitCocherButton.style.display = 'none';
-    } else if (currentQuestion.type === 'glisse') {
-      submitButtonMultiple.style.display = 'none';
-      submitGlisserButton.style.display = 'inline-block'; 
-      submitCocherButton.style.display = 'none';
-    }   else if (currentQuestion.type === 'cocher') {
-      submitCocherButton.style.display = 'inline-block';
-      submitButtonMultiple.style.display = 'none';
-      submitGlisserButton.style.display = 'none';
-    }      
-   nextButton.style.display = 'none';
+  window.montrerValiderButton = function() {
+   
+    validerButton.style.display = 'inline-block';
+    validerButton.disabled = false;
+   suivantButton.style.display = 'none';
   }
 
-  window.hideSubmitButton = function() {
-    submitButtonMultiple.style.display = 'none';
-    submitGlisserButton.style.display = 'none';
-    submitCocherButton.style.display = 'none';
+  window.cacherValiderButton = function() {
+    validerButton.style.display = 'none';
   }
 
-  window.showNextButton = function() {
-    nextButton.style.display = 'inline-block';
+  window.montrerPasserButton = function() {
+    passerButton.style.display = 'inline-block'; // Assurez-vous d'utiliser passerButton
+    passerButton.disabled = false; // Rendre le bouton actif
+    suivantButton.style.display = 'none'; // Cache le bouton "suivant"
+}
+
+  window.cacherPasserButton = function() {
+    passerButton.style.display = 'none';
   }
 
-  window.disableButtons = function() {
+  window.montrerSuivantButton = function() {
+    suivantButton.style.display = 'inline-block';
+  }
+
+  window.cacherSuivantButton = function() {
+    suivantButton.style.display = 'none';
+  }
+
+  window.desactiverButtons = function() {
     optionsElement.querySelectorAll('.option-button').forEach(button => {
       button.disabled = true;
     });
@@ -310,12 +326,12 @@ element.style.backgroundImage = `url('data/images/${currentQuestion.photo2}')`;
     checkboxes.forEach(checkbox => {
       checkbox.disabled = true;
     });
-    submitButtonMultiple.disabled = true;
-    submitGlisserButton.disabled = true;
-    submitCocherButton.disabled = true;
+
+    validerButton.disabled = true;
+
   }
 
-  window.enableButtons = function() {
+  window.activerButtons = function() {
     optionsElement.querySelectorAll('.option-button').forEach(button => {
       button.disabled = false;
     });
@@ -332,19 +348,20 @@ element.style.backgroundImage = `url('data/images/${currentQuestion.photo2}')`;
     checkboxes.forEach(checkbox => {
       checkbox.disabled = false;
     });
-    submitButtonMultiple.disabled = false;
-    submitGlisserButton.disabled = false;
-    submitCocherButton.disabled = false;
+
+    validerButton.disabled = false;
+
   }
 
-  function endQuiz() {
+  function finQuiz() {
     let scoreDivise = Math.ceil(score * 5 / questions.length);
     questionElement.innerHTML = 'Quiz terminé !<br/> Votre score : ' + scoreDivise + ' sur 20';
     optionsElement.innerHTML = '';
-    submitButtonMultiple.style.display = 'none';
-    submitGlisserButton.style.display = 'none';
-    nextButton.style.display = 'none';
-    feedbackElement.textContent = '';
+
+    validerButton.style.display = 'none';
+    passerButton.style.display = 'none';
+    suivantButton.style.display = 'none';
+    messageElement.textContent = '';
     blocscoreElement.textContent = '';
     blocnumquestionElement.textContent = '';
     questionContainerElement.style.fontSize = '2.5em';

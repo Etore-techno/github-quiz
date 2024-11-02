@@ -17,7 +17,7 @@ checkScrollBar();
 window.addEventListener('resize', checkScrollBar);
 
 
-  function showDraggableOptions(answers) {
+  function afficherGlisseReponses(answers) {
     const optionsContainer = document.getElementById('options');
     optionsContainer.innerHTML = '';
     optionsContainer.style.alignItems = 'flex-start';
@@ -41,7 +41,7 @@ window.addEventListener('resize', checkScrollBar);
   
         optionsElement.appendChild(row);
     });
-  
+    
     addDragAndDropListeners();
 }
 
@@ -56,6 +56,7 @@ function addDragAndDropListeners() {
 }
 
 function handleDragStart(event) {
+  montrerValiderButton();
   event.dataTransfer.setData('text/plain', event.target.dataset.index);
   event.currentTarget.classList.add('dragging');
 }
@@ -86,39 +87,26 @@ function handleDrop(event) {
 }
 
 
-function submitGlisserAnswer() {
+function verifGlisserAnswer() {
+
   isWaiting = true;
-  disableButtons();
-  hideSubmitButton();
+  desactiverButtons();
+  cacherValiderButton();
+  cacherPasserButton();
 
   // Obtenez l'ordre des éléments après déplacement
   const draggableOptions = Array.from(document.querySelectorAll('.draggable-option'));
   const userOrder = draggableOptions.map(option => option.textContent);
 
   const currentQuestion = questions[currentQuestionIndex];
+  
   const isCorrect = arraysEqual(userOrder, currentQuestion.correctOrder);
 
   if (isCorrect) {
-      handleCorrectAnswer();
-      setTimeout(() => {
-          showNextButton();
-      }, 2000);
+      gestionReponseCorrecte();
+     
   } else {
-      attemptsLeft--;
-      if (attemptsLeft > 0) {
-          feedbackElement.textContent = `Incorrect. Il vous reste ${attemptsLeft} essai${attemptsLeft === 1 ? '' : 's'}.`;
-        } else {
-          feedbackElement.textContent = `Incorrect. Vous avez utilisé tous vos essais.`;
-        }
-          
-          setTimeout(() => {
-              feedbackElement.textContent = '';
-              finPlacement();
-              showDraggableOptions(currentQuestion.answers);
-              enableButtons();
-              showSubmitButton();
-              isWaiting = false;
-          }, 5000);
-                 
+    gestionReponseFausse();
+      
   }
 }

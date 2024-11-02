@@ -97,7 +97,7 @@ var questions = [
 */
     {
       question: "Le vélo électrique présenté sur l'image de droite possède 3 éléments supplémentaires que le vélo classique.<br/>À quelle fonction technique répond la batterie ?",
-      answers: ["Eclairer le trajet", "Propulser le moyen de transport", "Assurer le confort de l'utilisateur", "Alimenter le vélo en énergie électrique", "Assurer la sécurité de l'utilisateur", "Freiner le moyen de transport", "Commander la vitesse du vélo", "Afficher le trajet", "Transporter des objets", "Mettre en mouvement le plateau", "Diriger le moyen de transport", "Protéger l'utilisateur des intempéries"],
+      answers: ["Propulser le moyen de transport", "Assurer le confort de l'utilisateur", "Alimenter le vélo en énergie électrique", "Assurer la sécurité de l'utilisateur", "Freiner le moyen de transport", "Commander la vitesse du vélo", "Afficher le trajet", "Transporter des objets", "Mettre en mouvement le plateau", "Diriger le moyen de transport", "Protéger l'utilisateur des intempéries"],
       correctAnswers: ["Alimenter le vélo en énergie électrique"],
       type: "cocher",
       vertical: "oui",
@@ -106,7 +106,7 @@ var questions = [
     },
     {
       question: "À quelle fonction technique répond le moteur électrique ?",
-      answers: ["Eclairer le trajet", "Propulser le moyen de transport", "Assurer le confort de l'utilisateur", "Alimenter le vélo en énergie électrique", "Assurer la sécurité de l'utilisateur", "Freiner le moyen de transport", "Commander la vitesse du vélo", "Afficher le trajet", "Transporter des objets", "Mettre en mouvement le plateau", "Diriger le moyen de transport", "Protéger l'utilisateur des intempéries"],
+      answers: ["Propulser le moyen de transport", "Assurer le confort de l'utilisateur", "Alimenter le vélo en énergie électrique", "Assurer la sécurité de l'utilisateur", "Freiner le moyen de transport", "Commander la vitesse du vélo", "Afficher le trajet", "Transporter des objets", "Mettre en mouvement le plateau", "Diriger le moyen de transport", "Protéger l'utilisateur des intempéries"],
       correctAnswers: ["Mettre en mouvement le plateau"],
       type: "cocher",
       vertical: "oui",
@@ -115,7 +115,7 @@ var questions = [
     },
     {
       question: "À quelle fonction technique répond la poignée d'accélérateur ?",
-      answers: ["Eclairer le trajet", "Propulser le moyen de transport", "Assurer le confort de l'utilisateur", "Alimenter le vélo en énergie électrique", "Assurer la sécurité de l'utilisateur", "Freiner le moyen de transport", "Commander la vitesse du vélo", "Afficher le trajet", "Transporter des objets", "Mettre en mouvement le plateau", "Diriger le moyen de transport", "Protéger l'utilisateur des intempéries"],
+      answers: ["Propulser le moyen de transport", "Assurer le confort de l'utilisateur", "Alimenter le vélo en énergie électrique", "Assurer la sécurité de l'utilisateur", "Freiner le moyen de transport", "Commander la vitesse du vélo", "Afficher le trajet", "Transporter des objets", "Mettre en mouvement le plateau", "Diriger le moyen de transport", "Protéger l'utilisateur des intempéries"],
       correctAnswers: ["Commander la vitesse du vélo"],
       type: "cocher",
       vertical: "oui",

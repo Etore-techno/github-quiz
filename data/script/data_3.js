@@ -5,7 +5,7 @@ var couleur = '#1B76AD'
 var questions = [ 
       {
       question: "Les moyens de transport sont composés de différentes parties, chacune accomplissant des fonctions techniques spécifiques.<br/>Quelles sont les fonctions techniques communes à la majorité des moyens de transport ?",
-      answers: ["Eclairer le trajet", "Propulser le moyen de transport", "Assurer le confort de l'utilisateur", "Assurer la sécurité de l'utilisateur", "Freiner le moyen de transport", "Afficher le trajet", "Transporter des objets", "Diriger le moyen de transport", "Protéger l'utilisateur des intempéries"],
+      answers: ["Propulser le moyen de transport", "Assurer le confort de l'utilisateur", "Assurer la sécurité de l'utilisateur", "Freiner le moyen de transport", "Afficher le trajet", "Transporter des objets", "Diriger le moyen de transport", "Protéger l'utilisateur des intempéries"],
       correctAnswers: ["Propulser le moyen de transport", "Freiner le moyen de transport", "Diriger le moyen de transport"],
       type: "cocher",
       vertical: "oui",
@@ -14,7 +14,7 @@ var questions = [
     },
     {
       question: "Quels sont les éléments du vélo réalisant la fonction technique : freiner le vélo (frein arrière) ?",
-      answers: ["Guidon", "Selle", "Poignée de frein", "Câble de frein", "Feu avant", "Roue avant", "Cadre", "Fourche", "Plateau(x)", "Pédalier", "Roue arrière", "Chaîne", "Pignon(s)", "Garde-boue", "Feu arrière", "Porte bagages", "Mâchoîre et patins"],
+      answers: ["Guidon", "Selle", "Poignée de frein", "Pédalier", "Feu avant", "Chaîne", "Cadre", "Fourche", "Plateau", "Câble de frein", "Roue avant", "Pignons", "Garde-boue", "Feu arrière", "Roue arrière", "Porte bagages", "Mâchoîre et patins"],
       correctAnswers: ["Poignée de frein", "Câble de frein", "Roue arrière", "Mâchoîre et patins"],
       type: "cocher",
       vertical: "non",
@@ -23,7 +23,7 @@ var questions = [
     },
     {
       question: "Quels sont les éléments du vélo réalisant la fonction technique : propulser le vélo (avancer) ?",
-      answers: ["Guidon", "Selle", "Poignée de frein", "Câble de frein", "Feu avant", "Roue avant", "Cadre", "Fourche", "Plateau(x)", "Pédalier", "Roue arrière", "Chaîne", "Pignon(s)", "Garde-boue", "Feu arrière", "Porte bagages", "Mâchoîre et patins"],
+      answers: ["Guidon", "Selle", "Poignée de frein", "Pédalier", "Feu avant", "Chaîne", "Cadre", "Fourche", "Plateau", "Câble de frein", "Roue avant", "Pignons", "Garde-boue", "Feu arrière", "Roue arrière", "Porte bagages", "Mâchoîre et patins"],
       correctAnswers: ["Plateau", "Pédalier", "Roue arrière", "Chaîne", "Pignons"],
       type: "cocher",
       vertical: "non",
@@ -31,8 +31,8 @@ var questions = [
       photo2: "velo_legende.jpg"
     },
     {
-      question: "Quels sont les éléments du vélo réalisant la fonction technique : dirigerle vélo (tourner) ?",
-      answers: ["Guidon", "Selle", "Poignée de frein", "Câble de frein", "Feu avant", "Roue avant", "Cadre", "Fourche", "Plateau(x)", "Pédalier", "Roue arrière", "Chaîne", "Pignon(s)", "Garde-boue", "Feu arrière", "Porte bagages", "Mâchoîre et patins"],
+      question: "Quels sont les éléments du vélo réalisant la fonction technique : diriger le vélo (tourner) ?",
+      answers: ["Guidon", "Selle", "Poignée de frein", "Pédalier", "Feu avant", "Chaîne", "Cadre", "Fourche", "Plateau", "Câble de frein", "Roue avant", "Pignons", "Garde-boue", "Feu arrière", "Roue arrière", "Porte bagages", "Mâchoîre et patins"],
       correctAnswers: ["Guidon", "Roue avant", "Fourche"],
       type: "cocher",
       vertical: "non",
@@ -41,8 +41,8 @@ var questions = [
     },
     {
       question: "À quelle fonction technique répondent le feu avant et le feu arrière ?",
-      answers: ["Eclairer le trajet", "Propulser le moyen de transport", "Assurer le confort de l'utilisateur", "Assurer la sécurité de l'utilisateur", "Freiner le moyen de transport", "Afficher le trajet", "Transporter des objets", "Diriger le moyen de transport", "Protéger l'utilisateur des intempéries"],
-      correctAnswers: ["Assurer la sécurité du cycliste"],
+      answers: ["Propulser le moyen de transport", "Assurer le confort de l'utilisateur", "Maintenir la structure du vélo", "Assurer la sécurité de l'utilisateur", "Freiner le moyen de transport", "Afficher le trajet", "Transporter des objets", "Diriger le moyen de transport", "Protéger l'utilisateur des éclaboussures"],
+      correctAnswers: ["Assurer la sécurité de l'utilisateur"],
       type: "cocher",
       vertical: "oui",
       photo1: "velo_legende.jpg",
@@ -50,8 +50,8 @@ var questions = [
     },
     {
       question: "À quelle fonction technique répond la selle ?",
-      answers: ["Eclairer le trajet", "Propulser le moyen de transport", "Assurer le confort de l'utilisateur", "Assurer la sécurité de l'utilisateur", "Freiner le moyen de transport", "Afficher le trajet", "Transporter des objets", "Diriger le moyen de transport", "Protéger l'utilisateur des intempéries"],
-      correctAnswers: ["Assurer le confort du cycliste"],
+      answers: ["Propulser le moyen de transport", "Assurer le confort de l'utilisateur", "Maintenir la structure du vélo", "Assurer la sécurité de l'utilisateur", "Freiner le moyen de transport", "Afficher le trajet", "Transporter des objets", "Diriger le moyen de transport", "Protéger l'utilisateur des éclaboussures"],
+      correctAnswers: ["Assurer le confort de l'utilisateur"],
       type: "cocher",
       vertical: "oui",
       photo1: "velo_legende.jpg",
@@ -59,7 +59,7 @@ var questions = [
     },
     {
       question: "À quelle fonction technique répond le cadre ?",
-      answers: ["Eclairer le trajet", "Propulser le moyen de transport", "Assurer le confort de l'utilisateur", "Assurer la sécurité de l'utilisateur", "Freiner le moyen de transport", "Afficher le trajet", "Transporter des objets", "Diriger le moyen de transport", "Protéger l'utilisateur des intempéries"],
+      answers: ["Propulser le moyen de transport", "Assurer le confort de l'utilisateur", "Maintenir la structure du vélo", "Assurer la sécurité de l'utilisateur", "Freiner le moyen de transport", "Afficher le trajet", "Transporter des objets", "Diriger le moyen de transport", "Protéger l'utilisateur des éclaboussures"],
       correctAnswers: ["Maintenir la structure du vélo"],
       type: "cocher",
       vertical: "oui",
@@ -68,8 +68,8 @@ var questions = [
     },
     {
       question: "À quelle fonction technique répond le garde-boue ?",
-      answers: ["Eclairer le trajet", "Propulser le moyen de transport", "Assurer le confort de l'utilisateur", "Assurer la sécurité de l'utilisateur", "Freiner le moyen de transport", "Afficher le trajet", "Transporter des objets", "Diriger le moyen de transport", "Protéger l'utilisateur des intempéries"],
-      correctAnswers: ["Protéger le cycliste des éclaboussures"],
+      answers: ["Propulser le moyen de transport", "Assurer le confort de l'utilisateur", "Maintenir la structure du vélo", "Assurer la sécurité de l'utilisateur", "Freiner le moyen de transport", "Afficher le trajet", "Transporter des objets", "Diriger le moyen de transport", "Protéger l'utilisateur des éclaboussures"],
+      correctAnswers: ["Protéger l'utilisateur des éclaboussures"],
       type: "cocher",
       vertical: "oui",
       photo1: "velo_legende.jpg",
@@ -77,7 +77,7 @@ var questions = [
     },
     {
       question: "À quelle fonction technique répond le porte bagages ?",
-      answers: ["Eclairer le trajet", "Propulser le moyen de transport", "Assurer le confort de l'utilisateur", "Assurer la sécurité de l'utilisateur", "Freiner le moyen de transport", "Afficher le trajet", "Transporter des objets", "Diriger le moyen de transport", "Protéger l'utilisateur des intempéries"],
+      answers: ["Propulser le moyen de transport", "Assurer le confort de l'utilisateur", "Maintenir la structure du vélo", "Assurer la sécurité de l'utilisateur", "Freiner le moyen de transport", "Afficher le trajet", "Transporter des objets", "Diriger le moyen de transport", "Protéger l'utilisateur des éclaboussures"],
       correctAnswers: ["Transporter des objets"],
       type: "cocher",
       vertical: "oui",
@@ -86,8 +86,8 @@ var questions = [
     },
     {
       question: "Le cycliste transmet son énergie au vélo afin de le propulser.<br/>Replacer les éléments suivants dans l'ordre de circulation de l'énergie (1. Le cycliste) :",
-      answers: ["le cycliste", "le(s) plateau(x)", "le sol", "la roue arrière", "la chaîne", "le pédalier", "le(s) pignon(s)"],
-      correctOrder: ["le cycliste", "le pédalier", "le(s) plateau(x)", "la chaîne", "le(s) pignon(s)", "la roue arrière", "le sol"],
+      answers: ["le cycliste", "le plateau", "le sol", "la roue arrière", "la chaîne", "le pédalier", "les pignons"],
+      correctOrder: ["le cycliste", "le pédalier", "le plateau", "la chaîne", "les pignons", "la roue arrière", "le sol"],
       type: "glisse",
       photo1: "velo_legende.jpg",
       photo2: "velo_legende.jpg"
