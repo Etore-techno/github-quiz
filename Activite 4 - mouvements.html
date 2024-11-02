@@ -1,60 +1,103 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-
-  <title></title>
-  <link rel="stylesheet" href="data/styles.css">
-  <script>
-    // Add an event listener for the 'beforeunload' event
-    window.addEventListener('beforeunload', function (event) {
-        // Set a message for the warning (some browsers ignore this and use a default message)
-        event.preventDefault(); // Necessary for some browsers
-        event.returnValue = 'Attention, vous allez fermer cette page !'; // Chrome requires returnValue to be set
-    });
-</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activité 4 - Transmission et transformation de mouvements</title>
+    <link rel="stylesheet" href="data/styles_activite_4.css">
 </head>
 <body>
-  <div class="total-container" id="totalContainer">
-  <div class="haut-container" id="hautContainer">
-    <div class="titre" id="titrequiz"></div>
-    <div class="numeroquestion" id="blocnumquestion" style="display: none;">Question : <span id="numeroquestion">0</span> sur <span id="nombrequestions">0</span> </div>
-  </div>
+    <div class="total-container" id="totalContainer">
+        <div class="haut-container" id="hautContainer">
+            <div class="titre" id="titre">Activité 4 - Transmission et transformation de mouvements</div>
+        </div>
+        <div class="quiz-container" id="quizContainer">
+            <!-- Colonne 1 : Titre et image cliquable -->
+            <div class="colonne-techno" id="colonneTechno">
+                <div class="sous-titre">Activité<br>Techno-Flash :</div>
+                <a href="https://techno-flash.com/animations/transmission_transformation_mouvement/transmission_transformation_mouvement.html" target="_blank" class="clickable-link">
+                    <img src="data/images/techno flash.jpg" alt="Lien externe" class="image-cliquable">
+                </a>
+            </div>
 
-<div class="quiz-container" id="quizcontainer">
-  <div class="photofull" id="photofull" style="display: none;"></div>
- 
-  <div class="question-container" id="questionContainer" style="display: none;">
-    <!-- La question sera ajoutée dynamiquement ici -->
-  </div>
-  <div id="barre" style="display: none;">
-    <hr style="width: 100%; height: 3px; background-color: #1B76AD; border: none; margin-left: 0;">
-  </div>
+            <!-- Colonne 2 : Titre Animations et images cliquables -->
+            <div class="colonne-animations">
+                <div class="sous-titre">Animations</div>
+                <div class="images-animations">
+                    <div class="animation">
+                        <p>système par piston,<br>bielle et manivelle :</p>
+                        <a href="data/animations/Systeme bielle manivelle.html" target="_blank" class="clickable-link">
+                            <img src="data/images/piston bielle manivelle.jpg" alt="Animation 1" class="image-cliquable">
+                        </a>
+                    </div>
+                    <div class="animation">
+                        <p>système par poulies<br>et courroie :</p>
+                        <a href="data/animations/Systeme poulies courroie.html" target="_blank" class="clickable-link">
+                            <img src="data/images/poulies courroie.jpg" alt="Animation 2" class="image-cliquable">
+                        </a>
+                    </div>
+                    <div class="animation">
+                        <p>système par pignon<br>et crémaillère :</p>
+                        <a href="data/animations/Systeme pignon cremaillere.html" target="_blank" class="clickable-link">
+                            <img src="data/images/pignon cremaillere.jpg" alt="Animation 3" class="image-cliquable">
+                        </a>
+                    </div>
+                </div>
+                <div class="images-animations">
+                    <div class="animation">
+                        <p>système par engrenages<br>animation 1 :</p>
+                        <a href="data/animations/Systeme engrenages.html" target="_blank" class="clickable-link">
+                            <img src="data/images/engrenages 1.jpg" alt="Animation 4" class="image-cliquable">
+                        </a>
+                    </div>
+                    <div class="animation">
+                        <p>système par engrenages<br>animation 2 :</p>
+                        <a href="data/animations/Systeme train d engrenages.html" target="_blank" class="clickable-link">
+                            <img src="data/images/engrenages 2.jpg" alt="Animation 5" class="image-cliquable">
+                        </a>
+                    </div>
+                </div>
+            </div>
 
-      <div class="centre-container" id="centrecontainer" style="display: none;">  
-    <div class="options" id="options"></div>
-    <div class="photobloc" id="photobloc"></div>  
-  </div>
-</div>
-   
-<div class="score-container">
-    <div class="feedback" id="feedback"></div>
-    <div class="scoreclass" id="blocscore" style="display: none;">Score : <span id="score">0</span> sur <span id="scorepossible">0</span></div>
-    <div class="button-container">
-    <button  id="demarrer">Démarrer</button>
-    <button  id="submitCocher" style="display: none;">Valider</button>
-    <button  id="submitMultiple" style="display: none;">Valider</button>
-    <button  id="submitGlisser" style="display: none;">Valider</button>
-    <button  id="next" style="display: none;">Suivant</button>
+            <!-- Colonne 3 : Titre "Fonction propulser du vélo" et image cliquable -->
+            <div class="colonne-fonction">
+                <div class="sous-titre">Fonction propulser<br>du vélo :</div>
+                <a href="data/animations/Systeme de transmission - velo.html" target="_blank" class="clickable-link">
+                    <img src="data/images/propulsion velo.jpg" alt="Fonction propulser du vélo" class="image-cliquable">
+                </a>
+            </div>
+        </div>
+
+        <div class="score-container" id="scoreContainer">
+        </div>
     </div>
-</div>
-</div>
-<script src="data/script/data_4.js"></script>
-<script src="data/script/script.js"></script>
-<script src="data/script/cocher.js"></script>
-<script src="data/script/glisser.js"></script>
-<script src="data/script/multiple.js"></script>
+
+
+    <script>
+        // Object to store open tabs
+        const openTabs = {};
+
+        // Function to handle link clicks
+        function openOrFocusLink(url) {
+            // Check if the link is already open in an existing tab
+            if (openTabs[url] && !openTabs[url].closed) {
+                // If it is, bring focus to the open tab
+                openTabs[url].focus();
+            } else {
+                // If not, open a new tab and store its reference
+                openTabs[url] = window.open(url, '_blank');
+                openTabs[url].focus();
+            }
+        }
+
+        // Add event listener to all clickable links
+        document.querySelectorAll('.clickable-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault(); // Prevent default link behavior
+                openOrFocusLink(link.href);
+            });
+        });
+    </script>
 
 </body>
 </html>

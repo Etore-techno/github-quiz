@@ -1,0 +1,128 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-color: #fff;
+  touch-action: none;
+}
+
+.total-container {
+  width: 90%;
+  height: 95%;
+  background-color: blue;
+  border: 10px solid blue;
+  border-radius: 10px;
+  text-align: center;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.haut-container, .score-container {
+  width: 100%;
+  height: 5%;
+  text-align: center;
+  vertical-align: middle;
+  background-color: blue;
+  color: white;
+  box-sizing: border-box;
+}
+
+.titre {
+  padding: 0px 20px;
+  box-sizing: border-box;
+  font-weight: bold;
+}
+
+.quiz-container {
+  width: 100%;
+  height: 90%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  vertical-align: middle;
+  margin-bottom: 15px;
+}
+
+.colonne-techno,
+.colonne-fonction {
+  width: 20%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background-color: #fff;
+  color: blue;
+  padding: 5px;
+  border-radius: 5px;
+  justify-content: center;
+}
+
+.colonne-animations {
+  width: 53%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background-color: #fff;
+  color: blue;
+  padding: 5px 20px;
+  border-radius: 5px;
+  justify-content: center;
+}
+
+p {
+font-weight: bold;
+}
+
+.sous-titre {
+  font-weight: bold;
+  font-size: 1.5em;
+  color: blue;
+  margin-bottom: 30px;
+}
+
+.images-animations {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.images-animations:nth-child(1) {
+  margin-bottom: 10px; /* Espacement entre les deux rangées d'images */
+
+}
+
+.animation {
+  text-align: center;
+  gap: 20px;
+  width : 30%;
+}
+
+.image-cliquable {
+  width: 100%; /* L'image occupe toute la largeur de l'animation */
+  height: auto;
+  cursor: pointer;
+}
+
+.image-cliquable:hover {
+  opacity: 0.8;
+}
