@@ -317,7 +317,7 @@ font-weight: bold;
   justify-content: center;
 }
 
-.feedback {
+.message {
   font-size: 18px;
   font-weight: bold;
   color: white;
@@ -412,9 +412,8 @@ font-weight: bold;
   margin-bottom: 0.1em;
 }
 
-#submitCocher,
-#submitMultiple,
-#submitGlisser,
+#valider-button,
+#passer-button,
 #next,
 #demarrer {
   background-color: white;
@@ -429,67 +428,16 @@ font-weight: bold;
   display: inline-block; /* Ajuster la largeur automatiquement */
   width: auto; /* S'adapter à la taille du texte */
 }
+#passer-button {
+  margin-right: 20px; /* Ajoute un espace de 20 pixels à droite */
 
-#submitCocher:hover,
-#submitMultiple:hover,
-#submitGlisser:hover,
+}
+
+#valider-button:hover,
+#passer-button:hover,
 #next:hover,
 #demarrer:hover {
   background-color: var(--main-color);
   color: white;
 }
 
-/* Media queries pour adapter le contenu à différentes tailles d'écran */
-@media (max-width: 600px) {
-  .question {
-    font-size: 20px;
-  }
-
-  .option-button {
-    font-size: 16px;
-    padding: 8px;
-  }
-
-  .feedback {
-    font-size: 16px;
-  }
-
-  .score {
-    font-size: 20px;
-    padding: 8px;
-  }
-
-
-  #submitMultiple,
-  #next {
-    font-size: 16px;
-    padding: 8px;
-  }
-}
-
-@media (max-width: 400px) {
-  .question {
-    font-size: 18px;
-  }
-
-  .option-button {
-    font-size: 14px;
-    padding: 6px;
-  }
-
-  .feedback {
-    font-size: 14px;
-  }
-
-  .score {
-    font-size: 18px;
-    padding: 6px;
-  }
-
-
-  #submitMultiple,
-  #next {
-    font-size: 14px;
-    padding: 6px;
-  }
-}
