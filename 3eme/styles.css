@@ -10,10 +10,15 @@ body {
 }
 
 /* Titres */
-h1 {
+#titre-1, #titre-2 {
     margin-top: 20px;
     margin-bottom: 20px;
     text-align: center;
+    font-family: 'Garamond', serif;
+    font-size: 38px;
+    font-weight: bold;
+    color: #111;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 /* Conteneur principal */
@@ -23,6 +28,8 @@ h1 {
     align-items: flex-start;
     gap: 20px;
     margin-top: 10px;
+    margin-bottom: 10px;
+
 }
 
 .main-container2 {
@@ -30,7 +37,7 @@ h1 {
     justify-content: center;
     align-items: flex-start;
     gap: 20px;
-    margin-top: 10px;
+    margin-bottom: 100px;
 }
 /* --- STYLES SPÉCIFIQUES AU TABLEAU --- */
 
@@ -52,7 +59,7 @@ h1 {
     border: 2px dashed #007BFF; /* Bordure visible pour les zones */
     box-sizing: border-box;
     position: absolute; /* Position absolue par rapport à l'image */
-    font-size: 16px;
+    font-size: 15px;
     font-weight: bold;
      /* Centrage du texte */
      display: flex;
@@ -206,4 +213,10 @@ h1 {
 #validate-controls-1 > *:not(:first-child),
 #validate-controls-2 > *:not(:first-child) {
     margin-left: 10px; /* Espacement seulement à gauche des autres éléments */
+}
+
+
+#diagramme-message, #tableau-message {
+    font-size: 18px;
+    font-weight: bold;
 }

@@ -23,6 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("deplacables-diagramme-container").style.display = "flex";
             document.getElementById("tableau-container").style.display = "none";
             document.getElementById("deplacables-tableau-container").style.display = "none";
+            const message = document.getElementById(messageId);
+            message.textContent = "Déplacez les éléments de droite afin de compléter le diagramme :";
           
         } else if (etape === 2) {
             console.log("Chargement de l'étape 2 : Tableau...");
@@ -32,15 +34,17 @@ document.addEventListener("DOMContentLoaded", () => {
             deplacablesContainerId = "deplacables-tableau-container";
             messageId = "tableau-message";
             validateButtonId = "validate-2-button";
-    
+
+            document.getElementById("titre-2").style.display = "block";
+
             document.getElementById("diagramme-container").style.display = "block";
             document.getElementById("deplacables-diagramme-container").style.display = "none";
             document.getElementById("validate-1-button").style.display = "none";
             document.getElementById("validate-2-button").style.display = "block";
 
-            document.getElementById("diagramme-message").style.display = "none";
             document.getElementById("tableau-message").style.display = "block";
-
+            const message = document.getElementById(messageId);
+            message.textContent = "Replacez les fonctions dans le tableau :";
             document.getElementById("tableau-container").style.display = "block";
             document.getElementById("tableau-container-fonctions").style.display = "block";
             document.getElementById("tableau-container-criteres-niveaux").style.display = "none";
@@ -66,8 +70,10 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("deplacables-diagramme-container").style.display = "none";
             document.getElementById("validate-2-button").style.display = "none";
             document.getElementById("validate-3-button").style.display = "block";
-            document.getElementById("tableau-message").innerHTML = "";
 
+            const message = document.getElementById(messageId);
+            message.textContent = "Replacez les critères et les niveaux dans le tableau :";
+            
             document.getElementById("tableau-container").style.display = "block";
             document.getElementById("tableau-container-criteres-niveaux").style.display = "block";
 
@@ -114,6 +120,13 @@ document.addEventListener("DOMContentLoaded", () => {
     
         // **🟢 Vérification que les zones de dépôt existent bien après leur création**
         setTimeout(() => {
+
+            document.addEventListener("wheel", (event) => {
+                if (isDragging || currentDraggedElement) {
+                    event.preventDefault();
+                    window.scrollBy(0, event.deltaY);
+                }
+            }, { passive: false });
             const allZones = document.querySelectorAll(etape === 1 ? ".diagramme-droppable" : ".tableau-droppable");
             console.log("📌 Vérification après création des zones :", allZones);
     
@@ -196,8 +209,8 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!isDragging || !currentDraggedElement) return;
     
             event.preventDefault();
-            const scrollSpeed = 10;
-            const scrollMargin = 200; // Zone de scroll augmentée (200px)
+            const scrollSpeed = 13;
+            const scrollMargin = 150; // Zone de scroll augmentée (200px)
     
             const mouseY = event.clientY;
             const windowHeight = window.innerHeight;
@@ -308,6 +321,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         document.querySelectorAll(".diagramme-droppable").forEach((zone, index) => {
             zone.id = `fixed-zone-diagramme-${index}`;
+            zone.style.border = "none"; // Supprimer la bordure
+            zone.style.backgroundColor = "transparent"; // Supprimer la couleur de fond
             zone.style.pointerEvents = "none"; // Désactiver toute interaction
         });
 
@@ -317,13 +332,23 @@ document.addEventListener("DOMContentLoaded", () => {
             element.style.cursor = "default";
             element.style.pointerEvents = "none"; // Désactiver toute interaction
         });
+        
+        const message = document.getElementById("diagramme-message");
+
+        message.innerHTML = "Recopiez le diagramme sur votre feuille,<br> puis complétez le tableau de caractérisation en-dessous !";
+        message.style.fontSize = "24px" ;
+        message.style.textAlign = "center" ;
+
     }
+
 
     function modifierIDsElementsEtape2() {
         console.log("Modification des IDs des éléments placés à la fin de l'étape 2...");
 
         document.querySelectorAll(".tableau-droppable").forEach((zone, index) => {
             zone.id = `fixed-zone-tableau-${index}`;
+            zone.style.border = "none"; // Supprimer la bordure
+            zone.style.backgroundColor = "transparent"; // Supprimer la couleur de fond
             zone.style.pointerEvents = "none"; // Désactiver toute interaction
         });
 
@@ -333,8 +358,37 @@ document.addEventListener("DOMContentLoaded", () => {
             element.style.cursor = "default";
             element.style.pointerEvents = "none"; // Désactiver toute interaction
         });
+
     }
 
+    function modifierIDsElementsEtape3() {
+        console.log("Modification des IDs des éléments placés à la fin de l'étape 3...");
+
+        document.querySelectorAll(".tableau-droppable").forEach((zone, index) => {
+            zone.id = `fixed-2-zone-tableau-${index}`;
+            zone.style.border = "none"; // Supprimer la bordure
+            zone.style.backgroundColor = "transparent"; // Supprimer la couleur de fond
+            zone.style.pointerEvents = "none"; // Désactiver toute interaction
+        });
+
+        document.querySelectorAll(".tableau-droppable .bougeable").forEach((element, index) => {
+            element.id = `fixed-2-tableau-${index}`;
+            element.removeAttribute("draggable"); 
+            element.style.cursor = "default";
+            element.style.pointerEvents = "none"; // Désactiver toute interaction
+        });  
+        
+        document.getElementById("deplacables-tableau-container").style.display = "none";
+        document.getElementById("validate-3-button").style.display = "none";
+
+        const message = document.getElementById("tableau-message");
+
+        message.innerHTML = "Recopiez le tableau sur votre feuille !";
+        message.style.fontSize = "24px" ;
+        message.style.textAlign = "center" ;
+        
+       
+    }
     
 
     function activerDragAndDrop(zonesData, elementsData, deplacablesContainerId, messageId, validateButtonId) {
@@ -386,6 +440,8 @@ document.addEventListener("DOMContentLoaded", () => {
             modifierIDsElementsEtape2();
             etape = 3;
             chargerEtape();
+        }else if (etape === 3) {
+            modifierIDsElementsEtape3();
         }
         return; // On quitte la fonction après avoir changé d'étape
     }
