@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3ème - CdCF - Diaporama</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Exercice du diagramme -->
+    <h1>Partie 1 : Diagramme des interactions</h1>
+    <div id="validate-controls-1">
+        <button id="validate-1-button">Valider Étape 1</button>
+        <p id="diagramme-message"></p>
+    </div>  
+    <div class="main-container">
+        
+        <div id="diagramme-container">
+            <img src="images/diagramme.jpg" alt="Diagramme">
+        </div>
+  
+        <div id="deplacables-diagramme-container">
+            <!-- Les éléments déplaçables seront insérés ici -->
+        </div>
+
+    </div>
+
+
+    <!-- Exercice du tableau -->
+    <h1>Partie 2 : Tableau de caractérisation des fonctions</h1>
+
+    <div class="main-container2">
+        <div>
+            <div id="validate-controls-2">
+                <button id="validate-2-button" style="display: none;">Valider Étape 2</button>
+                <button id="validate-3-button" style="display: none;">Valider Étape 3</button>
+                <p id="tableau-message"></p>
+            </div>
+         <div id="tableau-container">
+            <img src="images/tableau_couleurs.jpg" alt="Tableau de caractérisation">
+            <div id="tableau-container-fonctions">
+            </div>
+        
+  
+            <div id="tableau-container-criteres-niveaux">
+            </div>
+        </div>
+    </div>
+        <div>
+        
+        <div id="deplacables-tableau-container">
+            <!-- Les éléments déplaçables seront insérés ici dynamiquement -->
+        </div>
+        </div>
+
+    </div>
+    
+    
+
+    <!-- Scripts -->
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
