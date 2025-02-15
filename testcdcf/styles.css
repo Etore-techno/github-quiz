@@ -297,19 +297,20 @@ body {
     height: var(--height);
 }
 .diagramme-draggable, .bougeable {
-    touch-action: none; /* Désactive le défilement pendant le drag */
+    touch-action: none;
     cursor: grab;
     user-select: none;
-    position: absolute; /* Permet un calcul correct des positions */
+    position: fixed; /* Fixe permet d'éviter les décalages */
     z-index: 1;
     transition: transform 0.2s ease;
 }
 
 .dragging {
-    opacity: 0.6;
+    opacity: 0.7;
     cursor: grabbing;
     z-index: 1000;
 }
+
 
 
 .diagramme-droppable, .tableau-droppable {

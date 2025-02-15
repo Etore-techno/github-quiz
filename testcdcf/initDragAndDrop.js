@@ -13,29 +13,31 @@ function initDragAndDrop() {
         currentDraggedElement = e.target.closest('.diagramme-draggable, .bougeable');
         if (!currentDraggedElement) return;
 
-        // Sauvegarde du conteneur d'origine
+        // Sauvegarder le conteneur d'origine
         originContainer = currentDraggedElement.parentElement;
 
-        // Calcul des offsets absolus
+        // 🛠️ Calcul absolu correct des coordonnées, même après déplacement
         const rect = currentDraggedElement.getBoundingClientRect();
         const pageX = e.type.startsWith('touch') ? e.touches[0].pageX : e.pageX;
         const pageY = e.type.startsWith('touch') ? e.touches[0].pageY : e.pageY;
 
+        // Décalage précis du point de contact
         offsetX = pageX - rect.left;
         offsetY = pageY - rect.top;
 
         currentDraggedElement.classList.add('dragging');
-        currentDraggedElement.style.position = 'absolute';
+        currentDraggedElement.style.position = 'fixed'; // Garantir une position stable sur toute la page
         currentDraggedElement.style.zIndex = '1000';
     }
 
-    // 🟡 Déplacement
+    // 🟡 Déplacement de l'élément
     function moveDrag(e) {
         if (!currentDraggedElement) return;
 
         const pageX = e.type.startsWith('touch') ? e.touches[0].pageX : e.pageX;
         const pageY = e.type.startsWith('touch') ? e.touches[0].pageY : e.pageY;
 
+        // Calcul direct des positions
         const x = pageX - offsetX;
         const y = pageY - offsetY;
 
@@ -54,8 +56,9 @@ function initDragAndDrop() {
             const x = e.type.startsWith('touch') ? e.changedTouches[0].clientX : e.clientX;
             const y = e.type.startsWith('touch') ? e.changedTouches[0].clientY : e.clientY;
 
+            // Vérifier si le point d'arrêt est dans une zone valide
             if (x >= zoneRect.left && x <= zoneRect.right && y >= zoneRect.top && y <= zoneRect.bottom) {
-                // 🟢 Swap si déjà un élément dans la zone
+                // 🔄 Swap si un élément est déjà présent
                 const existingElement = zone.querySelector('.diagramme-draggable, .bougeable');
                 if (existingElement) {
                     const existingOrigin = document.getElementById(existingElement.dataset.originContainer);
@@ -67,7 +70,7 @@ function initDragAndDrop() {
                     }
                 }
 
-                // 🟢 Déposer le nouvel élément
+                // 🟢 Déposer l'élément
                 zone.appendChild(currentDraggedElement);
                 currentDraggedElement.style.left = '0px';
                 currentDraggedElement.style.top = '0px';
@@ -78,7 +81,7 @@ function initDragAndDrop() {
         });
 
         if (!dropped) {
-            // 🛑 Retourner l'élément si aucune zone valide
+            // 🔄 Retourner dans le conteneur d'origine si hors zone
             originContainer.appendChild(currentDraggedElement);
             currentDraggedElement.style.left = '0px';
             currentDraggedElement.style.top = '0px';
@@ -91,7 +94,7 @@ function initDragAndDrop() {
         currentDraggedElement = null;
     }
 
-    // 🖱️ Associer les événements pour souris et tactile
+    // 🖱️ Associer les événements
     draggables.forEach(elem => {
         // Souris
         elem.addEventListener('mousedown', startDrag);
@@ -104,7 +107,7 @@ function initDragAndDrop() {
         document.addEventListener('touchend', endDrag);
     });
 
-    console.log("🚀 Drag-and-drop mobile-first corrigé et activé !");
+    console.log("🚀 Drag-and-drop mobile-first corrigé et optimisé !");
 }
 
 initDragAndDrop();
