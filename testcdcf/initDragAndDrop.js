@@ -1,6 +1,7 @@
 function initDragAndDrop() {
     const draggables = document.querySelectorAll('.diagramme-draggable, .bougeable');
     const droppables = document.querySelectorAll('.diagramme-droppable, .tableau-droppable');
+    const containerDroite = document.getElementById('conteneur-droite'); // ID de ton conteneur
 
     let currentDraggedElement = null;
     let offsetX = 0;
@@ -13,31 +14,27 @@ function initDragAndDrop() {
         currentDraggedElement = e.target.closest('.diagramme-draggable, .bougeable');
         if (!currentDraggedElement) return;
 
-        // Sauvegarder le conteneur d'origine
         originContainer = currentDraggedElement.parentElement;
 
-        // 🛠️ Calcul absolu correct des coordonnées, même après déplacement
         const rect = currentDraggedElement.getBoundingClientRect();
         const pageX = e.type.startsWith('touch') ? e.touches[0].pageX : e.pageX;
         const pageY = e.type.startsWith('touch') ? e.touches[0].pageY : e.pageY;
 
-        // Décalage précis du point de contact
         offsetX = pageX - rect.left;
         offsetY = pageY - rect.top;
 
         currentDraggedElement.classList.add('dragging');
-        currentDraggedElement.style.position = 'fixed'; // Garantir une position stable sur toute la page
+        currentDraggedElement.style.position = 'fixed';
         currentDraggedElement.style.zIndex = '1000';
     }
 
-    // 🟡 Déplacement de l'élément
+    // 🟡 Déplacement
     function moveDrag(e) {
         if (!currentDraggedElement) return;
 
         const pageX = e.type.startsWith('touch') ? e.touches[0].pageX : e.pageX;
         const pageY = e.type.startsWith('touch') ? e.touches[0].pageY : e.pageY;
 
-        // Calcul direct des positions
         const x = pageX - offsetX;
         const y = pageY - offsetY;
 
@@ -58,19 +55,16 @@ function initDragAndDrop() {
 
             // Vérifier si le point d'arrêt est dans une zone valide
             if (x >= zoneRect.left && x <= zoneRect.right && y >= zoneRect.top && y <= zoneRect.bottom) {
-                // 🔄 Swap si un élément est déjà présent
                 const existingElement = zone.querySelector('.diagramme-draggable, .bougeable');
                 if (existingElement) {
                     const existingOrigin = document.getElementById(existingElement.dataset.originContainer);
                     if (existingOrigin) {
                         existingOrigin.appendChild(existingElement);
-                        existingElement.style.left = '0px';
-                        existingElement.style.top = '0px';
-                        existingElement.style.position = 'relative';
+                        repositionnerElements(existingOrigin);
                     }
                 }
 
-                // 🟢 Déposer l'élément
+                // 🟢 Déposer le nouvel élément
                 zone.appendChild(currentDraggedElement);
                 currentDraggedElement.style.left = '0px';
                 currentDraggedElement.style.top = '0px';
@@ -83,9 +77,7 @@ function initDragAndDrop() {
         if (!dropped) {
             // 🔄 Retourner dans le conteneur d'origine si hors zone
             originContainer.appendChild(currentDraggedElement);
-            currentDraggedElement.style.left = '0px';
-            currentDraggedElement.style.top = '0px';
-            currentDraggedElement.style.position = 'relative';
+            repositionnerElements(originContainer);
             console.warn("⚠️ Déplacement annulé : hors zone.");
         }
 
@@ -94,14 +86,21 @@ function initDragAndDrop() {
         currentDraggedElement = null;
     }
 
+    // 🔄 Fonction pour repositionner les éléments dans un conteneur
+    function repositionnerElements(container) {
+        const elements = container.querySelectorAll('.diagramme-draggable, .bougeable');
+        elements.forEach((elem, index) => {
+            elem.style.top = `${index * 60}px`; // Espacement vertical de 60px
+            elem.style.left = '0px';
+        });
+    }
+
     // 🖱️ Associer les événements
     draggables.forEach(elem => {
-        // Souris
         elem.addEventListener('mousedown', startDrag);
         document.addEventListener('mousemove', moveDrag);
         document.addEventListener('mouseup', endDrag);
 
-        // Tactile
         elem.addEventListener('touchstart', startDrag, { passive: false });
         document.addEventListener('touchmove', moveDrag, { passive: false });
         document.addEventListener('touchend', endDrag);
