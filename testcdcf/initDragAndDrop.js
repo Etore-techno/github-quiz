@@ -7,93 +7,89 @@ function initDragAndDrop() {
     let offsetY = 0;
     let originContainer = null;
 
-    // Fonction pour démarrer le drag (mobile et desktop)
+    // 🟢 Démarrer le drag
     function startDrag(e) {
         e.preventDefault();
         currentDraggedElement = e.target.closest('.diagramme-draggable, .bougeable');
         if (!currentDraggedElement) return;
 
-        // Sauvegarde du conteneur d'origine
-        originContainer = currentDraggedElement.parentElement;
-
         const rect = currentDraggedElement.getBoundingClientRect();
-        offsetX = (e.type.includes('touch') ? e.touches[0].clientX : e.clientX) - rect.left;
-        offsetY = (e.type.includes('touch') ? e.touches[0].clientY : e.clientY) - rect.top;
+        offsetX = (e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX) - rect.left;
+        offsetY = (e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY) - rect.top;
 
-        currentDraggedElement.style.zIndex = '1000';
+        originContainer = currentDraggedElement.parentElement;
         currentDraggedElement.classList.add('dragging');
+        currentDraggedElement.style.position = 'absolute';
     }
 
-    // Fonction pour déplacer l'élément
+    // 🟡 Déplacement
     function moveDrag(e) {
         if (!currentDraggedElement) return;
 
-        const x = (e.type.includes('touch') ? e.touches[0].clientX : e.clientX) - offsetX;
-        const y = (e.type.includes('touch') ? e.touches[0].clientY : e.clientY) - offsetY;
+        const x = (e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX) - offsetX;
+        const y = (e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY) - offsetY;
 
-        currentDraggedElement.style.position = 'fixed';
         currentDraggedElement.style.left = `${x}px`;
         currentDraggedElement.style.top = `${y}px`;
     }
 
-    // Fonction pour déposer l'élément
+    // 🔴 Fin du drag et dépôt
     function endDrag(e) {
         if (!currentDraggedElement) return;
 
-        // Déterminer la zone sous le point de relâchement
-        const x = e.type.includes('touch') ? e.changedTouches[0].clientX : e.clientX;
-        const y = e.type.includes('touch') ? e.changedTouches[0].clientY : e.clientY;
-        const dropZone = document.elementFromPoint(x, y);
+        let dropped = false;
 
-        if (dropZone && dropZone.classList.contains('diagramme-droppable')) {
-            // Gestion du swap si la zone est occupée
-            const existingElement = dropZone.querySelector('.diagramme-draggable, .bougeable');
-            if (existingElement) {
-                // Retour de l'élément en place à son origine
-                originContainer.appendChild(existingElement);
-                existingElement.style.left = '0px';
-                existingElement.style.top = '0px';
-                existingElement.style.position = 'relative';
+        droppables.forEach(zone => {
+            const zoneRect = zone.getBoundingClientRect();
+            const x = e.type.startsWith('touch') ? e.changedTouches[0].clientX : e.clientX;
+            const y = e.type.startsWith('touch') ? e.changedTouches[0].clientY : e.clientY;
+
+            if (x >= zoneRect.left && x <= zoneRect.right && y >= zoneRect.top && y <= zoneRect.bottom) {
+                const existingElement = zone.querySelector('.diagramme-draggable, .bougeable');
+                if (existingElement) {
+                    originContainer.appendChild(existingElement);
+                    existingElement.style.left = '0px';
+                    existingElement.style.top = '0px';
+                }
+                zone.appendChild(currentDraggedElement);
+                currentDraggedElement.style.left = '0px';
+                currentDraggedElement.style.top = '0px';
+                currentDraggedElement.style.position = 'relative';
+                dropped = true;
+                console.log(`✅ Élément déposé dans la zone : ${zone.id}`);
             }
+        });
 
-            // Placement du nouvel élément
-            dropZone.appendChild(currentDraggedElement);
-            currentDraggedElement.style.left = '0px';
-            currentDraggedElement.style.top = '0px';
-            currentDraggedElement.style.position = 'relative';
-            console.log(`✅ Élément déplacé vers ${dropZone.id}`);
-        } else {
-            // Retour à l'origine si aucune zone valide n'est trouvée
+        if (!dropped) {
             originContainer.appendChild(currentDraggedElement);
             currentDraggedElement.style.left = '0px';
             currentDraggedElement.style.top = '0px';
             currentDraggedElement.style.position = 'relative';
-            console.warn("⚠️ Déplacement annulé : zone non valide.");
+            console.warn("⚠️ Déplacement annulé : hors zone.");
         }
 
-        // Nettoyage final
         currentDraggedElement.classList.remove('dragging');
-        currentDraggedElement.style.zIndex = '1';
         currentDraggedElement = null;
     }
 
-    // Associer les événements pour souris et tactile
+    // 🖱️ Associer événements souris et tactile
     draggables.forEach(elem => {
-        // Événements souris
+        // Souris
         elem.addEventListener('mousedown', startDrag);
         document.addEventListener('mousemove', moveDrag);
         document.addEventListener('mouseup', endDrag);
 
-        // Événements tactiles
+        // Tactile
         elem.addEventListener('touchstart', startDrag, { passive: false });
         document.addEventListener('touchmove', moveDrag, { passive: false });
         document.addEventListener('touchend', endDrag);
     });
 
-    console.log("🚀 Drag-and-drop mobile-first activé !");
+    console.log("🚀 Drag-and-drop mobile-first opérationnel !");
 }
 
 initDragAndDrop();
+
 
 
 function activerDragAndDrop(zonesData, elementsData, deplacablesContainerId, messageId, validateButtonId) {

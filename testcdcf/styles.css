@@ -310,3 +310,8 @@ body {
     cursor: grabbing;
     z-index: 1000;
 }
+
+.diagramme-droppable, .tableau-droppable {
+    pointer-events: auto;
+    touch-action: none;
+}
