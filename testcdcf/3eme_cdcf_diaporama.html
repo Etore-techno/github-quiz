@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3ème - CdCF - Diaporama</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Exercice du diagramme -->
+    <div id="titre-1">1. Diagramme des interactions :</div>
+
+    <div id="validate-controls-1">
+        <button id="validate-1-button">Valider</button>
+        <p id="diagramme-message"></p>
+    </div>  
+    <div class="main-container">
+        
+        <div id="diagramme-container">
+            <img src="images/diagramme.jpg" alt="Diagramme" id="diagramme-img">
+        </div>
+  
+        <div id="deplacables-diagramme-container">
+            <!-- Les éléments déplaçables seront insérés ici -->
+        </div>
+
+    </div>
+
+
+    <!-- Exercice du tableau -->
+    <div id="titre-2" style="display: none;">2. Tableau de caractérisation :</div>
+    
+    <div class="main-container2">
+        <div>
+            <div id="validate-controls-2">
+                <button id="validate-2-button" style="display: none;">Valider</button>
+                <button id="validate-3-button" style="display: none;">Valider</button>
+                <p id="tableau-message"></p>
+            </div>
+         <div id="tableau-container">
+            <img src="images/tableau.jpg" alt="Tableau de caractérisation" id="tableau-img">
+            <div id="tableau-container-fonctions">
+            </div>
+        
+  
+            <div id="tableau-container-criteres-niveaux">
+            </div>
+        </div>
+    </div>
+        <div>
+        
+        <div id="deplacables-tableau-container">
+            <!-- Les éléments déplaçables seront insérés ici dynamiquement -->
+        </div>
+        </div>
+
+    </div>
+    
+    
+
+    <!-- Scripts -->
+   
+    
+    <script src="data.js"></script>
+    <script src="complete_script.js"></script>
+       
+    <script src="chargerEtape.js"></script>
+
+    <script>
+        function chargerScriptDragAndDrop() {
+            const isMobile = /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
+            const script = document.createElement('script');
+    
+            script.src = isMobile ? "initDragAndDropMobile.js" : "initDragAndDropDesktop.js";
+    
+            script.onload = () => {
+                console.log(isMobile ? "📱 Script mobile chargé" : "💻 Script desktop chargé");
+                initialiserDragAndDrop();
+            };
+    
+            document.head.appendChild(script);
+        }
+    
+        window.addEventListener('load', chargerScriptDragAndDrop);
+    </script>
+    
+   
+    <script src="retourElements.js"></script>
+    <script src="fixerElements.js"></script>
+
+
+</body>
+
+</html>

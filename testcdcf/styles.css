@@ -1,0 +1,312 @@
+/* Styles généraux pour le corps de la page */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    user-select: none; /* Empêche la sélection de texte */
+}
+
+/* Titres */
+#titre-1, #titre-2 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-family: 'Garamond', serif;
+    font-size: 38px;
+    font-weight: bold;
+    color: #111;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Conteneur principal */
+.main-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+}
+
+.main-container2 {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 100px;
+}
+/* --- STYLES SPÉCIFIQUES AU TABLEAU --- */
+
+/* Conteneur du tableau */
+#tableau-container {
+    position: relative;
+    width: auto;
+    height: auto;
+    border: 1px solid #ccc;
+}
+
+#tableau-container img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+#tableau-container .tableau-droppable {
+    border: 2px dashed #007BFF; /* Bordure visible pour les zones */
+    box-sizing: border-box;
+    position: absolute; /* Position absolue par rapport à l'image */
+    font-size: 15px;
+    font-weight: bold;
+     /* Centrage du texte */
+     display: flex;
+     align-items: center;  /* Centrage vertical */
+     justify-content: center; /* Centrage horizontal */
+     text-align: center; /* S'assurer que le texte reste centré */
+    background-color: #f9f9f9;
+    
+
+}
+
+#tableau-container-fonctions {
+    display: block;
+}
+
+#tableau-container-criteres-niveaux {
+    display: block;
+}
+
+/* Conteneur des éléments déplaçables pour le tableau */
+#deplacables-tableau-container {
+    width: 300px;
+    min-height: 400px; /* Taille minimale pour que la zone existe toujours */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 5px dashed #007BFF; /* Bordure visible autour de la zone */
+    padding: 10px;
+    background-color: #f9f9f9; /* Fond clair pour distinguer la zone */
+    align-items: center; /* Centrer les éléments dans la zone */
+    justify-content: flex-start; /* Alignement des éléments en haut */
+}
+
+/* Éléments déplaçables pour le tableau */
+#deplacables-tableau-container .bougeable {
+    padding: 10px 15px;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #f9f9f9;
+    border: 2px solid #007BFF;
+    border-radius: 5px;
+    cursor: grab;
+    text-align: center;
+    max-width: 280px;
+    display: block;
+}
+
+#validate-1-button, #validate-2-button, #validate-3-button {
+    padding: 10px 20px;
+    font-size: 18px;
+    font-weight: bold;
+
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* --- STYLES SPÉCIFIQUES AU DIAGRAMME --- */
+
+/* Conteneur du diagramme */
+#diagramme-container {
+    background-image: url("images/diagramme.jpg");
+    position: relative; /* Positionner les zones de dépôt par rapport à l'image */
+    width: auto;
+    height: auto;
+}
+
+#diagramme-container img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* Zones de dépôt du diagramme */
+#diagramme-container .diagramme-droppable {
+    border: 2px dashed #007BFF; /* Bordure visible pour les zones */
+    box-sizing: border-box;
+    position: absolute; /* Position absolue par rapport à l'image */
+    font-size: 18px;
+    font-weight: bold;
+     /* Centrage du texte */
+     display: flex;
+     align-items: center;  /* Centrage vertical */
+     justify-content: center; /* Centrage horizontal */
+     text-align: center; /* S'assurer que le texte reste centré */
+    background-color: #f9f9f9;
+    
+
+}
+
+
+
+/* Conteneur des éléments déplaçables pour le diagramme */
+#deplacables-diagramme-container {
+    width: 300px;
+    min-height: 200px; /* Taille minimale pour que la zone existe toujours */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 5px dashed #007BFF; /* Bordure visible autour de la zone */
+    padding: 10px;
+    background-color: #f9f9f9; /* Fond clair pour distinguer la zone */
+    align-items: center; /* Centrer les éléments dans la zone */
+    justify-content: flex-start; /* Alignement des éléments en haut */
+}
+
+/* Éléments déplaçables pour le diagramme */
+#deplacables-diagramme-container .diagramme-draggable {
+    padding: 10px 15px;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #f9f9f9;
+    border: 2px solid #007BFF;
+    border-radius: 5px;
+    cursor: grab;
+    text-align: center;
+    max-width: 280px;
+    display: block;
+}
+
+/* Lorsqu'un élément est en train d'être glissé (dragging) */
+#deplacables-diagramme-container .diagramme-draggable.diagramme-dragging {
+    opacity: 0.5;
+    border: 2px dashed #007BFF;
+}
+
+
+
+#validate-controls-1, #validate-controls-2 {
+    display: flex;
+    align-items: center; /* Centre verticalement */
+    justify-content: center; /* Centre le premier élément */
+    gap: 10px; /* Espacement entre les éléments */
+    margin-bottom: 20px;
+
+    width: 100%;
+}
+
+#validate-controls-1 > :first-child,
+#validate-controls-2 > :first-child {
+    margin-right: 0; /* Pas d'espace à droite pour le premier élément */
+}
+
+#validate-controls-1 > *:not(:first-child),
+#validate-controls-2 > *:not(:first-child) {
+    margin-left: 10px; /* Espacement seulement à gauche des autres éléments */
+}
+
+
+#diagramme-message, #tableau-message {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+
+/* --- RESPONSIVE DESIGN --- */
+
+/* Ajustements pour les tablettes et téléphones */
+@media (max-width: 768px) {
+    .main-container, .main-container2 {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    #deplacables-diagramme-container,
+    #deplacables-tableau-container {
+        width: 90%;
+        min-height: auto;
+    }
+
+    #tableau-container img, #diagramme-container img {
+        width: 100%;
+        height: auto;
+    }
+
+    #titre-1, #titre-2 {
+        font-size: 28px;
+    }
+
+    #validate-1-button, #validate-2-button, #validate-3-button {
+        font-size: 16px;
+        padding: 8px 15px;
+    }
+
+    .diagramme-draggable, .bougeable {
+        font-size: 14px;
+        padding: 8px 10px;
+        max-width: 100%;
+    }
+}
+
+/* Ajustements pour les petits téléphones */
+@media (max-width: 480px) {
+    #titre-1, #titre-2 {
+        font-size: 24px;
+    }
+
+    #validate-controls-1, #validate-controls-2 {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .diagramme-draggable, .bougeable {
+        font-size: 12px;
+        padding: 6px 8px;
+    }
+
+    #deplacables-diagramme-container, #deplacables-tableau-container {
+        border: 3px dashed #007BFF;
+    }
+}
+
+#diagramme-container img, #tableau-container img {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+}
+
+#diagramme-container .diagramme-droppable {
+    position: absolute;
+    top: var(--top);
+    left: var(--left);
+    width: var(--width);
+    height: var(--height);
+}
+
+#tableau-container .tableau-droppable {
+    position: absolute;
+    top: var(--top);
+    left: var(--left);
+    width: var(--width);
+    height: var(--height);
+}
+.diagramme-draggable, .bougeable {
+    touch-action: none;
+    cursor: grab;
+    user-select: none;
+    position: relative;
+    z-index: 1;
+}
+
+.dragging {
+    opacity: 0.6;
+    cursor: grabbing;
+    z-index: 1000;
+    pointer-events: auto;
+}
