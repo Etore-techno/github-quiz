@@ -155,25 +155,32 @@ body {
 
 
 /* Conteneur des éléments déplaçables pour le diagramme */
-#deplacables-diagramme-container {
-    position: relative;
-    width: 250px;
-    min-height: 500px;
-    border: 2px dashed #2980b9;
-    margin-top: 20px;
-    overflow-y: auto;
-    background-color: #ecf0f1;
+#deplacables-diagramme-container, #deplacables-tableau-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px; /* Espacement entre les éléments */
+        padding: 10px;
+        width: 100%;
+        box-sizing: border-box;
+        border: 2px solid #7f8c8d;
+        background-color: #ecf0f1;
+        max-height: 80vh;
+        overflow-y: auto;
 }
+
 
 /* Éléments déplaçables pour le diagramme */
 #deplacables-diagramme-container .diagramme-draggable {
-    position: relative;
-    width: 300px;
-    min-height: 500px;
-    border: 3px dashed #2980b9;
-    margin-top: 20px;
-    overflow-y: auto;
-    background-color: #dff6ff;
+    padding: 10px 15px;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #f9f9f9;
+    border: 2px solid #007BFF;
+    border-radius: 5px;
+    cursor: grab;
+    text-align: center;
+    max-width: 280px;
+    display: block;
 }
 
 /* Lorsqu'un élément est en train d'être glissé (dragging) */
@@ -300,10 +307,12 @@ body {
 
 
 .diagramme-draggable.dragging, .bougeable.dragging {
-    opacity: 0.5;
-    cursor: grabbing;
-    z-index: 1000;
+        opacity: 0.5;
+        cursor: grabbing;
+        transform: scale(1.1);
+        z-index: 1000;
 }
+
 
 /* Zones de dépôt */
 .diagramme-droppable, .tableau-droppable {
@@ -313,6 +322,7 @@ body {
     text-align: center;
     line-height: 2;
     touch-action: none;
+    background-color: #ecf0f1;
     transition: all 0.3s ease;
 }
 
@@ -321,19 +331,37 @@ body {
     touch-action: none;
     cursor: grab;
     user-select: none;
-    position: relative;
-    width: 100px;
-    height: 50px;
-    margin: 5px 0;
-    background-color: #27ae60;
-    color: #ffffff; /* Texte blanc pour contraster avec le fond vert */
+    min-width: 150px;
+    min-height: 40px;
+    width: fit-content;
+    height: auto;
+    background-color: #1abc9c;
+    color: #000000;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 5px;
     text-align: center;
-    font-size: 14px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: 1px solid #16a085;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    font-size: 16px;
     transition: transform 0.2s ease;
-    z-index: 1;
 }
 
+.placed {
+    background-color: #2980b9;
+    color: #ffffff;
+}
+
+/* Conteneur de droite (zones de dépôt) */
+#conteneur-droite {
+    position: relative;
+    width: 300px;
+    min-height: 500px;
+    border: 2px dashed #2980b9;
+    margin-top: 20px;
+    padding: 10px;
+    overflow-y: auto;
+    background-color: #f5f6fa;
+}
