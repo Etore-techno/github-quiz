@@ -1,7 +1,6 @@
 function initDragAndDrop() {
     const draggables = document.querySelectorAll('.diagramme-draggable, .bougeable');
     const droppables = document.querySelectorAll('.diagramme-droppable, .tableau-droppable');
-    const containerDroite = document.getElementById('conteneur-droite');
 
     let currentDraggedElement = null;
     let offsetX = 0;
@@ -14,8 +13,6 @@ function initDragAndDrop() {
         currentDraggedElement = e.target.closest('.diagramme-draggable, .bougeable');
         if (!currentDraggedElement) return;
 
-        originContainer = currentDraggedElement.parentElement;
-
         const rect = currentDraggedElement.getBoundingClientRect();
         const pageX = e.type.startsWith('touch') ? e.touches[0].pageX : e.pageX;
         const pageY = e.type.startsWith('touch') ? e.touches[0].pageY : e.pageY;
@@ -23,8 +20,9 @@ function initDragAndDrop() {
         offsetX = pageX - rect.left;
         offsetY = pageY - rect.top;
 
+        originContainer = currentDraggedElement.parentElement;
         currentDraggedElement.classList.add('dragging');
-        currentDraggedElement.style.position = 'fixed';
+        currentDraggedElement.style.position = 'absolute';
         currentDraggedElement.style.zIndex = '1000';
     }
 
@@ -54,7 +52,7 @@ function initDragAndDrop() {
             const y = e.type.startsWith('touch') ? e.changedTouches[0].clientY : e.clientY;
 
             if (x >= zoneRect.left && x <= zoneRect.right && y >= zoneRect.top && y <= zoneRect.bottom) {
-                // 🛑 Vérifier si la zone est déjà occupée
+                // 🛑 Vérifier s'il y a déjà un élément dans la zone
                 if (!zone.querySelector('.diagramme-draggable, .bougeable')) {
                     zone.appendChild(currentDraggedElement);
                     currentDraggedElement.style.left = '0px';
@@ -69,7 +67,6 @@ function initDragAndDrop() {
         });
 
         if (!dropped) {
-            // 🔄 Retour à l'origine
             originContainer.appendChild(currentDraggedElement);
             currentDraggedElement.style.left = '0px';
             currentDraggedElement.style.top = '0px';
@@ -93,7 +90,7 @@ function initDragAndDrop() {
         document.addEventListener('touchend', endDrag);
     });
 
-    console.log("🚀 Drag-and-drop mobile-first corrigé et optimisé !");
+    console.log("🚀 Drag-and-drop recalibré et optimisé !");
 }
 
 initDragAndDrop();
