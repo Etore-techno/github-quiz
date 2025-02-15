@@ -157,9 +157,14 @@ body {
 /* Conteneur des éléments déplaçables pour le diagramme */
 #deplacables-diagramme-container {
     position: relative;
-    min-height: 400px;
-    border: 2px dashed #3498db;
+    width: 200px; /* Ajuster si besoin */
+    min-height: 500px;
+    border: 2px dashed #2980b9;
     padding: 10px;
+    overflow-y: auto;
+    margin-top: 20px;
+    box-sizing: border-box;
+    background-color: #ecf0f1;
 }
 
 /* Éléments déplaçables pour le diagramme */
@@ -318,4 +323,45 @@ body {
     border-radius: 5px;
     transition: transform 0.2s ease;
     z-index: 1;
+}
+
+
+/* Éléments déplaçables */
+.diagramme-draggable, .bougeable {
+    touch-action: none;
+    cursor: grab;
+    user-select: none;
+    position: relative;
+    width: 180px;
+    height: 60px;
+    margin: 5px 0;
+    background-color: #27ae60;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: box-shadow 0.2s ease;
+}
+
+.diagramme-draggable.dragging, .bougeable.dragging {
+    opacity: 0.6;
+    cursor: grabbing;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+/* Zones de dépôt */
+.diagramme-droppable, .tableau-droppable {
+    width: 200px;
+    height: 70px;
+    border: 2px dashed #3498db;
+    margin: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ecf0f1;
+    position: relative;
 }
