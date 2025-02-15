@@ -304,27 +304,6 @@ body {
 }
 
 
-.diagramme-droppable, .tableau-droppable {
-    pointer-events: auto;
-    touch-action: none;
-}
-.diagramme-draggable, .bougeable {
-    touch-action: none;
-    cursor: grab;
-    user-select: none;
-    position: absolute;
-    width: 150px;
-    height: 50px;
-    background-color: #2ecc71;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 5px;
-    transition: transform 0.2s ease;
-    z-index: 1;
-}
-
 
 /* Éléments déplaçables */
 .diagramme-draggable, .bougeable {
