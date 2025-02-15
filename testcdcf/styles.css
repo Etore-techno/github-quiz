@@ -290,6 +290,19 @@ body {
     width: var(--width);
     height: var(--height);
 }
+
+
+.dragging {
+    opacity: 0.7;
+    cursor: grabbing;
+    z-index: 1000;
+}
+
+
+.diagramme-droppable, .tableau-droppable {
+    pointer-events: auto;
+    touch-action: none;
+}
 .diagramme-draggable, .bougeable {
     touch-action: none;
     cursor: grab;
@@ -305,16 +318,4 @@ body {
     border-radius: 5px;
     transition: transform 0.2s ease;
     z-index: 1;
-}
-
-.dragging {
-    opacity: 0.7;
-    cursor: grabbing;
-    z-index: 1000;
-}
-
-
-.diagramme-droppable, .tableau-droppable {
-    pointer-events: auto;
-    touch-action: none;
 }

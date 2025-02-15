@@ -1,7 +1,6 @@
 function initDragAndDrop() {
     const draggables = document.querySelectorAll('.diagramme-draggable, .bougeable');
     const droppables = document.querySelectorAll('.diagramme-droppable, .tableau-droppable');
-    const containerDroite = document.getElementById('conteneur-droite'); // ID de ton conteneur
 
     let currentDraggedElement = null;
     let offsetX = 0;
@@ -14,6 +13,7 @@ function initDragAndDrop() {
         currentDraggedElement = e.target.closest('.diagramme-draggable, .bougeable');
         if (!currentDraggedElement) return;
 
+        // Sauvegarder le conteneur d'origine
         originContainer = currentDraggedElement.parentElement;
 
         const rect = currentDraggedElement.getBoundingClientRect();
@@ -53,29 +53,24 @@ function initDragAndDrop() {
             const x = e.type.startsWith('touch') ? e.changedTouches[0].clientX : e.clientX;
             const y = e.type.startsWith('touch') ? e.changedTouches[0].clientY : e.clientY;
 
-            // Vérifier si le point d'arrêt est dans une zone valide
+            // Vérifier si l'élément est dans la zone
             if (x >= zoneRect.left && x <= zoneRect.right && y >= zoneRect.top && y <= zoneRect.bottom) {
+                // Si la zone est occupée, on échange les éléments
                 const existingElement = zone.querySelector('.diagramme-draggable, .bougeable');
                 if (existingElement) {
-                    const existingOrigin = document.getElementById(existingElement.dataset.originContainer);
-                    if (existingOrigin) {
-                        existingOrigin.appendChild(existingElement);
-                        repositionnerElements(existingOrigin);
-                    }
+                    originContainer.appendChild(existingElement);
+                    repositionnerElements(originContainer);
                 }
 
-                // 🟢 Déposer le nouvel élément
                 zone.appendChild(currentDraggedElement);
-                currentDraggedElement.style.left = '0px';
-                currentDraggedElement.style.top = '0px';
-                currentDraggedElement.style.position = 'relative';
+                repositionnerElements(zone);
                 dropped = true;
                 console.log(`✅ Élément déposé dans : ${zone.id}`);
             }
         });
 
         if (!dropped) {
-            // 🔄 Retourner dans le conteneur d'origine si hors zone
+            // Retour dans le conteneur d'origine
             originContainer.appendChild(currentDraggedElement);
             repositionnerElements(originContainer);
             console.warn("⚠️ Déplacement annulé : hors zone.");
@@ -86,21 +81,24 @@ function initDragAndDrop() {
         currentDraggedElement = null;
     }
 
-    // 🔄 Fonction pour repositionner les éléments dans un conteneur
+    // 🔄 Réorganiser les éléments pour éviter la superposition
     function repositionnerElements(container) {
         const elements = container.querySelectorAll('.diagramme-draggable, .bougeable');
         elements.forEach((elem, index) => {
-            elem.style.top = `${index * 60}px`; // Espacement vertical de 60px
+            elem.style.top = `${index * 60}px`;
             elem.style.left = '0px';
+            elem.style.position = 'absolute';
         });
     }
 
     // 🖱️ Associer les événements
     draggables.forEach(elem => {
+        // Souris
         elem.addEventListener('mousedown', startDrag);
         document.addEventListener('mousemove', moveDrag);
         document.addEventListener('mouseup', endDrag);
 
+        // Tactile
         elem.addEventListener('touchstart', startDrag, { passive: false });
         document.addEventListener('touchmove', moveDrag, { passive: false });
         document.addEventListener('touchend', endDrag);
