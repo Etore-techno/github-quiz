@@ -128,7 +128,7 @@ function chargerEtape() {
         }
 
         // **🔵 Initialisation du Drag & Drop après la création des zones**
-        initialiserDragAndDrop();
+        initDragAndDrop();
         activerDragAndDrop(zonesData, elementsData, deplacablesContainerId, messageId, validateButtonId);
         activerRetourContainer(deplacablesContainerId);
     }, 100); // ✅ Petit délai pour s'assurer que le DOM est bien mis à jour

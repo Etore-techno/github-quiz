@@ -67,24 +67,8 @@
        
     <script src="chargerEtape.js"></script>
 
-    <script>
-        function chargerScriptDragAndDrop() {
-            const isMobile = /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
-            const script = document.createElement('script');
-    
-            script.src = isMobile ? "initDragAndDropMobile.js" : "initDragAndDropDesktop.js";
-    
-            script.onload = () => {
-                console.log(isMobile ? "📱 Script mobile chargé" : "💻 Script desktop chargé");
-                initialiserDragAndDrop();
-            };
-    
-            document.head.appendChild(script);
-        }
-    
-        window.addEventListener('load', chargerScriptDragAndDrop);
-    </script>
-    
+    <script src="initDragAndDrop.js"></script>
+
    
     <script src="retourElements.js"></script>
     <script src="fixerElements.js"></script>

@@ -17,8 +17,16 @@ function initialiserDragAndDrop() {
 
     droppables.forEach(droppable => {
         droppable.addEventListener("dragover", event => event.preventDefault());
+
         droppable.addEventListener("drop", event => {
             event.preventDefault();
+
+            // 🛑 Vérification : Empêcher plusieurs éléments dans la même zone
+            if (droppable.querySelector('.diagramme-draggable, .bougeable')) {
+                console.warn("⚠️ Zone déjà occupée !");
+                return;
+            }
+
             const id = event.dataTransfer.getData("text");
             const draggedElement = document.getElementById(id);
             if (draggedElement) {
@@ -30,7 +38,7 @@ function initialiserDragAndDrop() {
         });
     });
 
-    console.log("💻 Drag-and-drop pour ordinateur activé.");
+    console.log("💻 Drag-and-drop pour ordinateur corrigé et activé.");
 }
 
 
