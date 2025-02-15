@@ -1,6 +1,7 @@
 function initDragAndDrop() {
     const draggables = document.querySelectorAll('.diagramme-draggable, .bougeable');
     const droppables = document.querySelectorAll('.diagramme-droppable, .tableau-droppable');
+    const containers = document.querySelectorAll('#deplacables-diagramme-container, #deplacables-tableau-container');
 
     let currentDraggedElement = null;
     let offsetX = 0;
@@ -22,7 +23,7 @@ function initDragAndDrop() {
 
         originContainer = currentDraggedElement.parentElement;
         currentDraggedElement.classList.add('dragging');
-        currentDraggedElement.style.position = 'absolute';
+        currentDraggedElement.style.position = 'fixed';
         currentDraggedElement.style.zIndex = '1000';
     }
 
@@ -51,32 +52,43 @@ function initDragAndDrop() {
             const x = e.type.startsWith('touch') ? e.changedTouches[0].clientX : e.clientX;
             const y = e.type.startsWith('touch') ? e.changedTouches[0].clientY : e.clientY;
 
+            // 🎯 Vérifier si l'élément est dans une zone de dépôt
             if (x >= zoneRect.left && x <= zoneRect.right && y >= zoneRect.top && y <= zoneRect.bottom) {
-                // 🛑 Vérifier s'il y a déjà un élément dans la zone
-                if (!zone.querySelector('.diagramme-draggable, .bougeable')) {
-                    zone.appendChild(currentDraggedElement);
-                    currentDraggedElement.style.left = '0px';
-                    currentDraggedElement.style.top = '0px';
-                    currentDraggedElement.style.position = 'relative';
-                    dropped = true;
-                    console.log(`✅ Élément déposé dans : ${zone.id}`);
-                } else {
-                    console.warn(`⚠️ Zone ${zone.id} déjà occupée !`);
+                // 🛑 Empêcher plusieurs éléments dans la même zone
+                const existingElement = zone.querySelector('.diagramme-draggable, .bougeable');
+                if (existingElement) {
+                    originContainer.appendChild(existingElement);
+                    repositionElements(originContainer);
                 }
+
+                zone.appendChild(currentDraggedElement);
+                currentDraggedElement.style.left = '0px';
+                currentDraggedElement.style.top = '0px';
+                currentDraggedElement.style.position = 'relative';
+                dropped = true;
+                console.log(`✅ Élément déposé dans : ${zone.id}`);
             }
         });
 
+        // 🔄 Retour dans le conteneur d'origine si hors zone
         if (!dropped) {
             originContainer.appendChild(currentDraggedElement);
-            currentDraggedElement.style.left = '0px';
-            currentDraggedElement.style.top = '0px';
-            currentDraggedElement.style.position = 'relative';
+            repositionElements(originContainer);
             console.warn("⚠️ Déplacement annulé : hors zone.");
         }
 
         currentDraggedElement.classList.remove('dragging');
         currentDraggedElement.style.zIndex = '1';
         currentDraggedElement = null;
+    }
+
+    // 🔄 Réorganiser les éléments dans les conteneurs
+    function repositionElements(container) {
+        const elements = container.querySelectorAll('.diagramme-draggable, .bougeable');
+        elements.forEach((elem, index) => {
+            elem.style.top = `${index * 50}px`;
+            elem.style.left = '0px';
+        });
     }
 
     // 🖱️ Associer les événements
@@ -90,7 +102,7 @@ function initDragAndDrop() {
         document.addEventListener('touchend', endDrag);
     });
 
-    console.log("🚀 Drag-and-drop recalibré et optimisé !");
+    console.log("🚀 Drag-and-drop mobile-first corrigé et optimisé !");
 }
 
 initDragAndDrop();
