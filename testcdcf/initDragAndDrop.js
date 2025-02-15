@@ -13,21 +13,31 @@ function initDragAndDrop() {
         currentDraggedElement = e.target.closest('.diagramme-draggable, .bougeable');
         if (!currentDraggedElement) return;
 
-        const rect = currentDraggedElement.getBoundingClientRect();
-        offsetX = (e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX) - rect.left;
-        offsetY = (e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY) - rect.top;
-
+        // Sauvegarde du conteneur d'origine
         originContainer = currentDraggedElement.parentElement;
+
+        // Calcul des offsets absolus
+        const rect = currentDraggedElement.getBoundingClientRect();
+        const pageX = e.type.startsWith('touch') ? e.touches[0].pageX : e.pageX;
+        const pageY = e.type.startsWith('touch') ? e.touches[0].pageY : e.pageY;
+
+        offsetX = pageX - rect.left;
+        offsetY = pageY - rect.top;
+
         currentDraggedElement.classList.add('dragging');
         currentDraggedElement.style.position = 'absolute';
+        currentDraggedElement.style.zIndex = '1000';
     }
 
     // 🟡 Déplacement
     function moveDrag(e) {
         if (!currentDraggedElement) return;
 
-        const x = (e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX) - offsetX;
-        const y = (e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY) - offsetY;
+        const pageX = e.type.startsWith('touch') ? e.touches[0].pageX : e.pageX;
+        const pageY = e.type.startsWith('touch') ? e.touches[0].pageY : e.pageY;
+
+        const x = pageX - offsetX;
+        const y = pageY - offsetY;
 
         currentDraggedElement.style.left = `${x}px`;
         currentDraggedElement.style.top = `${y}px`;
@@ -45,22 +55,30 @@ function initDragAndDrop() {
             const y = e.type.startsWith('touch') ? e.changedTouches[0].clientY : e.clientY;
 
             if (x >= zoneRect.left && x <= zoneRect.right && y >= zoneRect.top && y <= zoneRect.bottom) {
+                // 🟢 Swap si déjà un élément dans la zone
                 const existingElement = zone.querySelector('.diagramme-draggable, .bougeable');
                 if (existingElement) {
-                    originContainer.appendChild(existingElement);
-                    existingElement.style.left = '0px';
-                    existingElement.style.top = '0px';
+                    const existingOrigin = document.getElementById(existingElement.dataset.originContainer);
+                    if (existingOrigin) {
+                        existingOrigin.appendChild(existingElement);
+                        existingElement.style.left = '0px';
+                        existingElement.style.top = '0px';
+                        existingElement.style.position = 'relative';
+                    }
                 }
+
+                // 🟢 Déposer le nouvel élément
                 zone.appendChild(currentDraggedElement);
                 currentDraggedElement.style.left = '0px';
                 currentDraggedElement.style.top = '0px';
                 currentDraggedElement.style.position = 'relative';
                 dropped = true;
-                console.log(`✅ Élément déposé dans la zone : ${zone.id}`);
+                console.log(`✅ Élément déposé dans : ${zone.id}`);
             }
         });
 
         if (!dropped) {
+            // 🛑 Retourner l'élément si aucune zone valide
             originContainer.appendChild(currentDraggedElement);
             currentDraggedElement.style.left = '0px';
             currentDraggedElement.style.top = '0px';
@@ -69,10 +87,11 @@ function initDragAndDrop() {
         }
 
         currentDraggedElement.classList.remove('dragging');
+        currentDraggedElement.style.zIndex = '1';
         currentDraggedElement = null;
     }
 
-    // 🖱️ Associer événements souris et tactile
+    // 🖱️ Associer les événements pour souris et tactile
     draggables.forEach(elem => {
         // Souris
         elem.addEventListener('mousedown', startDrag);
@@ -85,11 +104,10 @@ function initDragAndDrop() {
         document.addEventListener('touchend', endDrag);
     });
 
-    console.log("🚀 Drag-and-drop mobile-first opérationnel !");
+    console.log("🚀 Drag-and-drop mobile-first corrigé et activé !");
 }
 
 initDragAndDrop();
-
 
 
 function activerDragAndDrop(zonesData, elementsData, deplacablesContainerId, messageId, validateButtonId) {

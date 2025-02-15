@@ -300,16 +300,17 @@ body {
     touch-action: none; /* Désactive le défilement pendant le drag */
     cursor: grab;
     user-select: none;
-    position: relative;
+    position: absolute; /* Permet un calcul correct des positions */
     z-index: 1;
     transition: transform 0.2s ease;
 }
 
 .dragging {
-    opacity: 0.7;
+    opacity: 0.6;
     cursor: grabbing;
     z-index: 1000;
 }
+
 
 .diagramme-droppable, .tableau-droppable {
     pointer-events: auto;
