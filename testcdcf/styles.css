@@ -156,18 +156,15 @@ body {
 
 /* Conteneur des éléments déplaçables pour le diagramme */
 #deplacables-diagramme-container, #deplacables-tableau-container {
-        display: flex;
-        flex-direction: column;
-        gap: 10px; /* Espacement entre les éléments */
-        padding: 10px;
-        width: 100%;
-        box-sizing: border-box;
-        border: 2px solid #7f8c8d;
-        background-color: #ecf0f1;
-        max-height: 80vh;
-        overflow-y: auto;
+    position: relative;
+    width: 300px;
+    min-height: 500px;
+    border: 2px dashed #2980b9;
+    margin-top: 20px;
+    padding: 10px;
+    overflow-y: auto;
+    background-color: #f5f6fa;
 }
-
 
 /* Éléments déplaçables pour le diagramme */
 #deplacables-diagramme-container .diagramme-draggable {
