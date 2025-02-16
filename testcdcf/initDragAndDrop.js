@@ -2,101 +2,90 @@ function initDragAndDrop() {
     const draggables = document.querySelectorAll('.diagramme-draggable, .bougeable');
     const droppables = document.querySelectorAll('.diagramme-droppable, .tableau-droppable');
 
-    let currentDraggedElement = null;
-    let offsetX = 0;
-    let offsetY = 0;
+    let draggedElement = null;
+    let startX = 0, startY = 0;
     let originContainer = null;
 
-    // 🟢 Démarrer le drag
+    // 🟢 Démarrage du drag
     function startDrag(e) {
         e.preventDefault();
-        currentDraggedElement = e.target.closest('.diagramme-draggable, .bougeable');
-        if (!currentDraggedElement) return;
+        draggedElement = e.target.closest('.diagramme-draggable, .bougeable');
+        if (!draggedElement) return;
 
-        const rect = currentDraggedElement.getBoundingClientRect();
-        const pageX = e.type.startsWith('touch') ? e.touches[0].pageX : e.pageX;
-        const pageY = e.type.startsWith('touch') ? e.touches[0].pageY : e.pageY;
+        startX = e.clientX || e.touches?.[0]?.clientX;
+        startY = e.clientY || e.touches?.[0]?.clientY;
 
-        offsetX = pageX - rect.left;
-        offsetY = pageY - rect.top;
-
-        originContainer = currentDraggedElement.parentElement;
-        currentDraggedElement.classList.add('dragging');
-        currentDraggedElement.style.position = 'fixed';
-        currentDraggedElement.style.zIndex = '1000';
+        originContainer = draggedElement.parentElement;
+        draggedElement.classList.add('dragging');
+        draggedElement.style.position = 'fixed';
+        draggedElement.style.zIndex = '1000';
     }
 
-    // 🟡 Déplacement
+    // 🟡 Déplacement de l'élément
     function moveDrag(e) {
-        if (!currentDraggedElement) return;
+        if (!draggedElement) return;
 
-        const pageX = e.type.startsWith('touch') ? e.touches[0].pageX : e.pageX;
-        const pageY = e.type.startsWith('touch') ? e.touches[0].pageY : e.pageY;
+        const x = e.clientX || e.touches?.[0]?.clientX;
+        const y = e.clientY || e.touches?.[0]?.clientY;
 
-        const x = pageX - offsetX;
-        const y = pageY - offsetY;
-
-        currentDraggedElement.style.left = `${x}px`;
-        currentDraggedElement.style.top = `${y}px`;
+        draggedElement.style.left = `${x - 50}px`;
+        draggedElement.style.top = `${y - 25}px`;
     }
 
-    // 🔴 Fin du drag et dépôt
+    // 🔴 Fin du drag
     function endDrag(e) {
-        if (!currentDraggedElement) return;
+        if (!draggedElement) return;
 
+        const x = e.clientX || e.changedTouches?.[0]?.clientX;
+        const y = e.clientY || e.changedTouches?.[0]?.clientY;
         let dropped = false;
 
         droppables.forEach(zone => {
-            const zoneRect = zone.getBoundingClientRect();
-            const x = e.type.startsWith('touch') ? e.changedTouches[0].clientX : e.clientX;
-            const y = e.type.startsWith('touch') ? e.changedTouches[0].clientY : e.clientY;
-
-            if (x >= zoneRect.left && x <= zoneRect.right && y >= zoneRect.top && y <= zoneRect.bottom) {
-                // 🛑 Empêcher plusieurs éléments dans la même zone
-                if (!zone.querySelector('.diagramme-draggable, .bougeable')) {
-                    zone.appendChild(currentDraggedElement);
-                    currentDraggedElement.classList.add('placed');
-                    currentDraggedElement.style.left = '0px';
-                    currentDraggedElement.style.top = '0px';
-                    currentDraggedElement.style.position = 'relative';
-                    dropped = true;
-                    console.log(`✅ Élément déposé dans : ${zone.id}`);
-                } else {
-                    console.warn(`⚠️ Zone ${zone.id} déjà occupée !`);
+            const rect = zone.getBoundingClientRect();
+            if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+                // Vérifier si la zone est déjà occupée
+                const existing = zone.querySelector('.diagramme-draggable, .bougeable');
+                if (existing) {
+                    originContainer.appendChild(existing);
+                    existing.classList.remove('placed');
                 }
+
+                zone.appendChild(draggedElement);
+                draggedElement.classList.add('placed');
+                draggedElement.style.position = 'relative';
+                draggedElement.style.left = '0';
+                draggedElement.style.top = '0';
+                dropped = true;
             }
         });
 
+        // Retour si pas déposé
         if (!dropped) {
-            // 🔄 Retour au conteneur d'origine
-            originContainer.appendChild(currentDraggedElement);
-            currentDraggedElement.classList.remove('placed');
-            currentDraggedElement.style.left = '0px';
-            currentDraggedElement.style.top = '0px';
-            currentDraggedElement.style.position = 'relative';
-            console.warn("⚠️ Déplacement annulé : hors zone.");
+            originContainer.appendChild(draggedElement);
+            draggedElement.classList.remove('placed');
+            draggedElement.style.position = 'relative';
+            draggedElement.style.left = '0';
+            draggedElement.style.top = '0';
         }
 
-        currentDraggedElement.classList.remove('dragging');
-        currentDraggedElement.style.zIndex = '1';
-        currentDraggedElement = null;
+        draggedElement.classList.remove('dragging');
+        draggedElement.style.zIndex = '1';
+        draggedElement = null;
     }
 
-    // 🖱️ Associer les événements
+    // 🖱️ Associer les événements `pointer`
     draggables.forEach(elem => {
-        elem.addEventListener('mousedown', startDrag);
-        document.addEventListener('mousemove', moveDrag);
-        document.addEventListener('mouseup', endDrag);
-
-        elem.addEventListener('touchstart', startDrag, { passive: false });
-        document.addEventListener('touchmove', moveDrag, { passive: false });
-        document.addEventListener('touchend', endDrag);
+        elem.addEventListener('pointerdown', startDrag);
+        document.addEventListener('pointermove', moveDrag);
+        document.addEventListener('pointerup', endDrag);
     });
 
-    console.log("🚀 Drag-and-drop mobile-first corrigé et optimisé !");
+    console.log("🚀 Drag-and-drop optimisé !");
 }
 
 initDragAndDrop();
+
+
 
 
 function activerDragAndDrop(zonesData, elementsData, deplacablesContainerId, messageId, validateButtonId) {

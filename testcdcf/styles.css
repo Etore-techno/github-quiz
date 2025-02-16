@@ -296,12 +296,6 @@ body {
 }
 
 
-.dragging {
-    opacity: 0.7;
-    cursor: grabbing;
-    z-index: 1000;
-}
-
 
 .diagramme-draggable.dragging, .bougeable.dragging {
         opacity: 0.5;
@@ -311,54 +305,69 @@ body {
 }
 
 
-/* Zones de dépôt */
-.diagramme-droppable, .tableau-droppable {
-    position: absolute;
-    border: 2px dashed #3498db;
+
+/* ✅ Conteneur des éléments déplaçables : affichage en colonne */
+#deplacables-diagramme-container, #deplacables-tableau-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    width: 100%;
     box-sizing: border-box;
-    text-align: center;
-    line-height: 2;
-    touch-action: none;
+    border: 3px solid #7f8c8d;
     background-color: #ecf0f1;
-    transition: all 0.3s ease;
+    max-height: 80vh;
+    overflow-y: auto;
 }
 
-/* Éléments déplaçables */
+/* ✅ Style des éléments déplaçables */
 .diagramme-draggable, .bougeable {
     touch-action: none;
     cursor: grab;
     user-select: none;
-    min-width: 150px;
-    min-height: 40px;
-    width: fit-content;
-    height: auto;
-    background-color: #1abc9c;
-    color: #000000;
+    min-width: 180px;
+    min-height: 50px;
+    padding: 0.5rem;
+    background-color: #3498db;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    border: 2px solid #2980b9;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    font-size: 1rem;
+    transition: transform 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    text-align: center;
-    padding: 5px 10px;
-    border-radius: 6px;
-    border: 1px solid #16a085;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-    font-size: 16px;
-    transition: transform 0.2s ease;
 }
 
+/* ✅ Indiquer un déplacement en cours */
+.dragging {
+    opacity: 0.5;
+    transform: scale(1.1);
+    cursor: grabbing;
+    z-index: 1000;
+}
+
+/* ✅ Élément placé */
 .placed {
-    background-color: #2980b9;
-    color: #ffffff;
+    background-color: #2ecc71;
+    color: #fff;
 }
 
-/* Conteneur de droite (zones de dépôt) */
-#conteneur-droite {
-    position: relative;
-    width: 300px;
-    min-height: 500px;
-    border: 2px dashed #2980b9;
-    margin-top: 20px;
-    padding: 10px;
-    overflow-y: auto;
-    background-color: #f5f6fa;
+/* ✅ Zones de dépôt */
+.diagramme-droppable, .tableau-droppable {
+    border: 3px dashed #3498db;
+    box-sizing: border-box;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 150px;
+    min-height: 50px;
+    color: #34495e;
+    background-color: #ecf0f1;
+    border-radius: 5px;
+    touch-action: none;
 }
