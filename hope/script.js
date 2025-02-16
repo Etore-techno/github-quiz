@@ -1,51 +1,106 @@
 document.addEventListener("DOMContentLoaded", function () {
     const data = window.exerciceData;
 
-    // Initialisation des exercices
+    // Initialisation
     setupDiagramme();
     setupTableau();
 
-    // Ajuster les positions en cas de redimensionnement
-    window.addEventListener("resize", () => {
-        adjustZonesPositions("diagramme", "diagramme-container");
-        adjustZonesPositions("tableau", "tableau-container");
-    });
-
+    // Affiche les zones et les éléments pour le diagramme
     function setupDiagramme() {
+        const container = document.getElementById("diagramme-container");
         const elementsContainer = document.getElementById("deplacables-diagramme-container");
-        data.diagramme.elements.forEach(element => {
-            let div = createDraggableElement(element);
-            elementsContainer.appendChild(div);
+
+        // Afficher les zones de dépôt
+        data.diagramme_zones.forEach(zone => {
+            let dropzone = createDropzone(zone, container);
+            container.appendChild(dropzone);
         });
-        adjustZonesPositions("diagramme", "diagramme-container");
-        document.getElementById("validate-1-button").addEventListener("click", validateDiagramme);
+
+        // Afficher les éléments déplaçables
+        data.diagramme_elements.forEach(element => {
+            let draggable = createDraggable(element);
+            elementsContainer.appendChild(draggable);
+        });
     }
 
+    // Affiche les zones et les éléments pour le tableau
     function setupTableau() {
+        const tableauContainer = document.getElementById("tableau-container");
         const elementsContainer = document.getElementById("deplacables-tableau-container");
-        data.tableau.fonctions.forEach(element => {
-            let div = createDraggableElement(element);
-            elementsContainer.appendChild(div);
+
+        // Afficher les zones étape 1
+        data.tableau_zones1.forEach(zone => {
+            let dropzone = createDropzone(zone, tableauContainer);
+            tableauContainer.appendChild(dropzone);
         });
-        adjustZonesPositions("tableau", "tableau-container");
-        document.getElementById("validate-2-button").addEventListener("click", validateTableau);
+
+        // Afficher les zones étape 2
+        data.tableau_zones2.forEach(zone => {
+            let dropzone = createDropzone(zone, tableauContainer);
+            tableauContainer.appendChild(dropzone);
+        });
+
+        // Afficher les éléments étape 1
+        data.tableau_elements_etape1.forEach(element => {
+            let draggable = createDraggable(element);
+            elementsContainer.appendChild(draggable);
+        });
+
+        // Afficher les éléments étape 2
+        data.tableau_elements_etape2.forEach(element => {
+            let draggable = createDraggable(element);
+            elementsContainer.appendChild(draggable);
+        });
     }
 
-    function createDraggableElement(element) {
+    // Créer une zone de dépôt
+    function createDropzone(zone, container) {
+        const rect = container.getBoundingClientRect();
         let div = document.createElement("div");
-        div.className = "draggable";
-        div.textContent = element.label;
-        div.style.left = `${element.startX}px`;
-        div.style.top = `${element.startY}px`;
-        div.draggable = true;
-        div.dataset.id = element.id;
+        div.className = "dropzone";
+        div.textContent = zone.id;
+        div.style.top = `${zone.relativeTop * rect.height}px`;
+        div.style.left = `${zone.relativeLeft * rect.width}px`;
+        div.style.width = `${zone.relativeWidth * rect.width}px`;
+        div.style.height = `${zone.relativeHeight * rect.height}px`;
+        div.dataset.expected = zone.id;
 
-        div.addEventListener("dragstart", (e) => {
-            e.dataTransfer.setData("text/plain", div.dataset.id);
+        div.addEventListener("dragover", (e) => e.preventDefault());
+
+        div.addEventListener("drop", (e) => {
+            e.preventDefault();
+            const draggedId = e.dataTransfer.getData("text/plain");
+            const draggedElement = document.querySelector(`.draggable[data-id="${draggedId}"]`);
+            if (draggedElement) {
+                div.appendChild(draggedElement);
+                draggedElement.style.left = "0";
+                draggedElement.style.top = "0";
+            }
         });
 
         return div;
     }
+
+    // Créer un élément déplaçable
+    function createDraggable(element) {
+        let div = document.createElement("div");
+        div.className = "draggable";
+        div.textContent = element.nom;
+        div.dataset.id = element.id;
+
+        // Position aléatoire au départ
+        div.style.top = `${Math.random() * 300}px`;
+        div.style.left = `${Math.random() * 300}px`;
+
+        div.draggable = true;
+
+        div.addEventListener("dragstart", (e) => {
+            e.dataTransfer.setData("text/plain", element.id);
+        });
+
+        return div;
+    }
+
 
     function adjustZonesPositions(type, containerId) {
         const container = document.getElementById(containerId);
