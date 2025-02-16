@@ -18,6 +18,7 @@ body {
     align-items: center;
     justify-content: center;
     margin-top: 20px;
+    background-color: gold;
 }
 
 img {
@@ -25,21 +26,19 @@ img {
     height: auto;
 }
 
-/* Assurer un comportement responsive et aligné */
 #diagramme-container img, #tableau-container img {
-    width: 100%;
+    max-width: 100%;
     height: auto;
     display: block;
-    margin: 0;
-    padding: 0;
+    margin: 0 auto;
 }
+
 
 #diagramme-container, #tableau-container {
     position: relative;
+    background-color: deeppink;
 }
 
-/* Zones de dépôt */
-/* Zones de dépôt */
 /* Zones de dépôt */
 .dropzone {
     position: absolute;
@@ -84,4 +83,15 @@ button:hover {
 #diagramme-message, #tableau-message {
     font-weight: bold;
     color: red;
+    background-color: chocolate;
+}
+
+#deplacables-diagramme-container, #tableau-container-criteres-niveaux {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
+    background-color: aqua;
 }
