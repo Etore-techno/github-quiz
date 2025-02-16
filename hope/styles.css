@@ -25,6 +25,15 @@ img {
     height: auto;
 }
 
+/* Assurer un comportement responsive et aligné */
+#diagramme-container img, #tableau-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+
 #diagramme-container, #tableau-container {
     position: relative;
 }

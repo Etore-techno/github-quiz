@@ -4,72 +4,71 @@ window.addEventListener("load", function () {
     const diagrammeImage = document.querySelector("#diagramme-container img");
     const tableauImage = document.querySelector("#tableau-container img");
 
-    // Attendre le chargement des deux images avec Promise.all
-    Promise.all([
-        waitForImage(diagrammeImage),
-        waitForImage(tableauImage)
-    ]).then(() => {
-        console.log("🚀 Toutes les images sont chargées. Début des exercices.");
+    // Attendre que les images soient chargées
+    Promise.all([waitForImage(diagrammeImage), waitForImage(tableauImage)]).then(() => {
+        console.log("🚀 Toutes les images sont chargées. Initialisation des exercices...");
         setupExercises();
+        window.addEventListener('resize', setupExercises); // Recalcule les positions au redimensionnement
     }).catch(err => {
-        console.error("❌ Erreur lors du chargement des images :", err);
+        console.error("❌ Erreur de chargement d'image:", err);
     });
 
-    // Attendre le chargement d'une image
+    // Fonction utilitaire pour attendre une image
     function waitForImage(img) {
         return new Promise((resolve, reject) => {
-            if (img.complete) {
-                console.log(`📸 Image déjà chargée: ${img.src}`);
-                resolve();
-            } else {
-                img.addEventListener("load", () => {
-                    console.log(`✅ Image chargée: ${img.src}`);
-                    resolve();
-                });
-                img.addEventListener("error", () => reject(`❌ Échec de chargement: ${img.src}`));
+            if (img.complete) resolve();
+            else {
+                img.addEventListener("load", resolve);
+                img.addEventListener("error", () => reject(`❌ Impossible de charger l'image: ${img.src}`));
             }
         });
     }
 
-    // Fonction principale après le chargement des images
+    // Fonction d'initialisation principale
     function setupExercises() {
-        console.log("🔧 Configuration des exercices...");
+        console.log("🔄 Recalcul des positions des zones et éléments...");
+
+        // Nettoyage des zones existantes
+        document.querySelectorAll(".dropzone").forEach(zone => zone.remove());
+        document.querySelectorAll(".draggable").forEach(el => el.remove());
+
         setupDiagramme();
         setupTableau();
     }
 
-    // Affiche les zones et éléments du diagramme
+    // Affichage des zones et éléments du diagramme
     function setupDiagramme() {
         const container = document.getElementById("diagramme-container");
         const elementsContainer = document.getElementById("deplacables-diagramme-container");
 
-        if (!window.exerciceData || !window.exerciceData.diagrammezone) {
-            console.error("❌ Données manquantes pour le diagramme !");
-            return;
-        }
+        const rect = container.querySelector("img").getBoundingClientRect();
+        const imgWidth = rect.width;
+        const imgHeight = rect.height;
 
-        // Affichage des zones
         window.exerciceData.diagrammezone.forEach(zone => {
-            const zoneDiv = createZone(zone, container, "red");
+            const zoneDiv = createZone(zone, imgWidth, imgHeight, "red");
             container.appendChild(zoneDiv);
         });
 
-        // Affichage des éléments
         window.exerciceData.diagrammeElements.forEach(element => {
             const el = createElement(element, elementsContainer, "lightblue");
             elementsContainer.appendChild(el);
         });
     }
 
-    // Affiche les zones et éléments du tableau
+    // Affichage des zones et éléments du tableau
     function setupTableau() {
         const container = document.getElementById("tableau-container");
         const elementsContainer = document.getElementById("deplacables-tableau-container");
 
+        const rect = container.querySelector("img").getBoundingClientRect();
+        const imgWidth = rect.width;
+        const imgHeight = rect.height;
+
         // Fusionner les zones des étapes 1 et 2
         const zones = [...window.exerciceData.tableauzones1, ...window.exerciceData.tableauzones2];
         zones.forEach(zone => {
-            const zoneDiv = createZone(zone, container, "blue");
+            const zoneDiv = createZone(zone, imgWidth, imgHeight, "blue");
             container.appendChild(zoneDiv);
         });
 
@@ -82,22 +81,23 @@ window.addEventListener("load", function () {
     }
 
     // Création générique d'une zone
-    function createZone(zone, container, color) {
+    function createZone(zone, imgWidth, imgHeight, color) {
         const zoneDiv = document.createElement("div");
         zoneDiv.className = "dropzone";
         zoneDiv.textContent = zone.id;
 
-        // Calcul des positions en fonction de la taille réelle de l'image
+        // Calcul en fonction de la taille visible de l'image
         zoneDiv.style.position = "absolute";
-        zoneDiv.style.top = `${zone.relativeTop * container.clientHeight}px`;
-        zoneDiv.style.left = `${zone.relativeLeft * container.clientWidth}px`;
-        zoneDiv.style.width = `${zone.relativeWidth * container.clientWidth}px`;
-        zoneDiv.style.height = `${zone.relativeHeight * container.clientHeight}px`;
+        zoneDiv.style.top = `${zone.relativeTop * imgHeight}px`;
+        zoneDiv.style.left = `${zone.relativeLeft * imgWidth}px`;
+        zoneDiv.style.width = `${zone.relativeWidth * imgWidth}px`;
+        zoneDiv.style.height = `${zone.relativeHeight * imgHeight}px`;
 
         zoneDiv.style.backgroundColor = `rgba(${color === "red" ? "255,0,0" : "0,0,255"}, 0.4)`;
         zoneDiv.style.border = "2px dashed black";
         zoneDiv.style.zIndex = "2";
-        console.log(`🟢 Zone ${zone.id} : top=${zoneDiv.style.top}, left=${zoneDiv.style.left}`);
+
+        console.log(`🛠️ Zone ${zone.id} positionnée à top: ${zoneDiv.style.top}, left: ${zoneDiv.style.left}`);
         return zoneDiv;
     }
 
@@ -121,7 +121,7 @@ window.addEventListener("load", function () {
             e.dataTransfer.setData("text/plain", element.id);
         });
 
-        console.log(`🟢 Élément "${element.nom}" ajouté.`);
+        console.log(`🛠️ Élément "${element.nom}" ajouté.`);
         return el;
     }
 });
