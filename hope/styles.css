@@ -23,28 +23,29 @@ img {
 }
 
 /* Zones de dépôt */
+/* Zones de dépôt */
 .dropzone {
     position: absolute;
-    border: 3px dashed red;
-    background-color: rgba(255, 0, 0, 0.5);
+    border: 3px dashed black;
+    box-sizing: border-box;
     color: white;
     text-align: center;
-    z-index: 2;
-    font-weight: bold;
     font-size: 14px;
+    font-weight: bold;
+    z-index: 2;
 }
 
 /* Éléments déplaçables */
 .draggable {
     position: absolute;
-    background-color: orange;
     padding: 15px;
     border-radius: 5px;
     border: 3px solid black;
-    color: white;
+    color: black;
+    text-align: center;
     cursor: grab;
     z-index: 3;
-    font-size: 14px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
 }
 
 
