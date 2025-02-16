@@ -1,4 +1,5 @@
 // Données pour l'exercice interactif avec coordonnées relatives
+window.exerciceData = {};
 
 
 // Initialisation de la structure attendue par le script
