@@ -19,7 +19,6 @@ app.setupDiagramme = function () {
     window.exerciceData.diagrammezone.forEach(zone => {
         const zoneDiv = document.createElement("div");
         zoneDiv.className = "dropzone";
-        zoneDiv.textContent = zone.id;
 
         // Calculer la position par rapport au conteneur d'image
         zoneDiv.style.top = `${zone.relativeTop * imgHeight}px`;
@@ -62,7 +61,6 @@ app.setupTableau = function () {
     zones.forEach(zone => {
         const zoneDiv = document.createElement("div");
         zoneDiv.className = "dropzone";
-        zoneDiv.textContent = zone.id;
 
         // Calculer la position par rapport au conteneur d'image
         zoneDiv.style.top = `${zone.relativeTop * imgHeight}px`;

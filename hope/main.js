@@ -42,5 +42,9 @@ window.addEventListener("load", function () {
         } else {
             console.error("❌ Les fonctions setupDiagramme et setupTableau sont introuvables !");
         }
+        app.initDragAndDrop();
+
     }
+
+
 });
