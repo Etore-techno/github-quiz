@@ -12,14 +12,18 @@ body {
     padding: 0;
 }
 
+/* Mise en page en ligne (image + éléments) */
 .main-container, .main-container2 {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    align-items: flex-start;
     justify-content: center;
-    margin-top: 20px;
-    background-color: gold;
+    margin: 20px auto;
+    gap: 20px;
+    max-width: 100%;
+    position: relative; /* ✅ Correction ici */
 }
+
 
 img {
     max-width: 100%;
@@ -34,12 +38,13 @@ img {
 }
 
 
+/* Image à gauche */
 #diagramme-container, #tableau-container {
-    position: relative;
-    background-color: deeppink;
+ 
+    position: relative; /* ✅ Le conteneur devient la référence */
 }
 
-/* Zones de dépôt */
+/* Conteneur des zones (absolu par rapport à l'image) */
 .dropzone {
     position: absolute;
     border: 3px dashed black;
@@ -49,22 +54,26 @@ img {
     font-size: 14px;
     font-weight: bold;
     z-index: 2;
+    pointer-events: none;
 }
 
-/* Éléments déplaçables */
+/* Ajustement des éléments déplaçables */
 .draggable {
-    position: absolute;
-    padding: 15px;
-    border-radius: 5px;
-    border: 3px solid black;
-    color: black;
+    width: 100%;
+    min-height: 60px;
     text-align: center;
+    box-sizing: border-box;
+    background-color: lightblue;
+    border: 2px solid navy;
+    border-radius: 5px;
+    padding: 10px;
     cursor: grab;
-    z-index: 3;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    transition: transform 0.2s ease;
 }
 
-
+.draggable:hover {
+    transform: scale(1.05);
+}
 
 button {
     padding: 10px 20px;
@@ -95,3 +104,41 @@ button:hover {
     align-items: center;
     background-color: aqua;
 }
+
+/* Conteneur des éléments à droite */
+.elements-container {
+    flex: 0 0 25%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    background-color: #e0f7fa;
+    border: 2px solid #0288d1;
+    border-radius: 10px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    height: fit-content;
+    min-height: 100px;
+    max-height: 80vh;
+    overflow-y: auto;
+    text-align: center;
+}
+
+
+
+
+
+@media (max-width: 768px) {
+    .main-container, .main-container2 {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .elements-container {
+        width: 100%;
+        max-height: 50vh;
+    }
+}
+
+

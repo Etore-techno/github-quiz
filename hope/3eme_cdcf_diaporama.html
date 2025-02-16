@@ -21,15 +21,12 @@
         <p id="diagramme-message"></p>
     </div>  
     <div class="main-container">
-        
         <div id="diagramme-container">
             <img src="images/diagramme.jpg" alt="Diagramme">
         </div>
-  
-        <div id="deplacables-diagramme-container">
-            <!-- Les éléments déplaçables seront insérés ici -->
+        <div id="deplacables-diagramme-container" class="elements-container">
+            <!-- Éléments déplaçables pour le diagramme -->
         </div>
-
     </div>
 
 
@@ -38,16 +35,19 @@
     <div id="validate-controls-2">
         <button id="validate-2-button" >Valider</button>
         <button id="validate-3-button" >Valider</button>
+        <button id="validate-4-button" >Valider</button>
+
         <p id="tableau-message"></p>
     </div>
     <div class="main-container2">
-      
-            
-         <div id="tableau-container">
+        <div id="tableau-container">
             <img src="images/tableau.jpg" alt="Tableau de caractérisation">
-            
-        
+        </div>
+        <div id="deplacables-tableau-container" class="elements-container">
+            <!-- Éléments déplaçables pour le tableau -->
+        </div>
     </div>
+    
        
         
         <div id="deplacables-tableau-container">
@@ -58,9 +58,14 @@
     </div>
     
     
+<!-- Charger l'objet global d'abord -->
+<script>
+    window.app = window.app || {};
+</script>
 
-    <!-- Scripts -->
-    <script src="data.js" defer></script>
-    <script src="script.js" defer></script>
-</body>
+<!-- Charger les fichiers dans le bon ordre -->
+<script src="data.js" defer></script>
+<script src="zonesElements.js" defer></script>
+<script src="main.js" defer></script>
+    
 </html>
