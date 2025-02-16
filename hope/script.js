@@ -1,3 +1,6 @@
+console.log("🔍 Vérification de window.exerciceData:", window.exerciceData);
+
+
 document.addEventListener("DOMContentLoaded", function () {
     const data = window.exerciceData;
 
