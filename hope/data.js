@@ -1,5 +1,16 @@
 // Données pour l'exercice interactif avec coordonnées relatives
 
+
+// Initialisation de la structure attendue par le script
+window.exerciceData = {
+    diagrammezone: window.diagrammezone || [],
+    diagrammeElements: window.diagrammeElements || [],
+    tableauzones1: window.tableauzones1 || [],
+    tableauzones2: window.tableauzones2 || [],
+    tableauElementsEtape1: window.tableauElementsEtape1 || [],
+    tableauElementsEtape2: window.tableauElementsEtape2 || []
+};
+
 // Zones de dépôt pour l'exercice du diagramme
 window.diagrammezone = [
     { id: "zone-1", relativeTop: 0.0467, relativeLeft: 0.6662, relativeWidth: 0.1946, relativeHeight: 0.2033 },
@@ -91,3 +102,14 @@ window.tableauElementsEtape2 = [
     { id: "draggable-l10", nom: "Mots-clés et images" },
     { id: "draggable-l11", nom: "Non autorisée" }
 ];
+
+
+// Fusion des données dans la structure attendue
+window.exerciceData.diagrammezone = window.diagrammezone;
+window.exerciceData.diagrammeElements = window.diagrammeElements;
+window.exerciceData.tableauzones1 = window.tableauzones1;
+window.exerciceData.tableauzones2 = window.tableauzones2;
+window.exerciceData.tableauElementsEtape1 = window.tableauElementsEtape1;
+window.exerciceData.tableauElementsEtape2 = window.tableauElementsEtape2;
+
+console.log("✅ Données chargées dans `window.exerciceData` avec succès !");
