@@ -2,14 +2,12 @@
 
 app.initDragAndDrop = function () {
     document.querySelectorAll('.draggable').forEach(element => {
-        // Gestion des événements souris
         element.addEventListener('mousedown', handleMouseDown);
-        // Gestion des événements tactiles
         element.addEventListener('touchstart', handleTouchStart, { passive: false });
     });
 
     document.querySelectorAll('.dropzone').forEach(zone => {
-        zone.addEventListener('dragover', (e) => e.preventDefault()); // Drag classique
+        zone.addEventListener('dragover', (e) => e.preventDefault());
         zone.addEventListener('drop', handleDrop);
     });
 };
@@ -26,17 +24,18 @@ function handleMouseDown(e) {
     e.preventDefault();
     draggedElement = e.target;
 
-    // Récupération des positions de départ
     const rect = draggedElement.getBoundingClientRect();
     const container = document.getElementById('diagramme-container') || document.getElementById('tableau-container');
     const containerRect = container.getBoundingClientRect();
 
+    // ✅ Calculer le décalage correct en tenant compte du décalage gauche de l'image
+    const imageLeftOffset = containerRect.left;
+
     startX = e.clientX;
     startY = e.clientY;
 
-    // Décalage en fonction du conteneur et non du document
-    offsetX = startX - rect.left + containerRect.left;
-    offsetY = startY - rect.top + containerRect.top;
+    offsetX = startX - rect.left + imageLeftOffset;
+    offsetY = startY - rect.top;
 
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
@@ -52,12 +51,14 @@ function handleTouchStart(e) {
     const container = document.getElementById('diagramme-container') || document.getElementById('tableau-container');
     const containerRect = container.getBoundingClientRect();
 
+    // ✅ Calculer le décalage gauche de l'image
+    const imageLeftOffset = containerRect.left;
+
     startX = touch.clientX;
     startY = touch.clientY;
 
-    // Ajustement par rapport au conteneur
-    offsetX = startX - rect.left + containerRect.left;
-    offsetY = startY - rect.top + containerRect.top;
+    offsetX = startX - rect.left + imageLeftOffset;
+    offsetY = startY - rect.top;
 
     document.addEventListener('touchmove', handleTouchMove, { passive: false });
     document.addEventListener('touchend', handleTouchEnd);
@@ -88,14 +89,14 @@ function handleTouchMove(e) {
     draggedElement.style.zIndex = 1000;
 }
 
-// 🎯 Fin déplacement souris
+// 🖱️ Fin déplacement souris
 function handleMouseUp(e) {
     document.removeEventListener('mousemove', handleMouseMove);
     document.removeEventListener('mouseup', handleMouseUp);
     handleDropCheck(e.clientX, e.clientY);
 }
 
-// 🎯 Fin déplacement tactile
+// 📱 Fin déplacement tactile
 function handleTouchEnd(e) {
     document.removeEventListener('touchmove', handleTouchMove);
     document.removeEventListener('touchend', handleTouchEnd);
@@ -130,7 +131,6 @@ function handleDropCheck(clientX, clientY) {
         }
     });
 
-    // Retour à la position initiale si non déposé
     if (!dropped) {
         draggedElement.style.left = `${startX - offsetX}px`;
         draggedElement.style.top = `${startY - offsetY}px`;
@@ -140,7 +140,7 @@ function handleDropCheck(clientX, clientY) {
     draggedElement = null;
 }
 
-// 🎯 Gestion du `drop` (drag classique desktop)
+// 🚚 Gestion classique du `drop` (drag desktop)
 function handleDrop(e) {
     e.preventDefault();
     const elementId = e.dataTransfer.getData('text/plain');
