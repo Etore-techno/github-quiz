@@ -1,10 +1,8 @@
-// dragAndDrop.js - Drag-and-drop mobile/desktop sans confinement
+// dragAndDrop.js - Gestion du Drag and Drop amélioré
 
 app.initDragAndDrop = function () {
     document.querySelectorAll('.draggable').forEach(element => {
-        element.classList.add('draggable-start');
-        element.addEventListener('mousedown', startDrag);
-        element.addEventListener('touchstart', startDrag, { passive: false });
+        element.addEventListener('pointerdown', startDrag);
     });
 };
 
@@ -12,85 +10,66 @@ let draggedElement = null;
 let offsetX = 0;
 let offsetY = 0;
 let initialParent = null;
-let initialPosition = { top: 0, left: 0 };
+let container = null;
 
 // 🟢 Démarrage du drag
 function startDrag(e) {
     e.preventDefault();
     draggedElement = e.target;
+    if (!draggedElement.classList.contains('draggable')) return;
 
-    // Calcul de l'offset par rapport au curseur
-    const rect = draggedElement.getBoundingClientRect();
-    initialPosition = { top: rect.top, left: rect.left };
     initialParent = draggedElement.parentNode;
+    container = document.querySelector('.main-container');
 
-    // Calculer les offsets
-    if (e.type === 'mousedown') {
-        offsetX = e.clientX - rect.left;
-        offsetY = e.clientY - rect.top;
-        document.addEventListener('mousemove', moveElement);
-        document.addEventListener('mouseup', stopDrag);
-    } else if (e.type === 'touchstart') {
-        const touch = e.touches[0];
-        offsetX = touch.clientX - rect.left;
-        offsetY = touch.clientY - rect.top;
-        document.addEventListener('touchmove', moveElement, { passive: false });
-        document.addEventListener('touchend', stopDrag);
-    }
+    const containerRect = container.getBoundingClientRect();
+    const elementRect = draggedElement.getBoundingClientRect();
 
-    // Déplacer temporairement dans le body
-    document.body.appendChild(draggedElement);
-    draggedElement.classList.remove('draggable-start');
-    draggedElement.classList.add('draggable-moving');
+    offsetX = e.clientX - elementRect.left;
+    offsetY = e.clientY - elementRect.top;
 
-    // Appliquer position absolue et aligner sous le curseur
+    // Appliquer un style temporaire pendant le déplacement
     draggedElement.style.position = 'absolute';
+    draggedElement.style.zIndex = 1000;
+    draggedElement.style.pointerEvents = 'none';
+
     moveElement(e);
+
+    document.addEventListener('pointermove', moveElement);
+    document.addEventListener('pointerup', stopDrag);
 }
 
-// 🚚 Déplacement en cours
+// 🚚 Déplacement de l'élément
 function moveElement(e) {
-    let x, y;
+    if (!draggedElement) return;
 
-    if (e.type === 'mousemove') {
-        x = e.clientX;
-        y = e.clientY;
-    } else if (e.type === 'touchmove') {
-        const touch = e.touches[0];
-        x = touch.clientX;
-        y = touch.clientY;
-    }
+    const containerRect = container.getBoundingClientRect();
 
-    // Déplacer l'élément sous le curseur
-    draggedElement.style.left = `${x - offsetX}px`;
-    draggedElement.style.top = `${y - offsetY}px`;
+    let x = e.clientX - offsetX - containerRect.left;
+    let y = e.clientY - offsetY - containerRect.top;
+
+    // Appliquer les nouvelles positions
+    draggedElement.style.left = `${x}px`;
+    draggedElement.style.top = `${y}px`;
 }
 
 // 🛑 Fin du drag
 function stopDrag(e) {
-    if (e.type === 'mouseup') {
-        document.removeEventListener('mousemove', moveElement);
-        document.removeEventListener('mouseup', stopDrag);
-    } else if (e.type === 'touchend') {
-        document.removeEventListener('touchmove', moveElement);
-        document.removeEventListener('touchend', stopDrag);
-    }
+    document.removeEventListener('pointermove', moveElement);
+    document.removeEventListener('pointerup', stopDrag);
 
-    const dropZones = document.querySelectorAll('.dropzone');
     let dropped = false;
-
-    dropZones.forEach(zone => {
+    document.querySelectorAll('.dropzone').forEach(zone => {
         const zoneRect = zone.getBoundingClientRect();
-        const elementRect = draggedElement.getBoundingClientRect();
+        const elemRect = draggedElement.getBoundingClientRect();
 
-        const elementCenterX = elementRect.left + elementRect.width / 2;
-        const elementCenterY = elementRect.top + elementRect.height / 2;
+        const elemCenterX = elemRect.left + elemRect.width / 2;
+        const elemCenterY = elemRect.top + elemRect.height / 2;
 
         if (
-            elementCenterX >= zoneRect.left &&
-            elementCenterX <= zoneRect.right &&
-            elementCenterY >= zoneRect.top &&
-            elementCenterY <= zoneRect.bottom
+            elemCenterX >= zoneRect.left &&
+            elemCenterX <= zoneRect.right &&
+            elemCenterY >= zoneRect.top &&
+            elemCenterY <= zoneRect.bottom
         ) {
             if (!zone.hasChildNodes()) {
                 zone.appendChild(draggedElement);
@@ -100,21 +79,19 @@ function stopDrag(e) {
                 draggedElement.style.left = '0px';
                 draggedElement.style.top = '0px';
                 dropped = true;
-            } else {
-                alert("❌ Zone déjà occupée !");
             }
         }
     });
 
-    // Si non déposé, retour au container initial
+    // Retour au container d'origine si non déposé
     if (!dropped) {
         initialParent.appendChild(draggedElement);
-        draggedElement.classList.remove('draggable-moving');
-        draggedElement.classList.add('draggable-start');
         draggedElement.style.position = 'relative';
         draggedElement.style.left = '0px';
         draggedElement.style.top = '0px';
     }
 
+    // Rétablir les interactions normales
+    draggedElement.style.pointerEvents = 'auto';
     draggedElement = null;
 }
