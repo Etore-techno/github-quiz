@@ -26,13 +26,17 @@ function handleMouseDown(e) {
     e.preventDefault();
     draggedElement = e.target;
 
+    // Calculer la position relative au conteneur parent
+    const rect = draggedElement.getBoundingClientRect();
+    const containerRect = draggedElement.parentElement.getBoundingClientRect();
+
     // Calcul des décalages
     startX = e.clientX;
     startY = e.clientY;
 
-    const rect = draggedElement.getBoundingClientRect();
-    offsetX = startX - rect.left;
-    offsetY = startY - rect.top;
+    // Ajuster en fonction du décalage du conteneur
+    offsetX = startX - rect.left + containerRect.left;
+    offsetY = startY - rect.top + containerRect.top;
 
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
@@ -44,18 +48,21 @@ function handleTouchStart(e) {
     draggedElement = e.targetTouches[0].target;
 
     const touch = e.targetTouches[0];
+    const rect = draggedElement.getBoundingClientRect();
+    const containerRect = draggedElement.parentElement.getBoundingClientRect();
+
+    // Calcul des décalages avec correction
     startX = touch.clientX;
     startY = touch.clientY;
 
-    const rect = draggedElement.getBoundingClientRect();
-    offsetX = startX - rect.left;
-    offsetY = startY - rect.top;
+    offsetX = startX - rect.left + containerRect.left;
+    offsetY = startY - rect.top + containerRect.top;
 
     document.addEventListener('touchmove', handleTouchMove, { passive: false });
     document.addEventListener('touchend', handleTouchEnd);
 }
 
-// Déplacement à la souris
+// 🖱️ Déplacement à la souris
 function handleMouseMove(e) {
     if (!draggedElement) return;
     const x = e.clientX - offsetX;
@@ -67,7 +74,7 @@ function handleMouseMove(e) {
     draggedElement.style.zIndex = 1000;
 }
 
-// Déplacement tactile
+// 📱 Déplacement tactile
 function handleTouchMove(e) {
     if (!draggedElement) return;
     const touch = e.targetTouches[0];
@@ -80,14 +87,14 @@ function handleTouchMove(e) {
     draggedElement.style.zIndex = 1000;
 }
 
-// Fin du déplacement à la souris
+// 🖱️ Fin du déplacement (souris)
 function handleMouseUp(e) {
     document.removeEventListener('mousemove', handleMouseMove);
     document.removeEventListener('mouseup', handleMouseUp);
     handleDropCheck(e.clientX, e.clientY);
 }
 
-// Fin du déplacement tactile
+// 📱 Fin du déplacement (tactile)
 function handleTouchEnd(e) {
     document.removeEventListener('touchmove', handleTouchMove);
     document.removeEventListener('touchend', handleTouchEnd);
@@ -95,7 +102,7 @@ function handleTouchEnd(e) {
     handleDropCheck(touch.clientX, touch.clientY);
 }
 
-// Vérifier si on est dans une zone de dépôt
+// 🚛 Vérifier si on est dans une zone de dépôt
 function handleDropCheck(clientX, clientY) {
     if (!draggedElement) return;
 
@@ -133,7 +140,7 @@ function handleDropCheck(clientX, clientY) {
     draggedElement = null;
 }
 
-// Gestion du drop classique (drag&drop desktop)
+// 🎯 Gestion classique du `drop` (souris uniquement)
 function handleDrop(e) {
     e.preventDefault();
     const elementId = e.dataTransfer.getData('text/plain');
