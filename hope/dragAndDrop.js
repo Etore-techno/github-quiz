@@ -1,123 +1,81 @@
-// dragAndDrop.js - Gestion avancée du drag-and-drop compatible desktop et mobile
+// dragAndDrop.js - Drag-and-drop simplifié et fiable
 
 app.initDragAndDrop = function () {
     document.querySelectorAll('.draggable').forEach(element => {
-        element.addEventListener('mousedown', handleMouseDown);
-        element.addEventListener('touchstart', handleTouchStart, { passive: false });
-    });
-
-    document.querySelectorAll('.dropzone').forEach(zone => {
-        zone.addEventListener('dragover', (e) => e.preventDefault());
-        zone.addEventListener('drop', handleDrop);
+        // Événements souris
+        element.addEventListener('mousedown', startDrag);
+        // Événements tactiles
+        element.addEventListener('touchstart', startDrag, { passive: false });
     });
 };
 
 // Variables globales
 let draggedElement = null;
-let offsetX = 0;
-let offsetY = 0;
-let startX = 0;
-let startY = 0;
 
-// 🖱️ Gestion souris
-function handleMouseDown(e) {
+// 🎯 Démarrage du déplacement
+function startDrag(e) {
     e.preventDefault();
     draggedElement = e.target;
 
-    const rect = draggedElement.getBoundingClientRect();
-    const container = document.getElementById('diagramme-container') || document.getElementById('tableau-container');
-    const containerRect = container.getBoundingClientRect();
-
-    // ✅ Calculer le décalage correct en tenant compte du décalage gauche de l'image
-    const imageLeftOffset = containerRect.left;
-
-    startX = e.clientX;
-    startY = e.clientY;
-
-    offsetX = startX - rect.left + imageLeftOffset;
-    offsetY = startY - rect.top;
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-}
-
-// 📱 Gestion tactile
-function handleTouchStart(e) {
-    e.preventDefault();
-    draggedElement = e.target;
-
-    const touch = e.targetTouches[0];
-    const rect = draggedElement.getBoundingClientRect();
-    const container = document.getElementById('diagramme-container') || document.getElementById('tableau-container');
-    const containerRect = container.getBoundingClientRect();
-
-    // ✅ Calculer le décalage gauche de l'image
-    const imageLeftOffset = containerRect.left;
-
-    startX = touch.clientX;
-    startY = touch.clientY;
-
-    offsetX = startX - rect.left + imageLeftOffset;
-    offsetY = startY - rect.top;
-
-    document.addEventListener('touchmove', handleTouchMove, { passive: false });
-    document.addEventListener('touchend', handleTouchEnd);
-}
-
-// 🚚 Déplacement souris
-function handleMouseMove(e) {
-    if (!draggedElement) return;
-    const x = e.clientX - offsetX;
-    const y = e.clientY - offsetY;
-
+    // Appliquer un style de suivi
     draggedElement.style.position = 'absolute';
+    draggedElement.style.zIndex = 1000;
+
+    // Gestion des événements en fonction du type d'interaction
+    if (e.type === 'mousedown') {
+        document.addEventListener('mousemove', moveElement);
+        document.addEventListener('mouseup', stopDrag);
+    } else if (e.type === 'touchstart') {
+        document.addEventListener('touchmove', moveElement, { passive: false });
+        document.addEventListener('touchend', stopDrag);
+    }
+}
+
+// 🚚 Déplacement de l'élément
+function moveElement(e) {
+    let x, y;
+
+    if (e.type === 'mousemove') {
+        x = e.clientX;
+        y = e.clientY;
+    } else if (e.type === 'touchmove') {
+        const touch = e.touches[0];
+        x = touch.clientX;
+        y = touch.clientY;
+    }
+
+    // Positionner directement sous le curseur/doigt
     draggedElement.style.left = `${x}px`;
     draggedElement.style.top = `${y}px`;
-    draggedElement.style.zIndex = 1000;
 }
 
-// 📱 Déplacement tactile
-function handleTouchMove(e) {
-    if (!draggedElement) return;
-    const touch = e.targetTouches[0];
-    const x = touch.clientX - offsetX;
-    const y = touch.clientY - offsetY;
+// 🛑 Arrêt du déplacement
+function stopDrag(e) {
+    if (e.type === 'mouseup') {
+        document.removeEventListener('mousemove', moveElement);
+        document.removeEventListener('mouseup', stopDrag);
+    } else if (e.type === 'touchend') {
+        document.removeEventListener('touchmove', moveElement);
+        document.removeEventListener('touchend', stopDrag);
+    }
 
-    draggedElement.style.position = 'absolute';
-    draggedElement.style.left = `${x}px`;
-    draggedElement.style.top = `${y}px`;
-    draggedElement.style.zIndex = 1000;
-}
-
-// 🖱️ Fin déplacement souris
-function handleMouseUp(e) {
-    document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('mouseup', handleMouseUp);
-    handleDropCheck(e.clientX, e.clientY);
-}
-
-// 📱 Fin déplacement tactile
-function handleTouchEnd(e) {
-    document.removeEventListener('touchmove', handleTouchMove);
-    document.removeEventListener('touchend', handleTouchEnd);
-    const touch = e.changedTouches[0];
-    handleDropCheck(touch.clientX, touch.clientY);
-}
-
-// 🎯 Vérification du dépôt
-function handleDropCheck(clientX, clientY) {
-    if (!draggedElement) return;
-
-    const zones = document.querySelectorAll('.dropzone');
+    // Vérifier si on est au-dessus d'une zone de dépôt
+    const dropZones = document.querySelectorAll('.dropzone');
     let dropped = false;
 
-    zones.forEach(zone => {
-        const rect = zone.getBoundingClientRect();
+    dropZones.forEach(zone => {
+        const zoneRect = zone.getBoundingClientRect();
+        const elementRect = draggedElement.getBoundingClientRect();
+
+        // Vérifier si l'élément est au centre de la zone
+        const elementCenterX = elementRect.left + elementRect.width / 2;
+        const elementCenterY = elementRect.top + elementRect.height / 2;
+
         if (
-            clientX >= rect.left &&
-            clientX <= rect.right &&
-            clientY >= rect.top &&
-            clientY <= rect.bottom
+            elementCenterX >= zoneRect.left &&
+            elementCenterX <= zoneRect.right &&
+            elementCenterY >= zoneRect.top &&
+            elementCenterY <= zoneRect.bottom
         ) {
             if (!zone.hasChildNodes()) {
                 zone.appendChild(draggedElement);
@@ -131,30 +89,12 @@ function handleDropCheck(clientX, clientY) {
         }
     });
 
+    // Si non déposé, remettre à sa place d'origine
     if (!dropped) {
-        draggedElement.style.left = `${startX - offsetX}px`;
-        draggedElement.style.top = `${startY - offsetY}px`;
+        draggedElement.style.position = 'relative';
+        draggedElement.style.left = '0px';
+        draggedElement.style.top = '0px';
     }
 
-    draggedElement.style.zIndex = 1;
     draggedElement = null;
-}
-
-// 🚚 Gestion classique du `drop` (drag desktop)
-function handleDrop(e) {
-    e.preventDefault();
-    const elementId = e.dataTransfer.getData('text/plain');
-    const element = document.querySelector(`.draggable[data-id="${elementId}"]`);
-    const zone = e.target.closest('.dropzone');
-
-    if (!zone || !element) return;
-
-    if (!zone.hasChildNodes()) {
-        zone.appendChild(element);
-        element.style.position = 'relative';
-        element.style.left = '0px';
-        element.style.top = '0px';
-    } else {
-        alert("❌ Zone déjà occupée !");
-    }
 }
