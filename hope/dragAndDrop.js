@@ -1,15 +1,15 @@
-// dragAndDrop.js - Gestion des déplacements et dépôts compatibles desktop et mobile
+// dragAndDrop.js - Gestion avancée du drag-and-drop compatible desktop et mobile
 
 app.initDragAndDrop = function () {
     document.querySelectorAll('.draggable').forEach(element => {
-        // Desktop events
+        // Gestion des événements souris
         element.addEventListener('mousedown', handleMouseDown);
-        // Mobile events
+        // Gestion des événements tactiles
         element.addEventListener('touchstart', handleTouchStart, { passive: false });
     });
 
     document.querySelectorAll('.dropzone').forEach(zone => {
-        zone.addEventListener('dragover', (e) => e.preventDefault()); // Compatibilité desktop
+        zone.addEventListener('dragover', (e) => e.preventDefault()); // Drag classique
         zone.addEventListener('drop', handleDrop);
     });
 };
@@ -21,20 +21,20 @@ let offsetY = 0;
 let startX = 0;
 let startY = 0;
 
-// 🖱️ Gestion de la souris (desktop)
+// 🖱️ Gestion souris
 function handleMouseDown(e) {
     e.preventDefault();
     draggedElement = e.target;
 
-    // Calculer la position relative au conteneur parent
+    // Récupération des positions de départ
     const rect = draggedElement.getBoundingClientRect();
-    const containerRect = draggedElement.parentElement.getBoundingClientRect();
+    const container = document.getElementById('diagramme-container') || document.getElementById('tableau-container');
+    const containerRect = container.getBoundingClientRect();
 
-    // Calcul des décalages
     startX = e.clientX;
     startY = e.clientY;
 
-    // Ajuster en fonction du décalage du conteneur
+    // Décalage en fonction du conteneur et non du document
     offsetX = startX - rect.left + containerRect.left;
     offsetY = startY - rect.top + containerRect.top;
 
@@ -42,19 +42,20 @@ function handleMouseDown(e) {
     document.addEventListener('mouseup', handleMouseUp);
 }
 
-// 📱 Gestion tactile (mobile)
+// 📱 Gestion tactile
 function handleTouchStart(e) {
     e.preventDefault();
-    draggedElement = e.targetTouches[0].target;
+    draggedElement = e.target;
 
     const touch = e.targetTouches[0];
     const rect = draggedElement.getBoundingClientRect();
-    const containerRect = draggedElement.parentElement.getBoundingClientRect();
+    const container = document.getElementById('diagramme-container') || document.getElementById('tableau-container');
+    const containerRect = container.getBoundingClientRect();
 
-    // Calcul des décalages avec correction
     startX = touch.clientX;
     startY = touch.clientY;
 
+    // Ajustement par rapport au conteneur
     offsetX = startX - rect.left + containerRect.left;
     offsetY = startY - rect.top + containerRect.top;
 
@@ -62,7 +63,7 @@ function handleTouchStart(e) {
     document.addEventListener('touchend', handleTouchEnd);
 }
 
-// 🖱️ Déplacement à la souris
+// 🚚 Déplacement souris
 function handleMouseMove(e) {
     if (!draggedElement) return;
     const x = e.clientX - offsetX;
@@ -87,14 +88,14 @@ function handleTouchMove(e) {
     draggedElement.style.zIndex = 1000;
 }
 
-// 🖱️ Fin du déplacement (souris)
+// 🎯 Fin déplacement souris
 function handleMouseUp(e) {
     document.removeEventListener('mousemove', handleMouseMove);
     document.removeEventListener('mouseup', handleMouseUp);
     handleDropCheck(e.clientX, e.clientY);
 }
 
-// 📱 Fin du déplacement (tactile)
+// 🎯 Fin déplacement tactile
 function handleTouchEnd(e) {
     document.removeEventListener('touchmove', handleTouchMove);
     document.removeEventListener('touchend', handleTouchEnd);
@@ -102,7 +103,7 @@ function handleTouchEnd(e) {
     handleDropCheck(touch.clientX, touch.clientY);
 }
 
-// 🚛 Vérifier si on est dans une zone de dépôt
+// 🎯 Vérification du dépôt
 function handleDropCheck(clientX, clientY) {
     if (!draggedElement) return;
 
@@ -117,7 +118,6 @@ function handleDropCheck(clientX, clientY) {
             clientY >= rect.top &&
             clientY <= rect.bottom
         ) {
-            // Vérifier si la zone est libre
             if (!zone.hasChildNodes()) {
                 zone.appendChild(draggedElement);
                 draggedElement.style.position = 'relative';
@@ -130,7 +130,7 @@ function handleDropCheck(clientX, clientY) {
         }
     });
 
-    // Retourner à la position initiale si non déposé
+    // Retour à la position initiale si non déposé
     if (!dropped) {
         draggedElement.style.left = `${startX - offsetX}px`;
         draggedElement.style.top = `${startY - offsetY}px`;
@@ -140,7 +140,7 @@ function handleDropCheck(clientX, clientY) {
     draggedElement = null;
 }
 
-// 🎯 Gestion classique du `drop` (souris uniquement)
+// 🎯 Gestion du `drop` (drag classique desktop)
 function handleDrop(e) {
     e.preventDefault();
     const elementId = e.dataTransfer.getData('text/plain');
