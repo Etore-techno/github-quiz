@@ -74,6 +74,32 @@ img {
 .draggable:hover {
     transform: scale(1.05);
 }
+/* 🟢 Départ */
+.draggable-start {
+    position: relative;
+    cursor: grab;
+    transition: transform 0.2s;
+    user-select: none;
+}
+
+/* 🚚 En déplacement */
+.draggable-moving {
+    position: absolute;
+    cursor: grabbing;
+    z-index: 1000;
+    pointer-events: none;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    transform: scale(1.1);
+    transition: none;
+}
+
+/* ✅ Déposé */
+.draggable-dropped {
+    position: relative;
+    cursor: default;
+    background-color: lightgreen;
+}
+
 
 button {
     padding: 10px 20px;
