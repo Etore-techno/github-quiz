@@ -63,42 +63,23 @@ img {
     background-color: rgba(0, 0, 255, 0.4);
 }
 
-/* Styles des éléments déplaçables */
+
+/* Styles pour éviter les décalages */
 .draggable {
     cursor: grab;
+    touch-action: none;
     user-select: none;
-    transition: transform 0.2s ease;
-}
-
-/* Styles des éléments déplaçables */
-.draggable {
-    position: absolute;
-    cursor: grab;
-    pointer-events: auto !important;
-    z-index: 999;
-}
-
-
-
-.draggable-start {
     position: relative;
-    background-color: lightblue;
-    border: 2px solid navy;
-    margin: 5px;
-    padding: 10px;
-    z-index: 1;
 }
 
 .draggable-moving {
-    transform: scale(1.1);
-    background-color: #ffcc00;
-    cursor: grabbing;
+    position: absolute;
     z-index: 1000;
 }
 
 .draggable-dropped {
+    position: relative;
     background-color: lightgreen;
-    border-color: green;
 }
 
 
