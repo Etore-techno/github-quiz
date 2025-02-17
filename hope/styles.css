@@ -59,45 +59,48 @@ img {
     pointer-events: none;
 }
 
-/* Correction pour un suivi précis du curseur */
+.dropzone:hover {
+    background-color: rgba(0, 0, 255, 0.4);
+}
+
+/* Styles des éléments déplaçables */
 .draggable {
     cursor: grab;
     user-select: none;
-    position: relative;
-    transition: transform 0.2s;
+    transition: transform 0.2s ease;
 }
 
-.draggable:active {
-    cursor: grabbing;
-    transform: scale(1.1);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+/* Styles des éléments déplaçables */
+.draggable {
+    position: absolute;
+    cursor: grab;
+    pointer-events: auto !important;
+    z-index: 999;
 }
 
 
-/* 🟢 Départ */
+
 .draggable-start {
     position: relative;
-    cursor: grab;
-    transition: transform 0.2s;
-    user-select: none;
+    background-color: lightblue;
+    border: 2px solid navy;
+    margin: 5px;
+    padding: 10px;
+    z-index: 1;
 }
 
-/* 🚚 En déplacement */
 .draggable-moving {
-    position: fixed;
+    transform: scale(1.1);
+    background-color: #ffcc00;
     cursor: grabbing;
     z-index: 1000;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-    transform: scale(1.1);
-    transition: none;
 }
 
-/* ✅ Déposé */
 .draggable-dropped {
-    position: relative;
-    cursor: default;
     background-color: lightgreen;
+    border-color: green;
 }
+
 
 
 button {
