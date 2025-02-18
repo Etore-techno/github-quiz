@@ -49,36 +49,34 @@ img {
 /* Conteneur des zones (absolu par rapport à l'image) */
 .dropzone {
     position: absolute;
-    border: 3px dashed black;
+    border: 2px dashed black;
+    background-color: rgba(0, 255, 0, 0.2);
     box-sizing: border-box;
-    color: white;
     text-align: center;
-    font-size: 14px;
-    font-weight: bold;
     z-index: 2;
-    pointer-events: none;
 }
 
 .dropzone:hover {
-    background-color: rgba(0, 0, 255, 0.4);
+    background-color: rgba(0, 255, 0, 0.2);
 }
 
-
-/* Styles pour éviter les décalages */
 .draggable {
     cursor: grab;
-    touch-action: none;
+    text-align: center;
+    margin: 5px 0;
+    transition: transform 0.2s ease;
+    background-color: lightblue;
+    border: 2px solid navy;
     user-select: none;
-    position: relative;
 }
 
 .draggable-moving {
-    position: absolute;
-    z-index: 1000;
+    z-index: 2000;
+    opacity: 0.6;
 }
 
 .draggable-dropped {
-    position: relative;
+    z-index: 1000;
     background-color: lightgreen;
 }
 
@@ -104,50 +102,45 @@ button:hover {
     background-color: chocolate;
 }
 
-#deplacables-diagramme-container, #tableau-container-criteres-niveaux {
+#deplacables-diagramme-container {
+    height: 100%;
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 10px;
-    padding: 10px;
-    justify-content: center;
     align-items: center;
-    background-color: aqua;
+    justify-content: flex-start;
+    position: relative;
 }
 
 /* Conteneur des éléments à droite */
 .elements-container {
-    flex: 0 0 25%;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    gap: 15px;
+    gap: 5px;
     padding: 10px;
     background-color: #e0f7fa;
     border: 2px solid #0288d1;
     border-radius: 10px;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-    height: fit-content;
-    min-height: 100px;
-    max-height: 80vh;
     overflow-y: auto;
     text-align: center;
+    width: auto;
+    min-width: 180px;
 }
 
 
 
+#diagramme-container, #deplacables-diagramme-container {
+    position: relative;
+    overflow: visible; /* ✅ Permettre la sortie */
+}
 
-
-@media (max-width: 768px) {
-    .main-container, .main-container2 {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .elements-container {
-        width: 100%;
-        max-height: 50vh;
-    }
+/* Ajuster la hauteur de l'image et du conteneur de droite */
+#diagramme-container {
+    height: auto;
+    position: relative;
 }
 
 

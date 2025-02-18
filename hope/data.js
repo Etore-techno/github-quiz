@@ -14,26 +14,26 @@ window.exerciceData = {
 
 // Zones de dépôt pour l'exercice du diagramme
 window.diagrammezone = [
-    { id: "zone-1", relativeTop: 0.0467, relativeLeft: 0.6662, relativeWidth: 0.1946, relativeHeight: 0.2033 },
-    { id: "zone-2", relativeTop: 0.2683, relativeLeft: 0.3736, relativeWidth: 0.1179, relativeHeight: 0.0813 },
-    { id: "zone-3", relativeTop: 0.3720, relativeLeft: 0.7060, relativeWidth: 0.1193, relativeHeight: 0.0813 },
-    { id: "zone-4", relativeTop: 0.3821, relativeLeft: 0.1861, relativeWidth: 0.1179, relativeHeight: 0.0793 },
-    { id: "zone-5", relativeTop: 0.4634, relativeLeft: 0.4062, relativeWidth: 0.1946, relativeHeight: 0.2033 },
-    { id: "zone-6", relativeTop: 0.5996, relativeLeft: 0.2131, relativeWidth: 0.1179, relativeHeight: 0.0793 },
-    { id: "zone-7", relativeTop: 0.7480, relativeLeft: 0.0625, relativeWidth: 0.1946, relativeHeight: 0.2033 },
-    { id: "zone-8", relativeTop: 0.7480, relativeLeft: 0.7415, relativeWidth: 0.1932, relativeHeight: 0.2033 }
+    { id: "zone-1", relativeTop: 0.0467, relativeLeft: 0.6662, relativeWidth: 0.1946, relativeHeight: 0.2033, taille: "grande" },
+    { id: "zone-2", relativeTop: 0.2683, relativeLeft: 0.3736, relativeWidth: 0.1179, relativeHeight: 0.0813, taille: "petite" },
+    { id: "zone-3", relativeTop: 0.3720, relativeLeft: 0.7060, relativeWidth: 0.1193, relativeHeight: 0.0813, taille: "petite" },
+    { id: "zone-4", relativeTop: 0.3821, relativeLeft: 0.1861, relativeWidth: 0.1179, relativeHeight: 0.0793, taille: "petite" },
+    { id: "zone-5", relativeTop: 0.4634, relativeLeft: 0.4062, relativeWidth: 0.1946, relativeHeight: 0.2033, taille: "grande" },
+    { id: "zone-6", relativeTop: 0.5996, relativeLeft: 0.2131, relativeWidth: 0.1179, relativeHeight: 0.0793, taille: "petite" },
+    { id: "zone-7", relativeTop: 0.7480, relativeLeft: 0.0625, relativeWidth: 0.1946, relativeHeight: 0.2033, taille: "grande" },
+    { id: "zone-8", relativeTop: 0.7480, relativeLeft: 0.7415, relativeWidth: 0.1932, relativeHeight: 0.2033, taille: "grande" }
 ];
 
 // Éléments déplaçables pour l'exercice du diagramme
 window.diagrammeElements = [
-    { id: "element-1", nom: "Public (élèves et professeur)" },
-    { id: "element-2", nom: "FP1" },
-    { id: "element-3", nom: "FC3" },
-    { id: "element-4", nom: "FC4" },
-    { id: "element-5", nom: "Diaporama" },
-    { id: "element-6", nom: "FC2" },
-    { id: "element-7", nom: "Matériel du collège" },
-    { id: "element-8", nom: "Temps" }
+    { id: "element-1", nom: "Public (élèves et professeur)", taille: "grande" },
+    { id: "element-2", nom: "FP1", taille: "petite" },
+    { id: "element-3", nom: "FC3", taille: "petite" },
+    { id: "element-4", nom: "FC4", taille: "petite"},
+    { id: "element-5", nom: "Diaporama", taille: "grande" },
+    { id: "element-6", nom: "FC2", taille: "petite" },
+    { id: "element-7", nom: "Matériel du collège", taille: "grande" },
+    { id: "element-8", nom: "Temps", taille: "grande" }
 ];
 
 // Zones de dépôt pour le tableau (étape 1 - fonctions)

@@ -1,103 +1,109 @@
-// dragAndDropMouse.js - Drag-and-Drop sécurisé pour le diagramme
+// dragAndDropMouse.js - Drag-and-Drop avec gestion avancée et logs détaillés
 
 app.initDragAndDropMouse = function () {
-    document.querySelectorAll('.draggable').forEach(element => {
-        element.addEventListener('pointerdown', startDrag);
-    });
-};
+    const container = document.getElementById('deplacables-diagramme-container');
 
-let draggedElement = null;
-let offsetX = 0;
-let offsetY = 0;
-let initialParent = null;
+    console.log("🚀 Initialisation du drag-and-drop...");
 
-// 🟢 Début du drag
-function startDrag(e) {
-    e.preventDefault();
-    draggedElement = e.target;
-    if (!draggedElement.classList.contains('draggable')) return;
+    interact('.draggable').draggable({
+        inertia: true,
+        autoScroll: true,
+        listeners: {
+            start(event) {
+                const target = event.target;
+                console.log(`🎯 Début du déplacement : ${target.id}`);
+                target.classList.add('draggable-moving');
+            },
+            move(event) {
+                const target = event.target;
+                let x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+                let y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
 
-    initialParent = draggedElement.parentNode;
-    const container = document.querySelector('.main-container');
-    const containerRect = container.getBoundingClientRect();
-    const elementRect = draggedElement.getBoundingClientRect();
+                target.style.transform = `translate(${x}px, ${y}px)`;
+                target.setAttribute('data-x', x);
+                target.setAttribute('data-y', y);
 
-    offsetX = e.clientX - elementRect.left + containerRect.left;
-    offsetY = e.clientY - elementRect.top + containerRect.top;
+                console.log(`🔄 Déplacement : ${target.id} → x: ${x}, y: ${y}`);
+            },
+            end(event) {
+                event.target.classList.remove('draggable-moving');
 
-    draggedElement.style.position = 'absolute';
-    draggedElement.style.zIndex = 1000;
-    draggedElement.style.pointerEvents = 'none';
+                const target = event.target;
+                const targetRect = target.getBoundingClientRect();
 
-    moveElement(e);
+                console.log(`🛑 Fin du déplacement : ${target.id}, Vérification des zones...`);
 
-    document.addEventListener('pointermove', moveElement);
-    document.addEventListener('pointerup', stopDrag);
-}
+                const zones = document.querySelectorAll('.dropzone');
+                let droppedInZone = false;
 
-// 🚚 Déplacement en cours
-function moveElement(e) {
-    if (!draggedElement) return;
+                zones.forEach(zone => {
+                    const zoneRect = zone.getBoundingClientRect();
+                    const zoneTaille = zone.getAttribute('data-taille');
+                    const elementTaille = target.getAttribute('data-taille');
 
-    const container = document.querySelector('.main-container');
-    const containerRect = container.getBoundingClientRect();
+                    const overlapX = Math.max(0, Math.min(targetRect.right, zoneRect.right) - Math.max(targetRect.left, zoneRect.left));
+                    const overlapY = Math.max(0, Math.min(targetRect.bottom, zoneRect.bottom) - Math.max(targetRect.top, zoneRect.top));
+                    const overlapArea = overlapX * overlapY;
+                    const targetArea = targetRect.width * targetRect.height;
 
-    let x = e.clientX - offsetX;
-    let y = e.clientY - offsetY;
+                    const overlapRatio = overlapArea / targetArea;
 
-    draggedElement.style.left = `${x}px`;
-    draggedElement.style.top = `${y}px`;
-}
+                    console.log(`🧐 Zone : ${zone.id}, Overlap: ${(overlapRatio * 100).toFixed(2)}%, Taille: ${zoneTaille}, Élément: ${elementTaille}`);
 
-// 🛑 Fin du drag
-function stopDrag(e) {
-    document.removeEventListener('pointermove', moveElement);
-    document.removeEventListener('pointerup', stopDrag);
+                    if (overlapRatio > 0.5 && zoneTaille === elementTaille && !zone.hasChildNodes()) {
+                        console.log(`✅ Placement réussi : ${target.id} → ${zone.id}`);
+                        zone.appendChild(target);
+                        target.style.transform = "translate(0,0)";
+                        target.setAttribute('data-x', 0);
+                        target.setAttribute('data-y', 0);
+                        window.app.positionsElements[target.id] = zone.id;
+                        droppedInZone = true;
+                    }
+                });
 
-    let dropped = false;
-    document.querySelectorAll('.dropzone').forEach(zone => {
-        const zoneRect = zone.getBoundingClientRect();
-        const elemRect = draggedElement.getBoundingClientRect();
+                if (!droppedInZone) {
+                    console.warn(`⚠️ Aucune zone valide trouvée. Retour au conteneur...`);
+                    container.appendChild(target);
+                    target.style.transform = "translate(0,0)";
+                    target.setAttribute('data-x', 0);
+                    target.setAttribute('data-y', 0);
+                    window.app.positionsElements[target.id] = container.id;
+                }
 
-        const elemCenterX = elemRect.left + elemRect.width / 2;
-        const elemCenterY = elemRect.top + elemRect.height / 2;
-
-        if (
-            elemCenterX >= zoneRect.left &&
-            elemCenterX <= zoneRect.right &&
-            elemCenterY >= zoneRect.top &&
-            elemCenterY <= zoneRect.bottom
-        ) {
-            if (!zone.hasChildNodes()) {
-                zone.appendChild(draggedElement);
-                draggedElement.classList.remove('draggable-moving');
-                draggedElement.classList.add('draggable-dropped');
-                draggedElement.style.position = 'relative';
-                draggedElement.style.left = '0px';
-                draggedElement.style.top = '0px';
-                dropped = true;
-
-                // 🧠 Mise à jour de la position
-                window.app.diagrammePositions[draggedElement.id] = zone.id;
-                console.log(`✅ ${draggedElement.id} placé dans ${zone.id}`);
+                app.reorganiserContainer(container);
             }
         }
     });
 
-    // 🔙 Retour au conteneur d'origine si nécessaire
-    if (!dropped) {
-        initialParent.appendChild(draggedElement);
-        draggedElement.style.position = 'relative';
-        draggedElement.style.left = '0px';
-        draggedElement.style.top = '0px';
+    app.reorganiserContainer(container);
 
-        window.app.diagrammePositions[draggedElement.id] = initialParent.id;
-        console.log(`↩️ ${draggedElement.id} remis dans ${initialParent.id}`);
-    }
+    app.verifierPositions = function () {
+        const correctPositions = {
+            "element-1": "zone-1",
+            "element-2": "zone-2",
+            "element-3": "zone-3",
+            "element-4": "zone-4",
+            "element-5": "zone-5",
+            "element-6": "zone-6",
+            "element-7": "zone-7",
+            "element-8": "zone-8"
+        };
 
-    draggedElement.style.pointerEvents = 'auto';
-    draggedElement = null;
+        let correct = true;
+        for (const [element, zone] of Object.entries(correctPositions)) {
+            const currentPosition = window.app.positionsElements[element];
+            console.log(`🔍 Vérification : ${element} → attendu: ${zone}, trouvé: ${currentPosition}`);
+            if (currentPosition !== zone) {
+                correct = false;
+            }
+        }
 
-    // 🖨️ Afficher les positions actuelles
-    window.app.logDiagrammePositions();
-}
+        if (correct) {
+            alert('✅ Tous les éléments sont correctement placés !');
+        } else {
+            alert('⚠️ Certains éléments ne sont pas bien placés.');
+        }
+    };
+};
+
+window.app.positionsElements = {};
