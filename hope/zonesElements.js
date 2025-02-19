@@ -26,18 +26,27 @@ app.setupDiagramme = function () {
         // Supprimer les anciennes zones
         document.querySelectorAll('.dropzone').forEach(zone => zone.remove());
 
+        // Calcul de la taille maximale du texte
+        let tailleMaxTexte = 0;
+        window.exerciceData.diagrammeElements.forEach(element => {
+            let longueurTexte = element.nom.length;
+            tailleMaxTexte = Math.max(tailleMaxTexte, longueurTexte);
+        });
+
+        let tailleTexte = Math.max(1.5, 20 / tailleMaxTexte) + "vw"; // 🔥 Ajustement dynamique
+
         // Recréer les zones avec la position relative à l’image
         window.exerciceData.diagrammezone.forEach(zoneData => {
             const zoneDiv = document.createElement("div");
             zoneDiv.className = "dropzone";
             zoneDiv.id = zoneData.id;
             zoneDiv.setAttribute("data-taille", zoneData.taille);
-
             zoneDiv.style.position = "absolute";
             zoneDiv.style.top = `${zoneData.relativeTop * imgHeight}px`;
             zoneDiv.style.left = `${zoneData.relativeLeft * imgWidth}px`;
             zoneDiv.style.width = `${zoneData.relativeWidth * imgWidth}px`;
             zoneDiv.style.height = `${zoneData.relativeHeight * imgHeight}px`;
+            zoneDiv.style.fontSize = tailleTexte;
 
             container.appendChild(zoneDiv);
             console.log(`✅ Zone créée : ${zoneData.id}`);
@@ -48,6 +57,9 @@ app.setupDiagramme = function () {
                 console.log(`🔄 Restauration des éléments dans ${zoneData.id}`);
             }
         });
+
+        // ✅ Réattache les événements après un recalcul
+        app.initSelectionMenu();
     }
 
     if (img.complete) {
