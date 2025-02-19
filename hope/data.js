@@ -12,6 +12,11 @@ window.exerciceData = {
     tableauElementsEtape2: window.tableauElementsEtape2 || []
 };
 
+// Vérification de la présence des données
+console.log("📊 Vérification des données de `diagrammezone` :", window.exerciceData.diagrammezone);
+
+
+
 // Zones de dépôt pour l'exercice du diagramme
 window.diagrammezone = [
     { id: "zone-1", relativeTop: 0.0467, relativeLeft: 0.6662, relativeWidth: 0.1946, relativeHeight: 0.2033, taille: "grande" },

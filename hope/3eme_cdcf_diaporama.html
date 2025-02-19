@@ -8,47 +8,27 @@
 </head>
 <body>
 
-    <!-- Exercice du diagramme -->
     <div id="titre-1">1. Diagramme des interactions :</div>
 
     <div id="validate-controls-1">
         <button id="validate-1-button">Valider</button>
         <p id="diagramme-message"></p>
     </div>  
+
     <div class="main-container">
         <div id="diagramme-container">
             <img src="images/diagramme.jpg" alt="Diagramme">
         </div>
-        <div id="deplacables-diagramme-container" class="elements-container">
-            <!-- Éléments déplaçables pour le diagramme -->
-        </div>
     </div>
 
-    <!-- Exercice du tableau -->
-    <div id="titre-2" >2. Tableau de caractérisation :</div>
-    <div id="validate-controls-2">
-        <button id="validate-2-button">Valider</button>
-        <p id="tableau-message"></p>
-    </div>
-    <div class="main-container2">
-        <div id="tableau-container">
-            <img src="images/tableau.jpg" alt="Tableau de caractérisation">
-        </div>
-        <div id="deplacables-tableau-container" class="elements-container">
-            <!-- Éléments déplaçables pour le tableau -->
-        </div>
-    </div>
-
-<!-- Charger l'objet global d'abord -->
+<!-- Scripts -->
 <script>
     window.app = window.app || {};
 </script>
 
-<!-- Charger les fichiers dans le bon ordre -->
-<script src="libs/interact.min.js"></script>
 <script src="data.js" defer></script>
 <script src="zonesElements.js" defer></script>
-<script src="dragAndDropMouse.js" defer></script>
+<script src="selectionMenu.js" defer></script>
 <script src="main.js" defer></script>
 </body>
 </html>

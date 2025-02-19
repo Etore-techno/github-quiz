@@ -1,8 +1,7 @@
-// main.js - Gestion des exercices avec chargement dynamique et recalcul après stabilisation
+// main.js - Initialisation de l'exercice avec la nouvelle interaction
 
 window.app = window.app || {};
-window.app.diagrammePositions = {};
-window.app.positionsElements = {}; // ✅ Initialisation dès le départ
+window.app.positionsElements = {}; // Stockage des positions des éléments
 
 window.addEventListener("DOMContentLoaded", () => {
     const diagrammeImage = document.querySelector("#diagramme-container img");
@@ -30,12 +29,11 @@ window.addEventListener("DOMContentLoaded", () => {
     function demarrerExercices() {
         setTimeout(() => {
             app.setupDiagramme();
-            app.initDragAndDropMouse();
             console.log("✅ Exercices prêts !");
         }, 500);
     }
 
     document.getElementById("validate-1-button").addEventListener("click", () => {
-        app.verifierPositions();
+        console.log("Vérification des positions :", window.app.positionsElements);
     });
 });

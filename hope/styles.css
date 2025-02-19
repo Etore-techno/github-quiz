@@ -12,17 +12,23 @@ body {
     padding: 0;
 }
 
+html, body {
+    touch-action: manipulation;
+}
+
 /* Correction sur .main-container */
 .main-container, .main-container2 {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
     justify-content: center;
-    margin: 20px auto;
-    gap: 20px;
-    max-width: 100%;
-    position: relative; /* 📍 Position relative pour base de calcul */
-    overflow: visible;
+    gap: 2vw;
+    transform-origin: top left; /* Maintient le point d’ancrage */
+    width: 100%; /* Empêche l'expansion */
+    height: 100%;
+    position: relative; /* Évite les recalculs bizarres */
+    overflow: visible; /* Autorise les débordements */
+    zoom: 1; /* ⚠️ Cette propriété empêche le conteneur de suivre le zoom du navigateur */
 }
 
 
@@ -33,52 +39,26 @@ img {
 }
 
 #diagramme-container img, #tableau-container img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin: 0 auto;
+    min-width: 100%;  /* 🚀 Empêche l'image de devenir plus petite que sa taille d'origine */
+    min-height: auto;
 }
 
 
 /* Image à gauche */
 #diagramme-container, #tableau-container {
- 
-    position: relative; /* ✅ Le conteneur devient la référence */
+    position: relative;
+    width: 50vw;
 }
 
-/* Conteneur des zones (absolu par rapport à l'image) */
 .dropzone {
     position: absolute;
     border: 2px dashed black;
-    background-color: rgba(0, 255, 0, 0.2);
+    background-color: rgba(0, 255, 0, 0.3);
     box-sizing: border-box;
     text-align: center;
-    z-index: 2;
+    z-index: 5;
 }
 
-.dropzone:hover {
-    background-color: rgba(0, 255, 0, 0.2);
-}
-
-.draggable {
-    cursor: grab;
-    text-align: center;
-    margin: 5px 0;
-    transition: transform 0.2s ease;
-    background-color: lightblue;
-    border: 2px solid navy;
-    user-select: none;
-}
-
-.draggable-moving {
-    z-index: 2000;
-    opacity: 0.6;
-}
-
-.draggable-dropped {
-    z-index: 1000;
-    background-color: lightgreen;
-}
 
 
 
@@ -102,15 +82,7 @@ button:hover {
     background-color: chocolate;
 }
 
-#deplacables-diagramme-container {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: center;
-    justify-content: flex-start;
-    position: relative;
-}
+
 
 /* Conteneur des éléments à droite */
 .elements-container {
@@ -118,16 +90,13 @@ button:hover {
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    gap: 5px;
-    padding: 10px;
+    gap: 1vh;
+    padding: 2vh;
     background-color: #e0f7fa;
-    border: 2px solid #0288d1;
-    border-radius: 10px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-    overflow-y: auto;
+    border-width: 0.2em; 
+    box-shadow: 0.1em 0.1em 0.3em rgba(0, 0, 0, 0.2);
     text-align: center;
-    width: auto;
-    min-width: 180px;
+    min-width: 20vw;
 }
 
 
@@ -144,3 +113,36 @@ button:hover {
 }
 
 
+#selection-menu {
+    position: absolute;
+    background: white;
+    border: 2px solid black;
+    padding: 10px;
+    z-index: 1000;
+    display: none;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
+    min-width: 200px;
+}
+
+.selection-button {
+    display: block;
+    width: 100%;
+    margin: 5px 0;
+    padding: 5px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.selection-button:hover {
+    background-color: #45a049;
+}
+
+.placed-element {
+    background-color: lightblue;
+    border: 2px solid navy;
+    text-align: center;
+    padding: 5px;
+    font-weight: bold;
+}
