@@ -6,8 +6,6 @@ app.setupDiagramme = function () {
         console.log("🔍 `positionnerZonesEtElements()` exécutée !");
 
         const rect = img.getBoundingClientRect();
-        
-        // Assurer que l'image est bien chargée avant de recalculer les zones
         if (rect.width === 0 || rect.height === 0) {
             console.warn("⚠️ L'image n'est pas encore chargée, recalcul en attente...");
             return;
@@ -15,19 +13,26 @@ app.setupDiagramme = function () {
 
         const imgWidth = rect.width;
         const imgHeight = rect.height;
-
         console.log(`📏 Taille actuelle de l'image : ${imgWidth} x ${imgHeight}`);
 
-        // Supprimer les anciennes zones avant d’en créer de nouvelles
+        // 🔒 **SAUVEGARDE** des éléments placés avant de recréer les zones
+        let elementsSauvegardes = {};
+        document.querySelectorAll('.dropzone').forEach(zone => {
+            if (zone.children.length > 0) {
+                elementsSauvegardes[zone.id] = zone.innerHTML;
+            }
+        });
+
+        // Supprimer les anciennes zones
         document.querySelectorAll('.dropzone').forEach(zone => zone.remove());
 
+        // Recréer les zones avec la position relative à l’image
         window.exerciceData.diagrammezone.forEach(zoneData => {
             const zoneDiv = document.createElement("div");
             zoneDiv.className = "dropzone";
             zoneDiv.id = zoneData.id;
             zoneDiv.setAttribute("data-taille", zoneData.taille);
 
-            // ⚠️ Positionnement RELATIF à l'image
             zoneDiv.style.position = "absolute";
             zoneDiv.style.top = `${zoneData.relativeTop * imgHeight}px`;
             zoneDiv.style.left = `${zoneData.relativeLeft * imgWidth}px`;
@@ -35,18 +40,23 @@ app.setupDiagramme = function () {
             zoneDiv.style.height = `${zoneData.relativeHeight * imgHeight}px`;
 
             container.appendChild(zoneDiv);
-            console.log(`✅ Zone créée : ${zoneData.id} → Top: ${zoneDiv.style.top}, Left: ${zoneDiv.style.left}`);
+            console.log(`✅ Zone créée : ${zoneData.id}`);
+
+            // 🔄 **RESTAURATION** des éléments placés dans les zones
+            if (elementsSauvegardes[zoneData.id]) {
+                zoneDiv.innerHTML = elementsSauvegardes[zoneData.id];
+                console.log(`🔄 Restauration des éléments dans ${zoneData.id}`);
+            }
         });
     }
 
-    // Attendre le chargement complet de l’image avant de placer les zones
     if (img.complete) {
         positionnerZonesEtElements();
     } else {
         img.onload = positionnerZonesEtElements;
     }
 
-    // Recalculer les positions des zones en cas de redimensionnement
+    // Recalcul des positions en cas de redimensionnement
     window.addEventListener("resize", () => {
         requestAnimationFrame(positionnerZonesEtElements);
     });
