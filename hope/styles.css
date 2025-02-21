@@ -162,3 +162,38 @@ button:hover {
     height: auto;
     position: relative;
 }
+
+
+
+
+
+@media screen and (orientation: portrait) {
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: white;
+    }
+
+    #rotate-message {
+        display: block;
+        font-size: 2em;
+        text-align: center;
+        color: red;
+    }
+
+    #content {
+        display: none;
+    }
+}
+
+@media screen and (orientation: landscape) {
+    #rotate-message {
+        display: none;
+    }
+
+    #content {
+        display: block;
+    }
+}
