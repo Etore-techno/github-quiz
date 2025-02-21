@@ -4,6 +4,15 @@ window.app = window.app || {};
 window.app.positionsElements = {}; // Stockage des positions des éléments
 
 window.addEventListener("DOMContentLoaded", () => {
+    if (window.innerWidth < window.innerHeight) {
+        console.log("📱 Démarrage en mode portrait, affichage du message...");
+    } else {
+        console.log("🌐 Démarrage en mode paysage, initialisation immédiate...");
+        app.setupDiagramme();
+    }
+   
+   
+   
     const diagrammeImage = document.querySelector("#diagramme-container img");
 
     function attendreChargement(callback) {
@@ -36,4 +45,12 @@ window.addEventListener("DOMContentLoaded", () => {
     document.getElementById("validate-1-button").addEventListener("click", () => {
         console.log("Vérification des positions :", window.app.positionsElements);
     });
+});
+
+window.addEventListener("orientationchange", () => {
+    console.log("🔄 Orientation changée, recalcul des zones...");
+
+    setTimeout(() => {
+        app.setupDiagramme(); // 🔥 Recalcule les zones
+    }, 500); // ⏳ Petite attente pour éviter les bugs d'affichage
 });
