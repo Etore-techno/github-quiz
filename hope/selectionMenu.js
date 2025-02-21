@@ -83,6 +83,28 @@ app.initSelectionMenu = function () {
 };
 
 
+function ajusterStylesMenu() {
+    console.log("🔧 Ajustement du style du menu de sélection");
+
+    const selectionMenu = document.getElementById("selection-menu");
+    if (!selectionMenu) return;
+
+    const baseTaille = window.innerHeight * 0.02; // 🔥 Base stable pour padding/marge
+    const baseBordure = window.innerHeight * 0.002; // 🔥 Taille stable pour bordure
+
+    selectionMenu.style.padding = `${baseTaille}px`;  
+    selectionMenu.style.borderWidth = `${baseBordure}px`;  // ✅ Fixe la bordure
+    selectionMenu.style.boxShadow = "0.2em 0.2em 0.8em rgba(0, 0, 0, 0.2)";  
+
+    console.log(`📏 Padding : ${selectionMenu.style.padding}, Bordure : ${selectionMenu.style.borderWidth}`);
+}
+
+// 🟢 Ajustement dès que le menu s’ouvre
+document.addEventListener("click", (event) => {
+    if (event.target.classList.contains("dropzone")) {
+        ajusterStylesMenu();
+    }
+});
 
 function ajusterStylesSelectionMenu(selectionMenu) {
     if (!selectionMenu) return;
@@ -97,13 +119,6 @@ function ajusterStylesSelectionMenu(selectionMenu) {
     selectionMenu.style.padding = `${0.8 * (100 / zoomLevel)}em`;
     selectionMenu.style.boxShadow = `${0.2 * (100 / zoomLevel)}em ${0.2 * (100 / zoomLevel)}em ${0.8 * (100 / zoomLevel)}em rgba(0, 0, 0, 0.2)`;
 
-    // ✅ Ajuster la position et la taille du menu en mode portrait
-    if (window.innerWidth < window.innerHeight) { // Mode portrait
-        selectionMenu.style.width = "80vw"; // Plus large en portrait
-        selectionMenu.style.left = "10vw";  // Centré horizontalement
-    } else {
-        selectionMenu.style.width = "auto"; // Taille normale en paysage
-    }
-
     console.log(`📏 Nouvelle bordure : ${selectionMenu.style.borderWidth}, Padding : ${selectionMenu.style.padding}`);
 }
+

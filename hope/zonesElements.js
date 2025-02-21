@@ -11,9 +11,8 @@ app.setupDiagramme = function () {
             return;
         }
 
-        const imgWidth = Math.max(rect.width, img.naturalWidth);
-        const imgHeight = Math.max(rect.height, img.naturalHeight);
-
+        const imgWidth = rect.width;
+        const imgHeight = rect.height;
         console.log(`📏 Taille actuelle de l'image : ${imgWidth} x ${imgHeight}`);
 
         // 🔒 **SAUVEGARDE** des éléments placés avant de recréer les zones
@@ -69,32 +68,28 @@ app.setupDiagramme = function () {
         img.onload = positionnerZonesEtElements;
     }
 
-    function ajusterStylesMenu() {
-        console.log("🔧 Ajustement du style du menu de sélection");
-    
-        const selectionMenu = document.getElementById("selection-menu");
-        if (!selectionMenu) return;
-    
-        const baseTaille = window.innerHeight * 0.02; // 🔥 Base stable pour padding/marge
-        const baseBordure = window.innerHeight * 0.002; // 🔥 Taille stable pour bordure
-    
-        selectionMenu.style.padding = `${baseTaille}px`;  
-        selectionMenu.style.borderWidth = `${baseBordure}px`;  // ✅ Fixe la bordure
-        selectionMenu.style.boxShadow = "0.2em 0.2em 0.8em rgba(0, 0, 0, 0.2)";  
-    
-        console.log(`📏 Padding : ${selectionMenu.style.padding}, Bordure : ${selectionMenu.style.borderWidth}`);
-    }
-    
     // Recalcul des positions en cas de redimensionnement
     window.addEventListener("resize", () => {
         requestAnimationFrame(positionnerZonesEtElements);
     });
-
-
-// 🟢 Ajustement dès que le menu s’ouvre
-document.addEventListener("click", (event) => {
-    if (event.target.classList.contains("dropzone")) {
-        ajusterStylesMenu();
-    }
-});
 };
+
+
+function ajusterConteneurElements() {
+    console.log("🔧 Ajustement du conteneur des éléments");
+
+    const container = document.querySelector(".elements-container");
+    if (!container) return;
+
+    const baseTaille = window.innerHeight * 0.02;  // 🔥 Base pour stabiliser les dimensions
+
+    container.style.padding = `${baseTaille}px`;  
+    container.style.borderWidth = "0.15em";  
+    container.style.boxShadow = "0.2em 0.2em 0.8em rgba(0, 0, 0, 0.2)";  
+
+    console.log(`📏 Nouveau padding : ${container.style.padding}, Bordure : ${container.style.borderWidth}`);
+}
+
+// 🟢 Ajustement au chargement et au redimensionnement
+window.addEventListener("resize", ajusterConteneurElements);
+window.addEventListener("DOMContentLoaded", ajusterConteneurElements);

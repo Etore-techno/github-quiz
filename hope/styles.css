@@ -16,7 +16,7 @@ html, body {
     touch-action: manipulation;
 }
 
-/* ✅ Correction sur `.main-container` */
+/* ✅ Correction sur .main-container */
 .main-container, .main-container2 {
     display: flex;
     flex-direction: row;
@@ -43,10 +43,7 @@ img {
 /* ✅ Image et zones de dépôt */
 #diagramme-container, #tableau-container {
     position: relative;
-    width: 90vw;
-    max-width: 100%;
-    height: auto;
-
+    width: 50vw;
 }
 
 /* ✅ Zones de dépôt */
@@ -62,7 +59,7 @@ img {
     word-wrap: break-word;
 
     /* 🔹 Taille des bordures et arrière-plan fixes au zoom */
-    border: 0.15em solid black; /* ✅ Plus de `px` */
+    border: 0.15em solid black; /* ✅ Plus de px */
     background-color: rgba(0, 255, 0, 0.2);
     
     /* ✅ Suppression des marges inutiles */
@@ -77,7 +74,7 @@ img {
 .dropzone span {
     display: block;
     width: 100%;
-    padding: 0.1em; /* ✅ Plus de `px` */
+    padding: 0.1em; /* ✅ Plus de px */
 }
 
 /* ✅ Menu de sélection */
@@ -88,7 +85,7 @@ img {
     padding: 0.8em; /* ✅ Adapté */
     z-index: 1000;
     display: none;
-    box-shadow: 0.2em 0.2em 0.8em rgba(0, 0, 0, 0.3); /* ✅ Plus de `px` */
+    box-shadow: 0.2em 0.2em 0.8em rgba(0, 0, 0, 0.3); /* ✅ Plus de px */
     min-width: 15vw; /* ✅ Taille minimale relative */
 }
 
@@ -154,42 +151,13 @@ button:hover {
 }
 
 
-
 /* ✅ Correction des hauteurs */
 #diagramme-container, #deplacables-diagramme-container {
     position: relative;
     overflow: visible;
 }
 
-
-
-@media screen and (orientation: portrait) {
-    body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background: white;
-    }
-
-    #rotate-message {
-        display: block;
-        font-size: 2em;
-        text-align: center;
-        color: red;
-    }
-
-    #content {
-        display: none;
-    }
-}
-
-@media screen and (orientation: landscape) {
-    #rotate-message {
-        display: none;
-    }
-
-    #content {
-        display: block;
-    }
+#diagramme-container {
+    height: auto;
+    position: relative;
 }
