@@ -11,8 +11,9 @@ app.setupDiagramme = function () {
             return;
         }
 
-        const imgWidth = rect.width;
-        const imgHeight = rect.height;
+        const imgWidth = Math.max(rect.width, img.naturalWidth);
+        const imgHeight = Math.max(rect.height, img.naturalHeight);
+
         console.log(`📏 Taille actuelle de l'image : ${imgWidth} x ${imgHeight}`);
 
         // 🔒 **SAUVEGARDE** des éléments placés avant de recréer les zones

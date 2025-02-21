@@ -49,3 +49,11 @@ window.addEventListener("orientationchange", () => {
         app.setupDiagramme(); // 🔥 Recalcule les zones
     }, 500); // ⏳ Petite attente pour éviter les bugs d'affichage
 });
+
+window.addEventListener("resize", () => {
+    console.log("🔄 Recalcul des positions après un redimensionnement...");
+
+    setTimeout(() => {
+        app.setupDiagramme(); // 🔥 Recalcule les positions des zones
+    }, 500);
+});

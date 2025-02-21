@@ -43,7 +43,10 @@ img {
 /* ✅ Image et zones de dépôt */
 #diagramme-container, #tableau-container {
     position: relative;
-    width: 50vw;
+    width: 90vw;
+    max-width: 100%;
+    height: auto;
+
 }
 
 /* ✅ Zones de dépôt */
@@ -157,13 +160,6 @@ button:hover {
     position: relative;
     overflow: visible;
 }
-
-#diagramme-container {
-    height: auto;
-    position: relative;
-}
-
-
 
 
 
