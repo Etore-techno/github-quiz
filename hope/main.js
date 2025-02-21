@@ -4,14 +4,9 @@ window.app = window.app || {};
 window.app.positionsElements = {}; // Stockage des positions des éléments
 
 window.addEventListener("DOMContentLoaded", () => {
-    if (window.innerWidth < window.innerHeight) {
-        console.log("📱 Démarrage en mode portrait, affichage du message...");
-    } else {
-        console.log("🌐 Démarrage en mode paysage, initialisation immédiate...");
-        app.setupDiagramme();
-    }
-   
-   
+    console.log("🌐 Page chargée, initialisation...");
+    app.setupDiagramme(); // ✅ Charge toujours les zones au démarrage
+  
    
     const diagrammeImage = document.querySelector("#diagramme-container img");
 
