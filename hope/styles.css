@@ -137,17 +137,19 @@ button:hover {
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    gap: 1vh; /* ✅ Espacement fixe qui ne change pas avec le zoom */
-    padding: 2vh; /* ✅ Fixé pour éviter l'expansion/réduction */
+    gap: 1vh; /* ✅ Fixe */
+
+    /* ✅ Bordures et marges stables au zoom */
+    padding: 1.5vh;  /* 🔥 Ajusté pour ne pas varier avec le zoom */
     background-color: #e0f7fa;
     
-    /* ✅ Bordures et ombres qui ne changent pas avec le zoom */
-    border: 0.15em solid black; 
-    box-shadow: 0.2em 0.2em 0.8em rgba(0, 0, 0, 0.2);
+    border: 0.15em solid black;  /* ✅ Fixe */
+    box-shadow: 0.2em 0.2em 0.8em rgba(0, 0, 0, 0.2); /* ✅ Ne change pas */
     
     text-align: center;
     min-width: 20vw;
 }
+
 
 
 /* ✅ Correction des hauteurs */

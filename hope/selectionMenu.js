@@ -24,33 +24,36 @@ app.initSelectionMenu = function () {
     document.querySelectorAll(".dropzone").forEach(zone => {
         zone.addEventListener("click", function (event) {
             console.log(`📌 Zone cliquée : ${zone.id}`);
-
+    
+            // ✅ Recalcul des styles AVANT d'afficher la fenêtre
+            ajusterStylesSelectionMenu(selectionMenu);
+    
             // Nettoyage du menu précédent
             selectionMenu.innerHTML = "";
             selectionMenu.style.top = `${event.clientY}px`;
             selectionMenu.style.left = `${event.clientX}px`;
             selectionMenu.style.display = "block";
-
+    
             // Récupération des éléments compatibles avec la zone
             const elementsCompatibles = window.exerciceData.diagrammeElements.filter(el => el.taille === zone.getAttribute("data-taille"));
-
+    
             if (elementsCompatibles.length === 0) {
                 selectionMenu.innerHTML = "<p>Aucun élément disponible</p>";
                 return;
             }
-
+    
             elementsCompatibles.forEach(element => {
                 const button = document.createElement("button");
                 button.className = "selection-button";
                 button.textContent = element.nom;
                 button.style.fontSize = tailleTexte; // ✅ Même taille que dans les zones
-
+    
                 button.addEventListener("click", function () {
                     console.log(`✅ Élément sélectionné : ${element.nom} → Zone: ${zone.id}`);
-
+    
                     // Supprime l'ancien élément dans la zone
                     zone.innerHTML = "";
-
+    
                     // Vérifier si l'élément est déjà placé ailleurs et le retirer
                     document.querySelectorAll(".dropzone span").forEach(placedEl => {
                         if (placedEl.textContent === element.nom) {
@@ -58,21 +61,41 @@ app.initSelectionMenu = function () {
                             placedEl.remove();
                         }
                     });
-
+    
                     // Ajout du texte directement dans la zone
                     const newText = document.createElement("span");
                     newText.textContent = element.nom;
                     zone.appendChild(newText);
-
+    
                     // Enregistrement de la position
                     window.app.positionsElements[element.id] = zone.id;
-
+    
                     // Fermeture du menu
                     selectionMenu.style.display = "none";
                 });
-
+    
                 selectionMenu.appendChild(button);
             });
         });
     });
+    
+    
 };
+
+
+
+function ajusterStylesSelectionMenu(selectionMenu) {
+    if (!selectionMenu) return;
+
+    console.log("🔄 Recalcul des styles du menu de sélection...");
+
+    const zoomLevel = window.devicePixelRatio * 100;
+    console.log(`🔍 Zoom actuel : ${zoomLevel}%`);
+
+    // ✅ Ajustement dynamique des bordures et marges en fonction du zoom
+    selectionMenu.style.borderWidth = `${0.15 * (100 / zoomLevel)}em`;
+    selectionMenu.style.padding = `${0.8 * (100 / zoomLevel)}em`;
+    selectionMenu.style.boxShadow = `${0.2 * (100 / zoomLevel)}em ${0.2 * (100 / zoomLevel)}em ${0.8 * (100 / zoomLevel)}em rgba(0, 0, 0, 0.2)`;
+
+    console.log(`📏 Nouvelle bordure : ${selectionMenu.style.borderWidth}, Padding : ${selectionMenu.style.padding}`);
+}

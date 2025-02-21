@@ -68,8 +68,32 @@ app.setupDiagramme = function () {
         img.onload = positionnerZonesEtElements;
     }
 
+    function ajusterStylesMenu() {
+        console.log("🔧 Ajustement du style du menu de sélection");
+    
+        const selectionMenu = document.getElementById("selection-menu");
+        if (!selectionMenu) return;
+    
+        const baseTaille = window.innerHeight * 0.02; // 🔥 Base stable pour padding/marge
+        const baseBordure = window.innerHeight * 0.002; // 🔥 Taille stable pour bordure
+    
+        selectionMenu.style.padding = `${baseTaille}px`;  
+        selectionMenu.style.borderWidth = `${baseBordure}px`;  // ✅ Fixe la bordure
+        selectionMenu.style.boxShadow = "0.2em 0.2em 0.8em rgba(0, 0, 0, 0.2)";  
+    
+        console.log(`📏 Padding : ${selectionMenu.style.padding}, Bordure : ${selectionMenu.style.borderWidth}`);
+    }
+    
     // Recalcul des positions en cas de redimensionnement
     window.addEventListener("resize", () => {
         requestAnimationFrame(positionnerZonesEtElements);
     });
+
+
+// 🟢 Ajustement dès que le menu s’ouvre
+document.addEventListener("click", (event) => {
+    if (event.target.classList.contains("dropzone")) {
+        ajusterStylesMenu();
+    }
+});
 };
