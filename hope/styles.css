@@ -77,18 +77,79 @@ html, body {
     white-space: nowrap;
     flex-shrink: 0;
     background-color: rgba(0, 255, 255, 0.3); /* 🟠 Cyan */
+    flex-shrink: 0;
+
 }
 
 /* ✅ Empêche le bouton de bouger en zoomant */
 #validate-controls-1 {
-    height: 40px;  /* 🔥 Hauteur fixe */
+    height: auto;  
     min-height: 40px;
-    max-height: 40px;
+    max-height: none;
+
     display: flex;
+    flex-direction: row; /* ✅ Alignement horizontal */
     justify-content: center;
     align-items: center;
+
     flex-shrink: 0;
-    background-color: rgba(255, 165, 0, 0.3); /* 🟠 Orange pour vérifier */
+    overflow: visible;
+
+    background-color: rgba(10, 124, 39, 0.3); /* 🟠 Vérification */
+}
+
+@media (max-width: 768px) { /* 📱 Appliquer uniquement sur mobile */
+    #header-container {
+        width: 100vw;
+        position: relative;
+        overflow: hidden;
+    }
+
+    #titre-1, #validate-1-button, #diagramme-message {
+        white-space: nowrap;
+        text-align: center;
+    }
+
+    .space-top, .space-between, .space-bottom {
+        flex-shrink: 0;
+    }
+}
+
+
+/* ✅ Centrer le header-container sur Mobile */
+@media (max-width: 768px) {
+    #header-container {
+        width: auto; /* 📱 Prend la largeur du container */
+        position: relative;
+        margin: 0 auto; /* 📌 Centre le header */
+        overflow: hidden;
+    }
+
+    /* ✅ Alignement horizontal du bouton et du message */
+    #validate-controls-1 {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 2vw; /* ✅ Espacement dynamique */
+    }
+
+    #diagramme-message {
+        font-size: 3vw; /* 📏 Adapté à l'écran */
+        text-align: center;
+        white-space: nowrap;
+    }
+}
+
+
+
+/* ✅ Messages */
+#diagramme-message, #tableau-message {
+    font-size: 1rem; /* ✅ Taille fixe */
+    text-align: center;
+    white-space: nowrap;
+    flex-shrink: 0;
+    background-color: chocolate;
 }
 
 
@@ -188,12 +249,7 @@ img {
 
 
 
-/* ✅ Messages */
-#diagramme-message, #tableau-message {
-    font-weight: bold;
-    color: red;
-    background-color: chocolate;
-}
+
 
 /* ✅ Conteneur des éléments sélectionnables */
 .elements-container {
