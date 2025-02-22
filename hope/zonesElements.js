@@ -22,33 +22,69 @@ app.setupDiagramme = function () {
         }, 200); // 🔄 Réduction du délai pour une mise à jour rapide
     }
 
+    let tailleTexteMemoire = null; // 🔒 Stockage de la taille correcte
+
     function positionnerZonesEtElements() {
         console.log("🔍 `positionnerZonesEtElements()` exécutée !");
-
+    
         const rect = img.getBoundingClientRect();
         if (rect.width === 0 || rect.height === 0) {
             console.warn("⚠️ L'image n'est pas encore chargée, recalcul en attente...");
             return;
         }
-
+    
         const imgWidth = rect.width;
         const imgHeight = rect.height;
         console.log(`📏 Taille actuelle de l'image : ${imgWidth} x ${imgHeight}`);
-
+    
         if (!window.exerciceData || !window.exerciceData.diagrammezone.length) {
             console.error("❌ Aucune donnée de positionnement trouvée !");
             return;
         }
-
+    
         let elementsSauvegardes = {};
         document.querySelectorAll('.dropzone').forEach(zone => {
             if (zone.children.length > 0) {
                 elementsSauvegardes[zone.id] = zone.innerHTML;
             }
         });
-
+    
         document.querySelectorAll('.dropzone').forEach(zone => zone.remove());
-
+    
+        // **Vérifier si on a déjà une taille enregistrée**
+        if (!tailleTexteMemoire) {
+            let texteMax = "Public (élèves et professeur)";
+            let zoneMax = window.exerciceData.diagrammezone.find(zone => zone.id.includes("zone"));
+    
+            if (zoneMax) {
+                const zoneWidth = zoneMax.relativeWidth * imgWidth;
+                const zoneHeight = zoneMax.relativeHeight * imgHeight;
+    
+                let testDiv = document.createElement("div");
+                testDiv.style.position = "absolute";
+                testDiv.style.visibility = "hidden";
+                testDiv.style.width = `${zoneWidth}px`;
+                testDiv.style.height = `${zoneHeight}px`;
+                testDiv.style.whiteSpace = "nowrap";
+                testDiv.innerText = texteMax;
+                document.body.appendChild(testDiv);
+    
+                let fontSize = 2;
+                testDiv.style.fontSize = `${fontSize}vw`;
+    
+                while (testDiv.scrollWidth > zoneWidth || testDiv.scrollHeight > zoneHeight) {
+                    fontSize -= 0.1;
+                    testDiv.style.fontSize = `${fontSize}vw`;
+                    if (fontSize < 0.5) break;
+                }
+    
+                document.body.removeChild(testDiv);
+                tailleTexteMemoire = isNaN(fontSize) || fontSize < 0.5 ? "1.5vw" : `${fontSize}vw`; // 🔹 Stockage de la taille trouvée
+            }
+        }
+    
+        console.log(`📝 Taille de texte verrouillée : ${tailleTexteMemoire}`);
+    
         window.exerciceData.diagrammezone.forEach(zoneData => {
             if (
                 isNaN(zoneData.relativeTop) || isNaN(zoneData.relativeLeft) ||
@@ -57,39 +93,33 @@ app.setupDiagramme = function () {
                 console.error(`❌ Données invalides pour ${zoneData.id} (relativeTop: ${zoneData.relativeTop}, relativeLeft: ${zoneData.relativeLeft})`);
                 return;
             }
-
+    
             const zoneDiv = document.createElement("div");
             zoneDiv.className = "dropzone";
             zoneDiv.id = zoneData.id;
             zoneDiv.setAttribute("data-taille", zoneData.taille);
             zoneDiv.style.position = "absolute";
-
+    
             zoneDiv.style.top = `${zoneData.relativeTop * imgHeight}px`;
             zoneDiv.style.left = `${zoneData.relativeLeft * imgWidth}px`;
             zoneDiv.style.width = `${zoneData.relativeWidth * imgWidth}px`;
             zoneDiv.style.height = `${zoneData.relativeHeight * imgHeight}px`;
-
+            zoneDiv.style.fontSize = tailleTexteMemoire; // 🔹 Toujours utiliser la taille mémorisée
+    
             container.appendChild(zoneDiv);
             console.log(`✅ Zone créée : ${zoneData.id}`);
-
+    
             if (elementsSauvegardes[zoneData.id]) {
                 zoneDiv.innerHTML = elementsSauvegardes[zoneData.id];
                 console.log(`🔄 Restauration des éléments dans ${zoneData.id}`);
             }
         });
-
-        // **Réaffichage fluide des zones**
-        setTimeout(() => {
-            console.log("👀 Réaffichage des zones après repositionnement !");
-            document.querySelectorAll('.dropzone').forEach(zone => {
-                zone.style.opacity = "1";
-                zone.style.transition = "opacity 0.2s ease-in";  // 🔹 Transition fluide
-            });
-        }, 50); // 🔹 Légère attente pour éviter tout clignotement
-
+    
         app.initSelectionMenu();
     }
-
+    
+    
+    
     if (img.complete) {
         attendreChargementEtPositionner();
     } else {
