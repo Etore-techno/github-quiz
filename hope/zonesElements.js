@@ -1,6 +1,26 @@
 app.setupDiagramme = function () {
     const container = document.getElementById("diagramme-container");
     const img = container.querySelector("img");
+    let repositionnementEnCours = false; // 🔒 Empêche plusieurs recalculs simultanés
+
+    function attendreChargementEtPositionner() {
+        if (repositionnementEnCours) {
+            console.log("⏳ Repositionnement déjà en cours, on ignore cet appel.");
+            return;
+        }
+
+        repositionnementEnCours = true;
+
+        console.log("👀 Masquage temporaire des zones...");
+        document.querySelectorAll('.dropzone').forEach(zone => {
+            zone.style.opacity = "0";  // 🔹 Masquer les zones pour éviter le flash visuel
+        });
+
+        setTimeout(() => {
+            positionnerZonesEtElements();
+            repositionnementEnCours = false;
+        }, 200); // 🔄 Réduction du délai pour une mise à jour rapide
+    }
 
     function positionnerZonesEtElements() {
         console.log("🔍 `positionnerZonesEtElements()` exécutée !");
@@ -15,7 +35,11 @@ app.setupDiagramme = function () {
         const imgHeight = rect.height;
         console.log(`📏 Taille actuelle de l'image : ${imgWidth} x ${imgHeight}`);
 
-        // 🔒 **SAUVEGARDE** des éléments placés avant de recréer les zones
+        if (!window.exerciceData || !window.exerciceData.diagrammezone.length) {
+            console.error("❌ Aucune donnée de positionnement trouvée !");
+            return;
+        }
+
         let elementsSauvegardes = {};
         document.querySelectorAll('.dropzone').forEach(zone => {
             if (zone.children.length > 0) {
@@ -23,56 +47,65 @@ app.setupDiagramme = function () {
             }
         });
 
-        // Supprimer les anciennes zones
         document.querySelectorAll('.dropzone').forEach(zone => zone.remove());
 
-        // Calcul de la taille maximale du texte
-        let tailleMaxTexte = 0;
-        window.exerciceData.diagrammeElements.forEach(element => {
-            let longueurTexte = element.nom.length;
-            tailleMaxTexte = Math.max(tailleMaxTexte, longueurTexte);
-        });
-
-        let tailleTexte = Math.max(1.5, 20 / tailleMaxTexte) + "vw"; // 🔥 Ajustement dynamique
-
-        // Recréer les zones avec la position relative à l’image
         window.exerciceData.diagrammezone.forEach(zoneData => {
+            if (
+                isNaN(zoneData.relativeTop) || isNaN(zoneData.relativeLeft) ||
+                isNaN(zoneData.relativeWidth) || isNaN(zoneData.relativeHeight)
+            ) {
+                console.error(`❌ Données invalides pour ${zoneData.id} (relativeTop: ${zoneData.relativeTop}, relativeLeft: ${zoneData.relativeLeft})`);
+                return;
+            }
+
             const zoneDiv = document.createElement("div");
             zoneDiv.className = "dropzone";
             zoneDiv.id = zoneData.id;
             zoneDiv.setAttribute("data-taille", zoneData.taille);
             zoneDiv.style.position = "absolute";
+
             zoneDiv.style.top = `${zoneData.relativeTop * imgHeight}px`;
             zoneDiv.style.left = `${zoneData.relativeLeft * imgWidth}px`;
             zoneDiv.style.width = `${zoneData.relativeWidth * imgWidth}px`;
             zoneDiv.style.height = `${zoneData.relativeHeight * imgHeight}px`;
-            zoneDiv.style.fontSize = tailleTexte;
 
             container.appendChild(zoneDiv);
             console.log(`✅ Zone créée : ${zoneData.id}`);
 
-            // 🔄 **RESTAURATION** des éléments placés dans les zones
             if (elementsSauvegardes[zoneData.id]) {
                 zoneDiv.innerHTML = elementsSauvegardes[zoneData.id];
                 console.log(`🔄 Restauration des éléments dans ${zoneData.id}`);
             }
         });
 
-        // ✅ Réattache les événements après un recalcul
+        // **Réaffichage fluide des zones**
+        setTimeout(() => {
+            console.log("👀 Réaffichage des zones après repositionnement !");
+            document.querySelectorAll('.dropzone').forEach(zone => {
+                zone.style.opacity = "1";
+                zone.style.transition = "opacity 0.2s ease-in";  // 🔹 Transition fluide
+            });
+        }, 50); // 🔹 Légère attente pour éviter tout clignotement
+
         app.initSelectionMenu();
     }
 
     if (img.complete) {
-        positionnerZonesEtElements();
+        attendreChargementEtPositionner();
     } else {
-        img.onload = positionnerZonesEtElements;
+        img.onload = () => attendreChargementEtPositionner();
     }
 
-    // Recalcul des positions en cas de redimensionnement
     window.addEventListener("resize", () => {
-        requestAnimationFrame(positionnerZonesEtElements);
+        attendreChargementEtPositionner();
+    });
+
+    window.addEventListener("orientationchange", () => {
+        attendreChargementEtPositionner();
     });
 };
+
+
 
 
 function ajusterConteneurElements() {
@@ -81,15 +114,27 @@ function ajusterConteneurElements() {
     const container = document.querySelector(".elements-container");
     if (!container) return;
 
-    const baseTaille = window.innerHeight * 0.02;  // 🔥 Base pour stabiliser les dimensions
+    const isPortrait = window.innerHeight > window.innerWidth;
 
-    container.style.padding = `${baseTaille}px`;  
-    container.style.borderWidth = "0.15em";  
-    container.style.boxShadow = "0.2em 0.2em 0.8em rgba(0, 0, 0, 0.2)";  
+    // **Correction du padding et des marges**
+    const basePadding = isPortrait ? "1vh" : "1.5vh";  // 🔹 Moins de marge en portrait
+    const baseBorder = "0.15em solid black";  
+    const baseShadow = "0.1em 0.1em 0.5em rgba(0, 0, 0, 0.2)";  // 🔹 Ombre réduite
+    const minWidth = isPortrait ? "25vw" : "20vw";  // 🔹 Taille plus équilibrée
+    const maxWidth = isPortrait ? "30vw" : "22vw";  // 🔹 Limite la largeur
+    const minHeight = "50vh";  // 🔹 Taille stable
 
-    console.log(`📏 Nouveau padding : ${container.style.padding}, Bordure : ${container.style.borderWidth}`);
+    container.style.padding = basePadding;  
+    container.style.border = baseBorder;  
+    container.style.boxShadow = baseShadow;
+    container.style.minWidth = minWidth;
+    container.style.maxWidth = maxWidth;
+    container.style.minHeight = minHeight;
+
+    console.log(`📏 Mode ${isPortrait ? "portrait" : "paysage"} - Padding: ${container.style.padding}, MinWidth: ${container.style.minWidth}`);
 }
 
-// 🟢 Ajustement au chargement et au redimensionnement
+// ✅ Appliquer la correction au chargement et aux redimensionnements
 window.addEventListener("resize", ajusterConteneurElements);
 window.addEventListener("DOMContentLoaded", ajusterConteneurElements);
+window.addEventListener("orientationchange", ajusterConteneurElements);
