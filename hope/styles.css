@@ -99,48 +99,7 @@ html, body {
 }
 
 
-@media (max-width: 768px) { /* 📱 Appliquer uniquement sur mobile */
-    #header-container {
-        width: 100vw;
-        position: relative;
-        overflow: hidden;
-    }
 
-    #titre-1, #validate-1-button, #diagramme-message {
-        white-space: nowrap;
-        text-align: center;
-    }
-
-    .space-top, .space-between, .space-bottom {
-        flex-shrink: 0;
-    }
-}
-
-
-/* ✅ Centrer le header-container sur Mobile */
-@media (max-width: 768px) {
-    #header-container {
-        width: auto; /* 📱 Prend la largeur du container */
-        position: relative;
-        margin: 0 auto; /* 📌 Centre le header */
-        overflow: hidden;
-    }
-
-    /* ✅ Alignement horizontal du bouton et du message */
-    #validate-controls-1 {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        gap: 2vw; /* ✅ Espacement dynamique */
-    }
-
-    #diagramme-message {
-        font-size: 3vw; /* 📏 Adapté à l'écran */
-        text-align: center;
-        white-space: nowrap;
-    }
-}
 
 
 
