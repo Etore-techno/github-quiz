@@ -47,9 +47,9 @@ function fixHeaderOnDesktop() {
     let containerWidth = diagrammeContainer.clientWidth;
 
     let baseHeaderHeight = 120;  
-    let baseSpaceTop = 20;       
+    let baseSpaceTop = 15;       
     let baseSpaceBetween = 10;   
-    let baseSpaceBottom = 20;    
+    let baseSpaceBottom = 15;    
     let baseValidateControls = 40; 
 
     // ✅ Fixation en pixels (ajustement avec le zoom pour éviter l'effet d'agrandissement)
@@ -71,7 +71,7 @@ function fixHeaderOnDesktop() {
     console.log(`✅ 🖥️ PC - Tailles fixées et stabilisées`);
 }
 
-// ✅ Fonction pour ajuster la taille du conteneur du bouton et du message
+// ✅ Fonction pour desktop pour ajuster la taille du conteneur du bouton et du message
 function fixValidateControlsSize() {
     const validateControls = document.getElementById("validate-controls-1");
     const bouton = document.getElementById("validate-1-button");
@@ -115,7 +115,7 @@ function fixValidateControlsSize() {
     }
 }
 
-// ✅ Fonction pour fixer la taille du titre, du bouton et du message
+// ✅ Fonction pour desktop fixer la taille du titre, du bouton et du message
 function fixTitleAndButtonSize() {
     const titre = document.getElementById("titre-1");
     const bouton = document.getElementById("validate-1-button");
@@ -202,17 +202,17 @@ function fixHeaderOnMobile() {
                 let headerWidth = containerWidth;
                 let headerHeight = containerHeight / 4;
 
-                let spaceTopHeight = headerHeight * 0.16;
-                let spaceBetweenHeight = headerHeight * 0.08;
-                let spaceBottomHeight = headerHeight * 0.16;
+                let spaceTopHeight = headerHeight * 0.12;
+                let spaceBetweenHeight = headerHeight * 0.1;
+                let spaceBottomHeight = headerHeight * 0.12;
 
-                let titleHeight = headerHeight * 0.25;
-                let validateControlsHeight = headerHeight * 0.35;
+                let titleHeight = headerHeight * 0.32;
+                let validateControlsHeight = headerHeight * 0.32;
 
                 let titleFontSize = calculateTitleFontSize(containerWidth);
-                let buttonWidth = headerWidth * 0.15;
-                let buttonFontSize = titleFontSize / 1.5;
-                let messageFontSize = titleFontSize / 1.5;
+                let buttonWidth = headerWidth * 0.2;
+                let buttonFontSize = titleFontSize / 1.2;
+                let messageFontSize = titleFontSize / 1.2;
 
                 if (isPortrait) {
                     headerWidthPortrait = headerWidth;
