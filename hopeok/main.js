@@ -42,21 +42,17 @@ window.addEventListener("DOMContentLoaded", () => {
 // Fonction pour détecter l'orientation et adapter l'affichage
 function adjustLayoutForOrientation() {
     const isPortrait = window.innerHeight > window.innerWidth;
-    const diagramContainer = document.getElementById("diagramme-container");
     const diagram = document.querySelector("#diagramme-container img");
+    const dropzones = document.querySelectorAll(".dropzone");
 
     if (isPortrait) {
         console.log("Mode portrait détecté - Ajustement du diagramme");
-
-        diagramContainer.style.width = "100vw";  // 🔹 Prend toute la largeur de l'écran
         diagram.style.width = "100vw";  // Largeur complète
         diagram.style.height = "auto";  // Ajustement proportionnel
     } else {
         console.log("Mode paysage détecté - Rétablissement de la mise en page");
-
-        diagramContainer.style.width = "50vw";   // 🔹 Largeur normale en paysage ou desktop
-        diagram.style.width = "100%";            // 🔹 Ajustement automatique
-        diagram.style.height = "auto";           // 🔹 Hauteur ajustée automatiquement
+        diagram.style.width = "";  // Retour aux valeurs CSS par défaut
+        diagram.style.height = "";
     }
 
     // Repositionnement des zones interactives après l'ajustement

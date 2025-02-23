@@ -23,7 +23,9 @@ html, body {
 
 /* ✅ Conteneur principal */
 #header-container {
-    
+    width: 100vw;
+    height: 10rem; /* 🔥 Fixe */
+  
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -132,12 +134,9 @@ img {
 
 /* ✅ Image et zones de dépôt */
 #diagramme-container, #tableau-container {
-    height: auto;
     position: relative;
-    overflow: visible;
+    width: 50vw;
 }
-
-
 
 /* ✅ Zones de dépôt */
 .dropzone {
@@ -226,4 +225,13 @@ img {
 }
 
 
+/* ✅ Correction des hauteurs */
+#diagramme-container, #deplacables-diagramme-container {
+    position: relative;
+    overflow: visible;
+}
 
+#diagramme-container {
+    height: auto;
+    position: relative;
+}
