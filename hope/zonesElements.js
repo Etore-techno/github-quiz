@@ -26,62 +26,94 @@ app.setupDiagramme = function () {
     let tailleTextePortrait = null; // 🔒 Stockage de la taille correcte
     let tailleTexteLandscape = null; // 🔒 Stockage de la taille correcte
 
-    function calculerTexteDesktop(imgWidth, imgHeight, zoomFactor) {
-        tailleTexteDesktop = calculerTailleTexte(imgWidth, imgHeight, zoomFactor, "desktop");
-    }
+    
 
-    function calculerTextePortrait(imgWidth, imgHeight, zoomFactor) {
-        tailleTextePortrait = calculerTailleTexte(imgWidth, imgHeight, zoomFactor, "portrait");
-    }
-
-    function calculerTexteLandscape(imgWidth, imgHeight, zoomFactor) {
-        tailleTexteLandscape = calculerTailleTexte(imgWidth, imgHeight, zoomFactor, "landscape");
-    }
-
-    function calculerTailleTexte(imgWidth, imgHeight, zoomFactor, mode) {
-        let texteMax = "Public (élèves et professeur)";
-        let zoneMax = window.exerciceData.diagrammezone.find(zone => zone.id.includes("zone"));
-
-        if (!zoneMax) return "1.5vw"; 
-
-        const zoneWidth = zoneMax.relativeWidth * imgWidth;
-        const zoneHeight = zoneMax.relativeHeight * imgHeight;
-
+    function calculerTailleTexteDesktop(zoneDiv) {
+        // 📌 Sélection de la plus longue réponse compatible avec une zone "grande"
+        let texteMax = "";
+        const zonesGrandes = window.exerciceData.diagrammezone.filter(z => z.taille === "grande");
+        const elementsCompatibles = window.exerciceData.diagrammeElements.filter(el => 
+            zonesGrandes.some(z => z.taille === el.taille)
+        );
+    
+        if (elementsCompatibles.length > 0) {
+            texteMax = elementsCompatibles.reduce((longest, el) => el.nom.length > longest.length ? el.nom : longest, "");
+        }
+    
+        console.log(`🔍 Texte utilisé pour le test Desktop : "${texteMax}"`);
+    
+        // 📌 Création d'une div invisible pour tester la taille du texte
         let testDiv = document.createElement("div");
         testDiv.style.position = "absolute";
         testDiv.style.visibility = "hidden";
-        testDiv.style.width = `${zoneWidth}px`;
-        testDiv.style.height = `${zoneHeight}px`;
         testDiv.style.whiteSpace = "nowrap";
         testDiv.innerText = texteMax;
         document.body.appendChild(testDiv);
-
-        let fontSize = 3;  // Commence avec une taille plus grande
-        testDiv.style.fontSize = `${fontSize / zoomFactor}vw`;
-
-        while (testDiv.scrollWidth > zoneWidth || testDiv.scrollHeight > zoneHeight) {
-            fontSize -= 0.1;
-            testDiv.style.fontSize = `${fontSize / zoomFactor}vw`;
-
-            if (fontSize < 0.5) break;  // 🔒 Sécurité pour éviter un texte invisible
+    
+        // 📏 Prendre les dimensions réelles de la zone
+        const zoneWidth = zoneDiv.clientWidth;
+        const zoneHeight = zoneDiv.clientHeight;
+    
+        console.log(`📏 Taille réelle de la zone (ID: ${zoneDiv.id}) → ${zoneWidth}px x ${zoneHeight}px`);
+    
+        let fontSize = Math.min(zoneHeight * 0.5, 24); // 🔹 Démarre avec 50% de la hauteur ou max 24px
+        testDiv.style.fontSize = `${fontSize}px`;
+    
+        while (testDiv.scrollHeight > zoneHeight * 0.9 || testDiv.scrollWidth > zoneWidth * 0.9) {
+            fontSize -= 1;
+            testDiv.style.fontSize = `${fontSize}px`;
+    
+            if (fontSize < 12) break; // 🔒 Sécurité pour éviter un texte trop petit
         }
-
-        // **Correction spécifique pour Portrait**
-        if (mode === "portrait") {
-            // 🔹 Autoriser une meilleure répartition largeur/hauteur
-            let maxHeight = zoneHeight * 0.8; // On laisse 80% de la hauteur max dispo
-            let maxWidth = zoneWidth * 0.95;  // 95% de la largeur max
-            let textWidth = testDiv.scrollWidth;
-            let textHeight = testDiv.scrollHeight;
-
-            if (textHeight < maxHeight && textWidth < maxWidth) {
-                fontSize *= 1.2;  // 📌 Permet d’augmenter un peu si c'est possible
-            }
-        }
+    
         document.body.removeChild(testDiv);
-        return isNaN(fontSize) || fontSize < 0.5 ? "1.5vw" : `${fontSize / zoomFactor}vw`;
-
+        return `${fontSize}px`;
     }
+    
+    
+    function calculerTailleTexteMobile(zoneDiv) {
+        // 📌 Sélection de la plus longue réponse compatible avec une zone "grande"
+        let texteMax = "";
+        const zonesGrandes = window.exerciceData.diagrammezone.filter(z => z.taille === "grande");
+        const elementsCompatibles = window.exerciceData.diagrammeElements.filter(el => 
+            zonesGrandes.some(z => z.taille === el.taille)
+        );
+    
+        if (elementsCompatibles.length > 0) {
+            texteMax = elementsCompatibles.reduce((longest, el) => el.nom.length > longest.length ? el.nom : longest, "");
+        }
+    
+        console.log(`🔍 Texte utilisé pour le test Mobile : "${texteMax}"`);
+    
+        let testDiv = document.createElement("div");
+        testDiv.style.position = "absolute";
+        testDiv.style.visibility = "hidden";
+        testDiv.style.whiteSpace = "nowrap";
+        testDiv.innerText = texteMax;
+        document.body.appendChild(testDiv);
+    
+        const zoneWidth = zoneDiv.clientWidth;
+        const zoneHeight = zoneDiv.clientHeight;
+    
+        console.log(`📏 Taille réelle de la zone (ID: ${zoneDiv.id}) → ${zoneWidth}px x ${zoneHeight}px`);
+    
+        let fontSize = zoneHeight * 0.6; // 🔹 Commence avec 60% de la hauteur de la zone
+        testDiv.style.fontSize = `${fontSize}px`;
+    
+        while (testDiv.scrollHeight > zoneHeight * 0.85 || testDiv.scrollWidth > zoneWidth * 0.9) {
+            fontSize -= 1;
+            testDiv.style.fontSize = `${fontSize}px`;
+    
+            if (fontSize < 10) break; // 🔒 Empêche une taille illisible
+        }
+    
+        document.body.removeChild(testDiv);
+        return `${fontSize}px`;
+    }
+    
+    
+    
+    
 
     function detecterMode() {
         if (window.innerWidth >= 1024) return "desktop";
@@ -120,17 +152,6 @@ app.setupDiagramme = function () {
     
         let mode = detecterMode();
 
-
-        if (mode === "desktop" && !tailleTexteDesktop) {
-            calculerTexteDesktop (imgWidth, imgHeight, zoomFactor);
-        } else if (mode === "portrait" && !tailleTextePortrait) {
-            calculerTextePortrait (imgWidth, imgHeight, zoomFactor);
-        } else if (mode === "landscape" && !tailleTexteLandscape) {
-            calculerTexteLandscape (imgWidth, imgHeight, zoomFactor);
-        } 
-    
-        console.log(`📝 Taille de texte desktop verrouillée : ${tailleTexteDesktop}`);
-    
         window.exerciceData.diagrammezone.forEach(zoneData => {
             if (
                 isNaN(zoneData.relativeTop) || isNaN(zoneData.relativeLeft) ||
@@ -150,16 +171,20 @@ app.setupDiagramme = function () {
             zoneDiv.style.left = `${zoneData.relativeLeft * imgWidth}px`;
             zoneDiv.style.width = `${zoneData.relativeWidth * imgWidth}px`;
             zoneDiv.style.height = `${zoneData.relativeHeight * imgHeight}px`;
-            
-            
+            container.appendChild(zoneDiv);
+
+            // 🔥 Calcul dynamique de la taille du texte après avoir ajouté l'élément DOM
+        setTimeout(() => {
+            let tailleTexte;
             if (mode === "desktop") {
-                zoneDiv.style.fontSize = tailleTexteDesktop; // ✅ Application de la taille ajustée
-            } else if (mode === "portrait") {
-                zoneDiv.style.fontSize = tailleTextePortrait; // ✅ Application de la taille ajustée
-            } else if (mode === "landscape") {
-                zoneDiv.style.fontSize = tailleTexteLandscape; // ✅ Application de la taille ajustée
-            } 
-    
+                tailleTexte = calculerTailleTexteDesktop(zoneDiv);
+            } else {
+                tailleTexte = calculerTailleTexteMobile(zoneDiv);
+            }
+            zoneDiv.style.fontSize = tailleTexte;
+            console.log(`📏 Taille de texte finale pour ${zoneData.id} : ${tailleTexte}`);
+        }, 50); // 📌 Petit délai pour assurer que les dimensions sont bien prises
+
             container.appendChild(zoneDiv);
             console.log(`✅ Zone créée : ${zoneData.id}`);
     
