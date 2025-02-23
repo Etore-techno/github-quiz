@@ -153,10 +153,8 @@ function fixHeaderOnMobile() {
         console.log(`📌 Taille de l'image du diagramme: ${containerWidth}px x ${containerHeight}px`);
 
         // ✅ Vérification si les tailles ont déjà été calculées pour ce mode
-        if (isPortrait && mobilePortraitCalculated) {
-            console.log(`🔄 📱 Mode Portrait déjà calculé, réattribution des valeurs.`);
-        } else if (!isPortrait && mobileLandscapeCalculated) {
-            console.log(`🔄 📱 Mode Paysage déjà calculé, réattribution des valeurs.`);
+        if ((isPortrait && mobilePortraitCalculated) || (!isPortrait && mobileLandscapeCalculated)) {
+            console.log(`🔄 📱 Mode ${isPortrait ? "Portrait" : "Paysage"} déjà calculé, réattribution des valeurs.`);
         } else {
             console.log(`🆕 📱 Calcul des valeurs fixes pour le mode ${isPortrait ? "Portrait" : "Paysage"}`);
 
@@ -170,8 +168,8 @@ function fixHeaderOnMobile() {
             let titleHeight = headerHeight * 0.25;
             let validateControlsHeight = headerHeight * 0.35;
 
-            let titleFontSize = headerWidth * 0.03;
-            let buttonWidth = headerWidth * 0.2;
+            let titleFontSize = headerWidth * 0.07;
+            let buttonWidth = headerWidth * 0.1;
             let messageFontSize = titleFontSize / 2;
 
             if (isPortrait) {
@@ -185,7 +183,6 @@ function fixHeaderOnMobile() {
                 titleFontSizePortrait = titleFontSize;
                 buttonWidthPortrait = buttonWidth;
                 messageFontSizePortrait = messageFontSize;
-
                 mobilePortraitCalculated = true;
             } else {
                 headerWidthLandscape = headerWidth;
@@ -198,7 +195,6 @@ function fixHeaderOnMobile() {
                 titleFontSizeLandscape = titleFontSize;
                 buttonWidthLandscape = buttonWidth;
                 messageFontSizeLandscape = messageFontSize;
-
                 mobileLandscapeCalculated = true;
             }
         }
@@ -217,32 +213,26 @@ function fixHeaderOnMobile() {
 
         header.style.width = `${headerWidth}px`;
         header.style.height = `${headerHeight}px`;
-        header.style.minHeight = `${headerHeight}px`;
-        header.style.maxHeight = `${headerHeight}px`;
-        header.style.margin = "0 auto";
 
         document.querySelector(".space-top").style.height = `${spaceTopHeight}px`;
         document.querySelector(".space-between").style.height = `${spaceBetweenHeight}px`;
         document.querySelector(".space-bottom").style.height = `${spaceBottomHeight}px`;
 
-        validateControls.style.height = `${validateControlsHeight}px`;
-
-        titre.style.fontSize = `${titleFontSize}px`;
         titre.style.height = `${titleHeight}px`;
+        titre.style.fontSize = `${titleFontSize}px`;
 
         bouton.style.width = `${buttonWidth}px`;
-        bouton.style.fontSize = `${buttonWidth * 0.5}px`;
-        bouton.style.padding = `${buttonWidth * 0.3}px ${buttonWidth * 0.6}px`;
+        bouton.style.fontSize = `${titleFontSize * 0.5}px`;
 
         message.style.fontSize = `${messageFontSize}px`;
 
+        validateControls.style.height = `${validateControlsHeight}px`;
+        validateControls.style.display = "flex";
+        validateControls.style.justifyContent = "flex-start";
+        validateControls.style.alignItems = "center";
+        validateControls.style.gap = `${buttonWidth * 0.5}px`;
+
         console.log(`✅ 📱 Mobile - Mode ${isPortrait ? "Portrait" : "Paysage"} ajusté avec succès.`);
-        console.log(`📏 ✅ Résumé des tailles pour ${isPortrait ? "Portrait" : "Paysage"}:`);
-        console.log(`   - Header: ${headerWidth}px x ${headerHeight}px`);
-        console.log(`   - Espaces: Haut=${spaceTopHeight}px | Milieu=${spaceBetweenHeight}px | Bas=${spaceBottomHeight}px`);
-        console.log(`   - Titre: ${titleHeight}px (Font: ${titleFontSize}px)`);
-        console.log(`   - Bouton: ${buttonWidth}px (Font: ${buttonWidth * 0.5}px)`);
-        console.log(`   - Message: ${messageFontSize}px`);
     });
 }
 
