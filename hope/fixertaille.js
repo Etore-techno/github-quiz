@@ -138,21 +138,25 @@ function calculateTitleFontSize(containerWidth) {
     let testDiv = document.createElement("div");
     testDiv.style.position = "absolute";
     testDiv.style.visibility = "hidden";
-    testDiv.style.width = `${containerWidth * 0.8}px`; // Laisser une marge de 10% de chaque côté
+    testDiv.style.width = `${containerWidth * 0.85}px`; // 🔹 Laisser une marge de 7.5% de chaque côté
     testDiv.style.whiteSpace = "nowrap";
-    testDiv.innerText = "1. Diagramme des interactions :";
+    testDiv.style.fontWeight = "bold";  // ✅ Simulation de la vraie mise en page
+    testDiv.innerText = "1. Diagramme des interactions :";  // ✅ Contenu réel
     document.body.appendChild(testDiv);
 
-    let fontSize = containerWidth * 0.5; // 🔥 Départ = 8% de la largeur du conteneur
+    let fontSize = containerWidth * 0.1; // 🔥 Augmentation de la taille de départ (10% de la largeur)
     testDiv.style.fontSize = `${fontSize}px`;
 
-    while (testDiv.scrollWidth > containerWidth * 0.8 || testDiv.offsetWidth > containerWidth * 0.8) {
+    // 🔹 Boucle pour réduire la taille si nécessaire
+    while (testDiv.getBoundingClientRect().width > containerWidth * 0.85) {
         fontSize -= 1;
         testDiv.style.fontSize = `${fontSize}px`;
-        if (fontSize < 12) break; // Eviter les tailles trop petites
+        if (fontSize < 12) break; // 🔒 Éviter une taille trop petite
     }
 
     document.body.removeChild(testDiv);
+    console.log(`📏 Taille optimale du titre calculée : ${fontSize}px`);
+
     return fontSize;
 }
 
