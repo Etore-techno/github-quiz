@@ -26,7 +26,7 @@ app.setupDiagramme = function () {
 
     function positionnerZonesEtElements() {
         console.log("🔍 `positionnerZonesEtElements()` exécutée !");
-    
+        
         const rect = img.getBoundingClientRect();
         if (rect.width === 0 || rect.height === 0) {
             console.warn("⚠️ L'image n'est pas encore chargée, recalcul en attente...");
@@ -42,6 +42,8 @@ app.setupDiagramme = function () {
             return;
         }
     
+        let zoomFactor = window.devicePixelRatio || 1; // 🔍 Détection du zoom
+    
         let elementsSauvegardes = {};
         document.querySelectorAll('.dropzone').forEach(zone => {
             if (zone.children.length > 0) {
@@ -51,7 +53,6 @@ app.setupDiagramme = function () {
     
         document.querySelectorAll('.dropzone').forEach(zone => zone.remove());
     
-        // **Vérifier si on a déjà une taille enregistrée**
         if (!tailleTexteMemoire) {
             let texteMax = "Public (élèves et professeur)";
             let zoneMax = window.exerciceData.diagrammezone.find(zone => zone.id.includes("zone"));
@@ -70,16 +71,16 @@ app.setupDiagramme = function () {
                 document.body.appendChild(testDiv);
     
                 let fontSize = 2;
-                testDiv.style.fontSize = `${fontSize}vw`;
+                testDiv.style.fontSize = `${fontSize / zoomFactor}vw`; // 🔥 Correction du zoom
     
                 while (testDiv.scrollWidth > zoneWidth || testDiv.scrollHeight > zoneHeight) {
                     fontSize -= 0.1;
-                    testDiv.style.fontSize = `${fontSize}vw`;
+                    testDiv.style.fontSize = `${fontSize / zoomFactor}vw`;
                     if (fontSize < 0.5) break;
                 }
     
                 document.body.removeChild(testDiv);
-                tailleTexteMemoire = isNaN(fontSize) || fontSize < 0.5 ? "1.5vw" : `${fontSize}vw`; // 🔹 Stockage de la taille trouvée
+                tailleTexteMemoire = isNaN(fontSize) || fontSize < 0.5 ? "1.5vw" : `${fontSize / zoomFactor}vw`; // ✅ Correction finale
             }
         }
     
@@ -104,7 +105,7 @@ app.setupDiagramme = function () {
             zoneDiv.style.left = `${zoneData.relativeLeft * imgWidth}px`;
             zoneDiv.style.width = `${zoneData.relativeWidth * imgWidth}px`;
             zoneDiv.style.height = `${zoneData.relativeHeight * imgHeight}px`;
-            zoneDiv.style.fontSize = tailleTexteMemoire; // 🔹 Toujours utiliser la taille mémorisée
+            zoneDiv.style.fontSize = tailleTexteMemoire; // ✅ Application de la taille ajustée
     
             container.appendChild(zoneDiv);
             console.log(`✅ Zone créée : ${zoneData.id}`);
@@ -117,6 +118,7 @@ app.setupDiagramme = function () {
     
         app.initSelectionMenu();
     }
+    
     
     
     
