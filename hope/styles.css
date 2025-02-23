@@ -82,20 +82,22 @@ html, body {
 
 /* ✅ Empêche le bouton de bouger en zoomant */
 #validate-controls-1 {
-    height: auto;  
+    height: auto;
     min-height: 40px;
     max-height: none;
 
     display: flex;
     flex-direction: row; /* ✅ Alignement horizontal */
-    justify-content: center;
-    align-items: center;
-
+    justify-content: flex-start; /* ✅ Place le bouton à gauche */
+    align-items: center; /* ✅ Centre verticalement */
+    width: 100%; /* ✅ Prend toute la largeur du header */
+    
     flex-shrink: 0;
     overflow: visible;
 
     background-color: rgba(10, 124, 39, 0.3); /* 🟠 Vérification */
 }
+
 
 @media (max-width: 768px) { /* 📱 Appliquer uniquement sur mobile */
     #header-container {
