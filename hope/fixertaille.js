@@ -170,117 +170,123 @@ function fixHeaderOnMobile() {
 
     waitForDiagramLoad(() => {
         let isPortrait = window.innerHeight > window.innerWidth;
-        
         let containerWidth = diagrammeContainer.clientWidth;
         let containerHeight = diagrammeContainer.clientHeight;
+
         console.log(`📏 📱 Mode: ${isPortrait ? "Portrait" : "Paysage"}`);
 
-        // ✅ Vérification si les tailles ont déjà été calculées pour ce mode
-        if (isPortrait && mobilePortraitCalculated) {
-            console.log(`🔄 📱 Mode Portrait déjà calculé, réattribution des valeurs.`);
-        } else if (!isPortrait && mobileLandscapeCalculated) {
-            console.log(`🔄 📱 Mode Paysage déjà calculé, réattribution des valeurs.`);
+        if ((isPortrait && mobilePortraitCalculated) || (!isPortrait && mobileLandscapeCalculated)) {
+            console.log(`🔄 📱 Mode ${isPortrait ? "Portrait" : "Paysage"} déjà calculé, réattribution des valeurs.`);
         } else {
             console.log(`🆕 📱 Calcul des valeurs fixes pour le mode ${isPortrait ? "Portrait" : "Paysage"}`);
 
+            setTimeout(() => {
+                console.log(`📌 Taille de l'image du diagramme: ${containerWidth}px x ${containerHeight}px`);
 
-            console.log(`📌 Taille de l'image du diagramme: ${containerWidth}px x ${containerHeight}px`);
+                let headerWidth = containerWidth;
+                let headerHeight = containerHeight / 4;
 
-            let headerWidth = containerWidth;
-            let headerHeight = containerHeight / 4;
+                let spaceTopHeight = headerHeight * 0.16;
+                let spaceBetweenHeight = headerHeight * 0.08;
+                let spaceBottomHeight = headerHeight * 0.16;
 
-            let spaceTopHeight = headerHeight * 0.16;
-            let spaceBetweenHeight = headerHeight * 0.08;
-            let spaceBottomHeight = headerHeight * 0.16;
+                let titleHeight = headerHeight * 0.25;
+                let validateControlsHeight = headerHeight * 0.35;
 
-            let titleHeight = headerHeight * 0.25;
-            let validateControlsHeight = headerHeight * 0.35;
+                let titleFontSize = calculateTitleFontSize(containerWidth);
+                let buttonWidth = headerWidth * 0.15;
+                let buttonFontSize = titleFontSize / 1.5;
+                let messageFontSize = titleFontSize / 1.5;
 
-            let titleFontSize = calculateTitleFontSize(containerWidth);
-            let buttonWidth = headerWidth * 0.15;
-            let buttonFontSize = titleFontSize / 1.5;
-            let messageFontSize = titleFontSize / 1.5;
+                if (isPortrait) {
+                    headerWidthPortrait = headerWidth;
+                    headerHeightPortrait = headerHeight;
 
-            if (isPortrait) {
-                headerWidthPortrait = headerWidth;
-                headerHeightPortrait = headerHeight;
-                
-                spaceTopHeightPortrait = spaceTopHeight;
-                spaceBetweenHeightPortrait = spaceBetweenHeight;
-                spaceBottomHeightPortrait = spaceBottomHeight;
+                    spaceTopHeightPortrait = spaceTopHeight;
+                    spaceBetweenHeightPortrait = spaceBetweenHeight;
+                    spaceBottomHeightPortrait = spaceBottomHeight;
 
-                titleHeightPortrait = titleHeight;
-                validateControlsHeightPortrait = validateControlsHeight;
-                titleFontSizePortrait = titleFontSize;
-                buttonWidthPortrait = buttonWidth;
-                buttonFontSizePortrait = buttonFontSize;
-                messageFontSizePortrait = messageFontSize;
-                mobilePortraitCalculated = true;
-            } else {
-                headerWidthLandscape = headerWidth;
-                headerHeightLandscape = headerHeight;
-                spaceTopHeightLandscape = spaceTopHeight;
-                spaceBetweenHeightLandscape = spaceBetweenHeight;
-                spaceBottomHeightLandscape = spaceBottomHeight;
+                    titleHeightPortrait = titleHeight;
+                    validateControlsHeightPortrait = validateControlsHeight;
+                    titleFontSizePortrait = titleFontSize;
+                    buttonWidthPortrait = buttonWidth;
+                    buttonFontSizePortrait = buttonFontSize;
+                    messageFontSizePortrait = messageFontSize;
+                    mobilePortraitCalculated = true;
+                } else {
+                    headerWidthLandscape = headerWidth;
+                    headerHeightLandscape = headerHeight;
+                    spaceTopHeightLandscape = spaceTopHeight;
+                    spaceBetweenHeightLandscape = spaceBetweenHeight;
+                    spaceBottomHeightLandscape = spaceBottomHeight;
 
-                titleHeightLandscape = titleHeight;
-                validateControlsHeightLandscape = validateControlsHeight;
-                titleFontSizeLandscape = titleFontSize;
-                buttonWidthLandscape = buttonWidth;
-                buttonFontSizeLandscape = buttonFontSize;
-                messageFontSizeLandscape = messageFontSize;
-                mobileLandscapeCalculated = true;
-            }
+                    titleHeightLandscape = titleHeight;
+                    validateControlsHeightLandscape = validateControlsHeight;
+                    titleFontSizeLandscape = titleFontSize;
+                    buttonWidthLandscape = buttonWidth;
+                    buttonFontSizeLandscape = buttonFontSize;
+                    messageFontSizeLandscape = messageFontSize;
+                    mobileLandscapeCalculated = true;
+                }
+
+                console.log(`✅ 📱 Phase 1 : Tailles calculées pour ${isPortrait ? "Portrait" : "Paysage"}`);
+
+                // Phase 2 : Appliquer les tailles calculées (après délai)
+                setTimeout(() => {
+                    let headerWidth = isPortrait ? headerWidthPortrait : headerWidthLandscape;
+                    let headerHeight = isPortrait ? headerHeightPortrait : headerHeightLandscape;
+                    let spaceTopHeight = isPortrait ? spaceTopHeightPortrait : spaceTopHeightLandscape;
+                    let spaceBetweenHeight = isPortrait ? spaceBetweenHeightPortrait : spaceBetweenHeightLandscape;
+                    let spaceBottomHeight = isPortrait ? spaceBottomHeightPortrait : spaceBottomHeightLandscape;
+                    let titleHeight = isPortrait ? titleHeightPortrait : titleHeightLandscape;
+                    let validateControlsHeight = isPortrait ? validateControlsHeightPortrait : validateControlsHeightLandscape;
+                    let titleFontSize = isPortrait ? titleFontSizePortrait : titleFontSizeLandscape;
+                    let buttonWidth = isPortrait ? buttonWidthPortrait : buttonWidthLandscape;
+                    let buttonFontSize = isPortrait ? buttonFontSizePortrait : buttonFontSizeLandscape;
+                    let messageFontSize = isPortrait ? messageFontSizePortrait : messageFontSizeLandscape;
+
+                    header.style.width = `${headerWidth}px`;
+                    header.style.height = `${headerHeight}px`;
+                    header.style.margin = "0 auto";
+                    header.style.position = "relative";
+
+                    console.log(`✅ 📱 Phase 2 : Header positionné`);
+
+                    // Phase 3 : Positionner les espaces et le titre (après délai)
+                    setTimeout(() => {
+                        document.querySelector(".space-top").style.height = `${spaceTopHeight}px`;
+                        document.querySelector(".space-between").style.height = `${spaceBetweenHeight}px`;
+                        document.querySelector(".space-bottom").style.height = `${spaceBottomHeight}px`;
+
+                        titre.style.height = `${titleHeight}px`;
+                        titre.style.fontSize = `${titleFontSize}px`;
+
+                        console.log(`✅ 📱 Phase 3 : Espaces et titre positionnés`);
+
+                        // Phase 4 : Positionner le bouton et le message (après délai)
+                        setTimeout(() => {
+                            validateControls.style.height = `${validateControlsHeight}px`;
+                            validateControls.style.display = "flex";
+                            validateControls.style.justifyContent = "flex-start";
+                            validateControls.style.alignItems = "center";
+                            validateControls.style.gap = `${buttonWidth * 0.5}px`;
+
+                            bouton.style.width = `${buttonWidth}px`;
+                            bouton.style.fontSize = `${buttonFontSize}px`;
+                            bouton.style.marginLeft = "0px";
+
+                            message.style.fontSize = `${messageFontSize}px`;
+
+                            console.log(`✅ 📱 Phase 4 : Bouton et message positionnés`);
+                            console.log(`✅ 📱 Mobile - Mode ${isPortrait ? "Portrait" : "Paysage"} ajusté avec succès.`);
+                        }, 2000);
+                    }, 2000);
+                }, 2000);
+            }, 2000);
         }
-
-        // 📌 **Réattribution des valeurs**
-        let headerWidth = isPortrait ? headerWidthPortrait : headerWidthLandscape;
-        let headerHeight = isPortrait ? headerHeightPortrait : headerHeightLandscape;
-        let spaceTopHeight = isPortrait ? spaceTopHeightPortrait : spaceTopHeightLandscape;
-        let spaceBetweenHeight = isPortrait ? spaceBetweenHeightPortrait : spaceBetweenHeightLandscape;
-        let spaceBottomHeight = isPortrait ? spaceBottomHeightPortrait : spaceBottomHeightLandscape;
-        let titleHeight = isPortrait ? titleHeightPortrait : titleHeightLandscape;
-        let validateControlsHeight = isPortrait ? validateControlsHeightPortrait : validateControlsHeightLandscape;
-        let titleFontSize = isPortrait ? titleFontSizePortrait : titleFontSizeLandscape;
-        let buttonWidth = isPortrait ? buttonWidthPortrait : buttonWidthLandscape;
-        let buttonFontSize = isPortrait ? buttonFontSizePortrait : buttonFontSizeLandscape;
-        let messageFontSize = isPortrait ? messageFontSizePortrait : messageFontSizeLandscape;
-
-        header.style.width = `${headerWidth}px`;
-        header.style.height = `${headerHeight}px`;
-        header.style.margin = "0 auto"; // ✅ Centrage horizontal
-        header.style.position = "relative"; // ✅ S'assurer qu'il est bien placé
-
-
-        document.querySelector(".space-top").style.height = `${spaceTopHeight}px`;
-        document.querySelector(".space-between").style.height = `${spaceBetweenHeight}px`;
-        document.querySelector(".space-bottom").style.height = `${spaceBottomHeight}px`;
-
-        titre.style.height = `${titleHeight}px`;
-        titre.style.fontSize = `${titleFontSize}px`;
-
-        validateControls.style.height = `${validateControlsHeight}px`;
-        validateControls.style.display = "flex";
-        validateControls.style.justifyContent = "flex-start";  // ✅ Bien positionné à gauche
-        validateControls.style.alignItems = "center";  // ✅ Corrigé (middle n'existe pas)
-        validateControls.style.gap = `${buttonWidth * 0.5}px`;  // ✅ Espacement correct
-
-        // ✅ Bouton bien placé à gauche
-        bouton.style.width = `${buttonWidth}px`;
-        bouton.style.fontSize = `${buttonFontSize}px`;
-        bouton.style.marginLeft = "0px";  // ✅ S'assurer qu'il n'y a pas de marge à gauche
-
-        // ✅ Message bien positionné
-        message.style.fontSize = `${messageFontSize}px`;
-
-        console.log(`✅ 📱 Mobile - Mode ${isPortrait ? "Portrait" : "Paysage"} ajusté avec succès.`);
-
-        console.log(`✅ 📱 Résumé des tailles pour ${isPortrait ? "Portrait" : "Paysage"}:`);
-        console.log(`   - Titre: ${titleFontSize}px`);
-        console.log(`   - Bouton: ${buttonFontSize}px`);
-        console.log(`   - Message: ${messageFontSize}px`);
     });
 }
+
 
 // ✅ Fonction globale pour recalculer les tailles après un zoom (Desktop) ou un changement d'orientation (Mobile)
 function updateHeaderSizes() {
