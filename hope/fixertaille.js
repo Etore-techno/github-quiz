@@ -22,9 +22,9 @@ function waitForDiagramLoad(callback) {
     if (!diagramImage) return;
 
     if (diagramImage.complete) {
-        callback(); // ✅ Si l'image est déjà chargée
+        setTimeout(callback, 50); // 🔹 Petit délai pour garantir que tout est chargé
     } else {
-        diagramImage.onload = callback; // ✅ Attendre qu'elle se charge
+        diagramImage.onload = () => setTimeout(callback, 50);
     }
 }
 
@@ -149,7 +149,10 @@ function fixHeaderOnMobile() {
         let containerWidth = diagrammeContainer.clientWidth;
         let containerHeight = diagrammeContainer.clientHeight;
 
-        // ✅ 📌 Vérification si on a déjà calculé les valeurs fixes pour ce mode
+        console.log(`📏 📱 Mode: ${isPortrait ? "Portrait" : "Paysage"}`);
+        console.log(`📌 Taille de l'image du diagramme: ${containerWidth}px x ${containerHeight}px`);
+
+        // ✅ Vérification si les tailles ont déjà été calculées pour ce mode
         if (isPortrait && mobilePortraitCalculated) {
             console.log(`🔄 📱 Mode Portrait déjà calculé, réattribution des valeurs.`);
         } else if (!isPortrait && mobileLandscapeCalculated) {
@@ -157,6 +160,7 @@ function fixHeaderOnMobile() {
         } else {
             console.log(`🆕 📱 Calcul des valeurs fixes pour le mode ${isPortrait ? "Portrait" : "Paysage"}`);
 
+            let headerWidth = containerWidth;
             let headerHeight = containerHeight / 4;
 
             let spaceTopHeight = headerHeight * 0.16;
@@ -166,12 +170,12 @@ function fixHeaderOnMobile() {
             let titleHeight = headerHeight * 0.25;
             let validateControlsHeight = headerHeight * 0.35;
 
-            let titleFontSize = containerWidth * 0.07;
-            let buttonWidth = validateControlsHeight * 0.3;
+            let titleFontSize = headerWidth * 0.03;
+            let buttonWidth = headerWidth * 0.2;
             let messageFontSize = titleFontSize / 2;
 
             if (isPortrait) {
-                headerWidthPortrait = containerWidth;
+                headerWidthPortrait = headerWidth;
                 headerHeightPortrait = headerHeight;
                 spaceTopHeightPortrait = spaceTopHeight;
                 spaceBetweenHeightPortrait = spaceBetweenHeight;
@@ -184,7 +188,7 @@ function fixHeaderOnMobile() {
 
                 mobilePortraitCalculated = true;
             } else {
-                headerWidthLandscape = containerWidth;
+                headerWidthLandscape = headerWidth;
                 headerHeightLandscape = headerHeight;
                 spaceTopHeightLandscape = spaceTopHeight;
                 spaceBetweenHeightLandscape = spaceBetweenHeight;
@@ -233,6 +237,12 @@ function fixHeaderOnMobile() {
         message.style.fontSize = `${messageFontSize}px`;
 
         console.log(`✅ 📱 Mobile - Mode ${isPortrait ? "Portrait" : "Paysage"} ajusté avec succès.`);
+        console.log(`📏 ✅ Résumé des tailles pour ${isPortrait ? "Portrait" : "Paysage"}:`);
+        console.log(`   - Header: ${headerWidth}px x ${headerHeight}px`);
+        console.log(`   - Espaces: Haut=${spaceTopHeight}px | Milieu=${spaceBetweenHeight}px | Bas=${spaceBottomHeight}px`);
+        console.log(`   - Titre: ${titleHeight}px (Font: ${titleFontSize}px)`);
+        console.log(`   - Bouton: ${buttonWidth}px (Font: ${buttonWidth * 0.5}px)`);
+        console.log(`   - Message: ${messageFontSize}px`);
     });
 }
 
