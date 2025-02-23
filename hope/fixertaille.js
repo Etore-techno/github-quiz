@@ -144,14 +144,16 @@ function calculateTitleFontSize(containerWidth) {
     testDiv.innerText = "1. Diagramme des interactions :";  // ✅ Contenu réel
     document.body.appendChild(testDiv);
 
-    let fontSize = containerWidth * 0.1; // 🔥 Augmentation de la taille de départ (10% de la largeur)
+    let zoomFactor = window.devicePixelRatio || 1; // 🔍 Correction du facteur de zoom
+    let fontSize = (containerWidth * 0.12) / zoomFactor; // 🔥 Départ avec 12% de la largeur ajustée
+    
     testDiv.style.fontSize = `${fontSize}px`;
 
     // 🔹 Boucle pour réduire la taille si nécessaire
-    while (testDiv.getBoundingClientRect().width > containerWidth * 0.85) {
+    while (testDiv.getBoundingClientRect().width > containerWidth * 0.9) {
         fontSize -= 1;
         testDiv.style.fontSize = `${fontSize}px`;
-        if (fontSize < 12) break; // 🔒 Éviter une taille trop petite
+        if (fontSize < 14) break; // 🔒 Éviter une taille trop petite
     }
 
     document.body.removeChild(testDiv);
