@@ -175,11 +175,12 @@ function fixHeaderOnMobile() {
 
         console.log(`📏 📱 Mode: ${isPortrait ? "Portrait" : "Paysage"}`);
 
-        if ((isPortrait && mobilePortraitCalculated) || (!isPortrait && mobileLandscapeCalculated)) {
-            console.log(`🔄 📱 Mode ${isPortrait ? "Portrait" : "Paysage"} déjà calculé, réattribution des valeurs.`);
+        if (isPortrait && mobilePortraitCalculated) {
+            console.log(`🔄 📱 Mode Portrait déjà calculé, réattribution des valeurs.`);
+        } else if (!isPortrait && mobileLandscapeCalculated) {
+            console.log(`🔄 📱 Mode Paysage déjà calculé, réattribution des valeurs.`);
         } else {
             console.log(`🆕 📱 Calcul des valeurs fixes pour le mode ${isPortrait ? "Portrait" : "Paysage"}`);
-
             setTimeout(() => {
                 console.log(`📌 Taille de l'image du diagramme: ${containerWidth}px x ${containerHeight}px`);
 
@@ -230,7 +231,7 @@ function fixHeaderOnMobile() {
                 }
 
                 console.log(`✅ 📱 Phase 1 : Tailles calculées pour ${isPortrait ? "Portrait" : "Paysage"}`);
-
+            })}
                 // Phase 2 : Appliquer les tailles calculées (après délai)
                 setTimeout(() => {
                     let headerWidth = isPortrait ? headerWidthPortrait : headerWidthLandscape;
@@ -284,8 +285,8 @@ function fixHeaderOnMobile() {
                 }, 2000);
             }, 2000);
         }
-    });
-}
+    
+
 
 
 // ✅ Fonction globale pour recalculer les tailles après un zoom (Desktop) ou un changement d'orientation (Mobile)
