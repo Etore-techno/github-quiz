@@ -35,13 +35,17 @@ function fixHeaderOnDesktop() {
     const spaceBetween = document.querySelector(".space-between");
     const spaceBottom = document.querySelector(".space-bottom");
     const validateControls = document.getElementById("validate-controls-1");
+    const diagrammeContainer = document.getElementById("diagramme-container");
 
-    if (!header || !spaceTop || !spaceBetween || !spaceBottom || !validateControls) return;
+
+    if (!header || !spaceTop || !spaceBetween || !spaceBottom || !diagrammeContainer || !validateControls) return;
 
     // 🔍 Détection du facteur de zoom
     let zoomFactor = window.devicePixelRatio || 1;
 
     // 📏 Tailles correctes à 100% de zoom
+    let containerWidth = diagrammeContainer.clientWidth;
+
     let baseHeaderHeight = 120;  
     let baseSpaceTop = 20;       
     let baseSpaceBetween = 10;   
@@ -49,9 +53,14 @@ function fixHeaderOnDesktop() {
     let baseValidateControls = 40; 
 
     // ✅ Fixation en pixels (ajustement avec le zoom pour éviter l'effet d'agrandissement)
+    header.style.width = `${containerWidth}px`;
+
     header.style.height = `${baseHeaderHeight / zoomFactor}px`;
     header.style.minHeight = `${baseHeaderHeight / zoomFactor}px`;
     header.style.maxHeight = `${baseHeaderHeight / zoomFactor}px`;
+
+    header.style.margin = "0 auto";
+    header.style.position = "relative";
 
     spaceTop.style.height = `${baseSpaceTop / zoomFactor}px`;
     spaceBetween.style.height = `${baseSpaceBetween / zoomFactor}px`;
@@ -133,7 +142,7 @@ function fixTitleAndButtonSize() {
     }
 }
 
-// ✅ Fonction pour calculer la taille maximale du titre avant de le fixer
+// ✅ Fonction pour Mobile pour calculer la taille maximale du titre avant de le fixer
 function calculateTitleFontSize(containerWidth) {
     let testDiv = document.createElement("div");
     testDiv.style.position = "absolute";
@@ -291,9 +300,6 @@ function fixHeaderOnMobile() {
                 }, 2000);
             }, 2000);
         }
-    
-
-
 
 // ✅ Fonction globale pour recalculer les tailles après un zoom (Desktop) ou un changement d'orientation (Mobile)
 function updateHeaderSizes() {
