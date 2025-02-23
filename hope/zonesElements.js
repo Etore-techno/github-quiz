@@ -26,99 +26,60 @@ app.setupDiagramme = function () {
     let tailleTextePortrait = null; // 🔒 Stockage de la taille correcte
     let tailleTexteLandscape = null; // 🔒 Stockage de la taille correcte
 
-    function calculerTexteDesktop (imgWidth, imgHeight, zoomFactor) {
-        let texteMax = "Public (élèves et professeur)";
-        let zoneMax = window.exerciceData.diagrammezone.find(zone => zone.id.includes("zone"));
-
-        if (zoneMax) {
-            const zoneWidth = zoneMax.relativeWidth * imgWidth;
-            const zoneHeight = zoneMax.relativeHeight * imgHeight;
-
-            let testDiv = document.createElement("div");
-            testDiv.style.position = "absolute";
-            testDiv.style.visibility = "hidden";
-            testDiv.style.width = `${zoneWidth}px`;
-            testDiv.style.height = `${zoneHeight}px`;
-            testDiv.style.whiteSpace = "nowrap";
-            testDiv.innerText = texteMax;
-            document.body.appendChild(testDiv);
-
-            let fontSize = 2;
-            testDiv.style.fontSize = `${fontSize / zoomFactor}vw`; // 🔥 Correction du zoom
-
-            while (testDiv.scrollWidth > zoneWidth || testDiv.scrollHeight > zoneHeight) {
-                fontSize -= 0.1;
-                testDiv.style.fontSize = `${fontSize / zoomFactor}vw`;
-                if (fontSize < 0.5) break;
-            }
-
-            document.body.removeChild(testDiv);
-            tailleTexteDesktop = isNaN(fontSize) || fontSize < 0.5 ? "1.5vw" : `${fontSize / zoomFactor}vw`; // ✅ Correction finale
-        }
-
+    function calculerTexteDesktop(imgWidth, imgHeight, zoomFactor) {
+        tailleTexteDesktop = calculerTailleTexte(imgWidth, imgHeight, zoomFactor, "desktop");
     }
 
-    function calculerTextePortrait (imgWidth, imgHeight, zoomFactor) {
-        let texteMax = "Public (élèves et professeur)";
-        let zoneMax = window.exerciceData.diagrammezone.find(zone => zone.id.includes("zone"));
-
-        if (zoneMax) {
-            const zoneWidth = zoneMax.relativeWidth * imgWidth;
-            const zoneHeight = zoneMax.relativeHeight * imgHeight;
-
-            let testDiv = document.createElement("div");
-            testDiv.style.position = "absolute";
-            testDiv.style.visibility = "hidden";
-            testDiv.style.width = `${zoneWidth}px`;
-            testDiv.style.height = `${zoneHeight}px`;
-            testDiv.style.whiteSpace = "nowrap";
-            testDiv.innerText = texteMax;
-            document.body.appendChild(testDiv);
-
-            let fontSize = 2;
-            testDiv.style.fontSize = `${fontSize / zoomFactor}vw`; // 🔥 Correction du zoom
-
-            while (testDiv.scrollWidth > zoneWidth || testDiv.scrollHeight > zoneHeight) {
-                fontSize -= 0.1;
-                testDiv.style.fontSize = `${fontSize / zoomFactor}vw`;
-                if (fontSize < 0.5) break;
-            }
-
-            document.body.removeChild(testDiv);
-            tailleTextePortrait = isNaN(fontSize) || fontSize < 0.5 ? "1.5vw" : `${fontSize / zoomFactor}vw`; // ✅ Correction finale
-        }
-
+    function calculerTextePortrait(imgWidth, imgHeight, zoomFactor) {
+        tailleTextePortrait = calculerTailleTexte(imgWidth, imgHeight, zoomFactor, "portrait");
     }
 
-    function calculerTexteLandscape (imgWidth, imgHeight, zoomFactor) {
+    function calculerTexteLandscape(imgWidth, imgHeight, zoomFactor) {
+        tailleTexteLandscape = calculerTailleTexte(imgWidth, imgHeight, zoomFactor, "landscape");
+    }
+
+    function calculerTailleTexte(imgWidth, imgHeight, zoomFactor, mode) {
         let texteMax = "Public (élèves et professeur)";
         let zoneMax = window.exerciceData.diagrammezone.find(zone => zone.id.includes("zone"));
 
-        if (zoneMax) {
-            const zoneWidth = zoneMax.relativeWidth * imgWidth;
-            const zoneHeight = zoneMax.relativeHeight * imgHeight;
+        if (!zoneMax) return "1.5vw"; 
 
-            let testDiv = document.createElement("div");
-            testDiv.style.position = "absolute";
-            testDiv.style.visibility = "hidden";
-            testDiv.style.width = `${zoneWidth}px`;
-            testDiv.style.height = `${zoneHeight}px`;
-            testDiv.style.whiteSpace = "nowrap";
-            testDiv.innerText = texteMax;
-            document.body.appendChild(testDiv);
+        const zoneWidth = zoneMax.relativeWidth * imgWidth;
+        const zoneHeight = zoneMax.relativeHeight * imgHeight;
 
-            let fontSize = 2;
-            testDiv.style.fontSize = `${fontSize}vw`; // 🔥 Correction du zoom
+        let testDiv = document.createElement("div");
+        testDiv.style.position = "absolute";
+        testDiv.style.visibility = "hidden";
+        testDiv.style.width = `${zoneWidth}px`;
+        testDiv.style.height = `${zoneHeight}px`;
+        testDiv.style.whiteSpace = "nowrap";
+        testDiv.innerText = texteMax;
+        document.body.appendChild(testDiv);
 
-            while (testDiv.scrollWidth > zoneWidth || testDiv.scrollHeight > zoneHeight) {
-                fontSize -= 0.1;
-                testDiv.style.fontSize = `${fontSize}vw`;
-                if (fontSize < 0.5) break;
-            }
+        let fontSize = 3;  // Commence avec une taille plus grande
+        testDiv.style.fontSize = `${fontSize / zoomFactor}vw`;
 
-            document.body.removeChild(testDiv);
-            tailleTexteLandscape = isNaN(fontSize) || fontSize < 0.5 ? "1.5vw" : `${fontSize}vw`; // ✅ Correction finale
+        while (testDiv.scrollWidth > zoneWidth || testDiv.scrollHeight > zoneHeight) {
+            fontSize -= 0.1;
+            testDiv.style.fontSize = `${fontSize / zoomFactor}vw`;
+
+            if (fontSize < 0.5) break;  // 🔒 Sécurité pour éviter un texte invisible
         }
+
+        // **Correction spécifique pour Portrait**
+        if (mode === "portrait") {
+            // 🔹 Autoriser une meilleure répartition largeur/hauteur
+            let maxHeight = zoneHeight * 0.8; // On laisse 80% de la hauteur max dispo
+            let maxWidth = zoneWidth * 0.95;  // 95% de la largeur max
+            let textWidth = testDiv.scrollWidth;
+            let textHeight = testDiv.scrollHeight;
+
+            if (textHeight < maxHeight && textWidth < maxWidth) {
+                fontSize *= 1.2;  // 📌 Permet d’augmenter un peu si c'est possible
+            }
+        }
+        document.body.removeChild(testDiv);
+        return isNaN(fontSize) || fontSize < 0.5 ? "1.5vw" : `${fontSize / zoomFactor}vw`;
 
     }
 
