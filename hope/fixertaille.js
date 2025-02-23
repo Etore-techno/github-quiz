@@ -9,10 +9,10 @@ let mobileLandscapeCalculated = false;
 
 // 📌 Variables de stockage des tailles fixes en Mobile (Portrait & Paysage)
 let headerWidthPortrait, headerHeightPortrait, spaceTopHeightPortrait, spaceBetweenHeightPortrait, spaceBottomHeightPortrait;
-let titleHeightPortrait, validateControlsHeightPortrait, titleFontSizePortrait, buttonWidthPortrait, messageFontSizePortrait;
+let titleHeightPortrait, validateControlsHeightPortrait, titleFontSizePortrait, buttonWidthPortrait, buttonFontSizePortrait, messageFontSizePortrait;
 
 let headerWidthLandscape, headerHeightLandscape, spaceTopHeightLandscape, spaceBetweenHeightLandscape, spaceBottomHeightLandscape;
-let titleHeightLandscape, validateControlsHeightLandscape, titleFontSizeLandscape, buttonWidthLandscape, messageFontSizeLandscape;
+let titleHeightLandscape, validateControlsHeightLandscape, titleFontSizeLandscape, buttonWidthLandscape, buttonFontSizeLandscape, messageFontSizeLandscape;
 
 
 
@@ -133,6 +133,30 @@ function fixTitleAndButtonSize() {
     }
 }
 
+// ✅ Fonction pour calculer la taille maximale du titre avant de le fixer
+function calculateTitleFontSize(containerWidth) {
+    let testDiv = document.createElement("div");
+    testDiv.style.position = "absolute";
+    testDiv.style.visibility = "hidden";
+    testDiv.style.width = `${containerWidth * 0.8}px`; // Laisser une marge de 10% de chaque côté
+    testDiv.style.whiteSpace = "nowrap";
+    testDiv.innerText = "1. Diagramme des interactions :";
+    document.body.appendChild(testDiv);
+
+    let fontSize = containerWidth * 0.08; // 🔥 Départ = 8% de la largeur du conteneur
+    testDiv.style.fontSize = `${fontSize}px`;
+
+    while (testDiv.scrollWidth > containerWidth * 0.8 || testDiv.offsetWidth > containerWidth * 0.8) {
+        fontSize -= 1;
+        testDiv.style.fontSize = `${fontSize}px`;
+        if (fontSize < 12) break; // Eviter les tailles trop petites
+    }
+
+    document.body.removeChild(testDiv);
+    return fontSize;
+}
+
+
 // ✅ Fonction qui ajuste la taille du header sur Mobile (Portrait et Paysage)
 function fixHeaderOnMobile() {
     const header = document.getElementById("header-container");
@@ -147,7 +171,8 @@ function fixHeaderOnMobile() {
     waitForDiagramLoad(() => {
         let isPortrait = window.innerHeight > window.innerWidth;
         
-
+        let containerWidth = diagrammeContainer.clientWidth;
+        let containerHeight = diagrammeContainer.clientHeight;
         console.log(`📏 📱 Mode: ${isPortrait ? "Portrait" : "Paysage"}`);
 
         // ✅ Vérification si les tailles ont déjà été calculées pour ce mode
@@ -158,8 +183,7 @@ function fixHeaderOnMobile() {
         } else {
             console.log(`🆕 📱 Calcul des valeurs fixes pour le mode ${isPortrait ? "Portrait" : "Paysage"}`);
 
-            let containerWidth = diagrammeContainer.clientWidth;
-            let containerHeight = diagrammeContainer.clientHeight;
+
             console.log(`📌 Taille de l'image du diagramme: ${containerWidth}px x ${containerHeight}px`);
 
             let headerWidth = containerWidth;
@@ -172,20 +196,24 @@ function fixHeaderOnMobile() {
             let titleHeight = headerHeight * 0.25;
             let validateControlsHeight = headerHeight * 0.35;
 
-            let titleFontSize = headerWidth * 0.07;
-            let buttonWidth = headerWidth * 0.1;
-            let messageFontSize = titleFontSize / 2;
+            let titleFontSize = calculateTitleFontSize(containerWidth);
+            let buttonWidth = headerWidth * 0.15;
+            let buttonFontSize = titleFontSize / 1.5;
+            let messageFontSize = titleFontSize / 1.5;
 
             if (isPortrait) {
                 headerWidthPortrait = headerWidth;
                 headerHeightPortrait = headerHeight;
+                
                 spaceTopHeightPortrait = spaceTopHeight;
                 spaceBetweenHeightPortrait = spaceBetweenHeight;
                 spaceBottomHeightPortrait = spaceBottomHeight;
+
                 titleHeightPortrait = titleHeight;
                 validateControlsHeightPortrait = validateControlsHeight;
                 titleFontSizePortrait = titleFontSize;
                 buttonWidthPortrait = buttonWidth;
+                buttonFontSizePortrait = buttonFontSize;
                 messageFontSizePortrait = messageFontSize;
                 mobilePortraitCalculated = true;
             } else {
@@ -194,10 +222,12 @@ function fixHeaderOnMobile() {
                 spaceTopHeightLandscape = spaceTopHeight;
                 spaceBetweenHeightLandscape = spaceBetweenHeight;
                 spaceBottomHeightLandscape = spaceBottomHeight;
+
                 titleHeightLandscape = titleHeight;
                 validateControlsHeightLandscape = validateControlsHeight;
                 titleFontSizeLandscape = titleFontSize;
                 buttonWidthLandscape = buttonWidth;
+                buttonFontSizeLandscape = buttonFontSize;
                 messageFontSizeLandscape = messageFontSize;
                 mobileLandscapeCalculated = true;
             }
@@ -213,10 +243,14 @@ function fixHeaderOnMobile() {
         let validateControlsHeight = isPortrait ? validateControlsHeightPortrait : validateControlsHeightLandscape;
         let titleFontSize = isPortrait ? titleFontSizePortrait : titleFontSizeLandscape;
         let buttonWidth = isPortrait ? buttonWidthPortrait : buttonWidthLandscape;
+        let buttonFontSize = isPortrait ? buttonFontSizePortrait : buttonFontSizeLandscape;
         let messageFontSize = isPortrait ? messageFontSizePortrait : messageFontSizeLandscape;
 
         header.style.width = `${headerWidth}px`;
         header.style.height = `${headerHeight}px`;
+        header.style.margin = "0 auto"; // ✅ Centrage horizontal
+        header.style.position = "relative"; // ✅ S'assurer qu'il est bien placé
+
 
         document.querySelector(".space-top").style.height = `${spaceTopHeight}px`;
         document.querySelector(".space-between").style.height = `${spaceBetweenHeight}px`;
@@ -233,13 +267,18 @@ function fixHeaderOnMobile() {
 
         // ✅ Bouton bien placé à gauche
         bouton.style.width = `${buttonWidth}px`;
-        bouton.style.fontSize = `${titleFontSize * 0.5}px`;
+        bouton.style.fontSize = `${buttonFontSize}px`;
         bouton.style.marginLeft = "0px";  // ✅ S'assurer qu'il n'y a pas de marge à gauche
 
         // ✅ Message bien positionné
         message.style.fontSize = `${messageFontSize}px`;
-        
+
         console.log(`✅ 📱 Mobile - Mode ${isPortrait ? "Portrait" : "Paysage"} ajusté avec succès.`);
+
+        console.log(`✅ 📱 Résumé des tailles pour ${isPortrait ? "Portrait" : "Paysage"}:`);
+        console.log(`   - Titre: ${titleFontSize}px`);
+        console.log(`   - Bouton: ${buttonFontSize}px`);
+        console.log(`   - Message: ${messageFontSize}px`);
     });
 }
 
