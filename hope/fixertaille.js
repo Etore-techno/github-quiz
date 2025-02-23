@@ -143,7 +143,7 @@ function calculateTitleFontSize(containerWidth) {
     testDiv.innerText = "1. Diagramme des interactions :";
     document.body.appendChild(testDiv);
 
-    let fontSize = containerWidth * 0.08; // 🔥 Départ = 8% de la largeur du conteneur
+    let fontSize = containerWidth * 0.5; // 🔥 Départ = 8% de la largeur du conteneur
     testDiv.style.fontSize = `${fontSize}px`;
 
     while (testDiv.scrollWidth > containerWidth * 0.8 || testDiv.offsetWidth > containerWidth * 0.8) {
