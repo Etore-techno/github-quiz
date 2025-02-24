@@ -26,6 +26,8 @@ window.addEventListener("DOMContentLoaded", () => {
         diagrammeImage.addEventListener('load', () => attendreChargement(demarrerExercices));
     }
 
+
+    
     function demarrerExercices() {
         setTimeout(() => {
             app.setupDiagramme();
@@ -38,26 +40,41 @@ window.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+function detecterMode() {
+    const largeur = window.innerWidth;
+    const hauteur = window.innerHeight;
+    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent); // ✅ Vérifie si c'est un mobile
+
+    if (isMobile) {
+        return hauteur > largeur ? "portrait" : "landscape"; // 📌 Portrait ou Paysage pour mobiles
+    } else {
+        return "desktop"; // ✅ Par défaut, tout le reste est Desktop
+    }
+}
 
 // Fonction pour détecter l'orientation et adapter l'affichage
 function adjustLayoutForOrientation() {
-    const isPortrait = window.innerHeight > window.innerWidth;
+    const mode = detecterMode(); // ✅ On utilise la même fonction que dans zonesElements.js
     const diagramContainer = document.getElementById("diagramme-container");
     const diagram = document.querySelector("#diagramme-container img");
 
-    if (isPortrait) {
-        console.log("Mode portrait détecté - Ajustement du diagramme");
+    console.log("🔍 Mode détecté dans `main.js` :", mode); // ✅ Vérification
+
+
+    if (mode === "portrait") {
+        console.log("📲 Mode portrait détecté - Ajustement du diagramme");
 
         diagramContainer.style.width = "100vw";  // 🔹 Prend toute la largeur de l'écran
         diagram.style.width = "100vw";  // Largeur complète
         diagram.style.height = "auto";  // Ajustement proportionnel
     } else {
-        console.log("Mode paysage détecté - Rétablissement de la mise en page");
+        console.log("🖥️ Mode Desktop/Paysage détecté - Rétablissement de la mise en page");
 
         diagramContainer.style.width = "50vw";   // 🔹 Largeur normale en paysage ou desktop
         diagram.style.width = "100%";            // 🔹 Ajustement automatique
         diagram.style.height = "auto";           // 🔹 Hauteur ajustée automatiquement
     }
+
 
     // Repositionnement des zones interactives après l'ajustement
     setTimeout(updateDropzonesPosition, 300);

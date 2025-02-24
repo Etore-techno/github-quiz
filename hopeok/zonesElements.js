@@ -22,7 +22,60 @@ app.setupDiagramme = function () {
         }, 200); // 🔄 Réduction du délai pour une mise à jour rapide
     }
 
-    let tailleTexteMemoire = null; // 🔒 Stockage de la taille correcte
+    // 🔒 Stockage des tailles calculées
+let tailleTexteMemoireDesktop = null;
+let tailleTexteMemoirePortrait = null;
+let tailleTexteMemoireLandscape = null;
+
+function calculerTailleTexteDesktop(imgWidth, imgHeight, zoomFactor) {
+    return calculerTailleTexte(imgWidth, imgHeight, zoomFactor, "desktop");
+}
+
+function calculerTailleTextePortrait(imgWidth, imgHeight, zoomFactor) {
+    return calculerTailleTexte(imgWidth, imgHeight, zoomFactor, "portrait");
+}
+
+function calculerTailleTexteLandscape(imgWidth, imgHeight, zoomFactor) {
+    return calculerTailleTexte(imgWidth, imgHeight, zoomFactor, "landscape");
+}
+
+// 🟢 Fonction générique pour éviter la répétition de code
+function calculerTailleTexte(imgWidth, imgHeight, zoomFactor, mode) {
+    let texteMax = "Public (élèves et professeur)";
+    let zoneMax = window.exerciceData.diagrammezone.find(zone => zone.id.includes("zone"));
+
+    if (!zoneMax) return "16px"; // 🔒 Valeur par défaut
+
+    const zoneWidth = zoneMax.relativeWidth * imgWidth;
+    const zoneHeight = zoneMax.relativeHeight * imgHeight;
+
+    let testDiv = document.createElement("div");
+    testDiv.style.position = "absolute";
+    testDiv.style.visibility = "hidden";
+    testDiv.style.width = `${zoneWidth}px`;
+    testDiv.style.height = `${zoneHeight}px`;
+    testDiv.style.whiteSpace = "nowrap";
+    testDiv.innerText = texteMax;
+    document.body.appendChild(testDiv);
+
+    let fontSize = mode === "desktop" ? Math.min(zoneHeight * 0.5, 24) :
+                   mode === "portrait" ? Math.min(zoneHeight * 0.6, 26) :
+                   Math.min(zoneHeight * 0.55, 25);
+
+    testDiv.style.fontSize = `${fontSize}px`;
+
+    while (testDiv.scrollHeight > zoneHeight * 0.9 || testDiv.scrollWidth > zoneWidth * 0.9) {
+        fontSize -= 1;
+        testDiv.style.fontSize = `${fontSize}px`;
+        if (fontSize < 12) break;
+    }
+
+    document.body.removeChild(testDiv);
+
+    console.log(`📏 Taille optimale calculée pour ${mode} : ${fontSize}px`);
+    return `${fontSize}px`;
+}
+
 
     function positionnerZonesEtElements() {
         console.log("🔍 `positionnerZonesEtElements()` exécutée !");
@@ -43,7 +96,7 @@ app.setupDiagramme = function () {
         }
     
         let zoomFactor = window.devicePixelRatio || 1; // 🔍 Détection du zoom
-    
+        let mode = detecterMode(); // 📌 Détecte le mode actuel
         let elementsSauvegardes = {};
         document.querySelectorAll('.dropzone').forEach(zone => {
             if (zone.children.length > 0) {
@@ -53,38 +106,28 @@ app.setupDiagramme = function () {
     
         document.querySelectorAll('.dropzone').forEach(zone => zone.remove());
     
-        if (!tailleTexteMemoire) {
-            let texteMax = "Public (élèves et professeur)";
-            let zoneMax = window.exerciceData.diagrammezone.find(zone => zone.id.includes("zone"));
-    
-            if (zoneMax) {
-                const zoneWidth = zoneMax.relativeWidth * imgWidth;
-                const zoneHeight = zoneMax.relativeHeight * imgHeight;
-    
-                let testDiv = document.createElement("div");
-                testDiv.style.position = "absolute";
-                testDiv.style.visibility = "hidden";
-                testDiv.style.width = `${zoneWidth}px`;
-                testDiv.style.height = `${zoneHeight}px`;
-                testDiv.style.whiteSpace = "nowrap";
-                testDiv.innerText = texteMax;
-                document.body.appendChild(testDiv);
-    
-                let fontSize = 2;
-                testDiv.style.fontSize = `${fontSize / zoomFactor}vw`; // 🔥 Correction du zoom
-    
-                while (testDiv.scrollWidth > zoneWidth || testDiv.scrollHeight > zoneHeight) {
-                    fontSize -= 0.1;
-                    testDiv.style.fontSize = `${fontSize / zoomFactor}vw`;
-                    if (fontSize < 0.5) break;
-                }
-    
-                document.body.removeChild(testDiv);
-                tailleTexteMemoire = isNaN(fontSize) || fontSize < 0.5 ? "1.5vw" : `${fontSize / zoomFactor}vw`; // ✅ Correction finale
-            }
-        }
-    
-        console.log(`📝 Taille de texte verrouillée : ${tailleTexteMemoire}`);
+ // 🔹 1️⃣ Calcul de la taille du texte pour **Desktop**
+ if (mode === "desktop" && !tailleTexteMemoireDesktop) {
+    tailleTexteMemoireDesktop = calculerTailleTexteDesktop(imgWidth, imgHeight, zoomFactor);
+    console.log(`📏 Taille calculée pour Desktop : ${tailleTexteMemoireDesktop}`);
+}
+
+// 🔹 2️⃣ Calcul de la taille du texte pour **Portrait**
+if (mode === "portrait" && !tailleTexteMemoirePortrait) {
+    tailleTexteMemoirePortrait = calculerTailleTextePortrait(imgWidth, imgHeight, zoomFactor);
+    console.log(`📏 Taille calculée pour Portrait : ${tailleTexteMemoirePortrait}`);
+}
+
+// 🔹 3️⃣ Calcul de la taille du texte pour **Landscape**
+if (mode === "landscape" && !tailleTexteMemoireLandscape) {
+    tailleTexteMemoireLandscape = calculerTailleTexteLandscape(imgWidth, imgHeight, zoomFactor);
+    console.log(`📏 Taille calculée pour Landscape : ${tailleTexteMemoireLandscape}`);
+}
+
+console.log(`📝 Tailles de texte mémorisées : 
+    - Desktop : ${tailleTexteMemoireDesktop}
+    - Portrait : ${tailleTexteMemoirePortrait}
+    - Landscape : ${tailleTexteMemoireLandscape}`);
     
         window.exerciceData.diagrammezone.forEach(zoneData => {
             if (
@@ -105,7 +148,15 @@ app.setupDiagramme = function () {
             zoneDiv.style.left = `${zoneData.relativeLeft * imgWidth}px`;
             zoneDiv.style.width = `${zoneData.relativeWidth * imgWidth}px`;
             zoneDiv.style.height = `${zoneData.relativeHeight * imgHeight}px`;
-            zoneDiv.style.fontSize = tailleTexteMemoire; // ✅ Application de la taille ajustée
+            // 📌 Application de la bonne taille de texte selon le mode
+        if (mode === "desktop") {
+            zoneDiv.style.fontSize = tailleTexteMemoireDesktop;
+        } else if (mode === "portrait") {
+            zoneDiv.style.fontSize = tailleTexteMemoirePortrait;
+        } else {
+            zoneDiv.style.fontSize = tailleTexteMemoireLandscape;
+        }
+
     
             container.appendChild(zoneDiv);
             console.log(`✅ Zone créée : ${zoneData.id}`);
@@ -147,26 +198,73 @@ function ajusterConteneurElements() {
     if (!container) return;
 
     const isPortrait = window.innerHeight > window.innerWidth;
+    const mode = window.innerWidth >= 1024 ? "desktop" : isPortrait ? "portrait" : "landscape";
 
-    // **Correction du padding et des marges**
-    const basePadding = isPortrait ? "1vh" : "1.5vh";  // 🔹 Moins de marge en portrait
-    const baseBorder = "0.15em solid black";  
-    const baseShadow = "0.1em 0.1em 0.5em rgba(0, 0, 0, 0.2)";  // 🔹 Ombre réduite
-    const minWidth = isPortrait ? "25vw" : "20vw";  // 🔹 Taille plus équilibrée
-    const maxWidth = isPortrait ? "30vw" : "22vw";  // 🔹 Limite la largeur
-    const minHeight = "50vh";  // 🔹 Taille stable
+    // ✅ Fixation des tailles en pixels pour éviter l'effet du zoom en Mobile
+    const basePadding = isPortrait ? "10px" : "15px";
+    const baseBorder = "2px solid black";
+    const baseShadow = "2px 2px 5px rgba(0, 0, 0, 0.2)";
+    const minWidth = isPortrait ? "250px" : "300px";
+    const maxWidth = isPortrait ? "350px" : "400px";
+    const minHeight = "500px";
 
-    container.style.padding = basePadding;  
-    container.style.border = baseBorder;  
+    container.style.padding = basePadding;
+    container.style.border = baseBorder;
     container.style.boxShadow = baseShadow;
     container.style.minWidth = minWidth;
     container.style.maxWidth = maxWidth;
     container.style.minHeight = minHeight;
 
-    console.log(`📏 Mode ${isPortrait ? "portrait" : "paysage"} - Padding: ${container.style.padding}, MinWidth: ${container.style.minWidth}`);
+    console.log(`📏 Mode ${mode} - Padding: ${container.style.padding}, MinWidth: ${container.style.minWidth}`);
+
+    // ✅ Correction du zoom en mode Desktop
+    if (mode === "desktop") {
+        let zoomFactor = window.devicePixelRatio || 1;
+
+        console.log(`🔍 Zoom détecté : ${zoomFactor}`);
+
+        document.querySelectorAll('.dropzone').forEach(zone => {
+            // 🔹 Vérifier si la taille initiale est déjà stockée, sinon la stocker
+            if (!zone.dataset.fontSizeOriginale) {
+                zone.dataset.fontSizeOriginale = zone.style.fontSize;
+            }
+            if (!zone.dataset.borderSizeOriginale) {
+                zone.dataset.borderSizeOriginale = getComputedStyle(zone).borderWidth;
+            }
+
+            // 🔹 Ajustement de la taille du texte après zoom
+            let tailleOriginale = parseFloat(zone.dataset.fontSizeOriginale);
+            if (!isNaN(tailleOriginale)) {
+                let tailleCorrigee = tailleOriginale / zoomFactor;
+                zone.style.fontSize = `${tailleCorrigee}px`;
+                console.log(`📏 Ajustement texte Desktop : ${zone.style.fontSize}`);
+            }
+
+            // 🔹 Ajustement de la bordure après zoom
+            let borderSize = parseFloat(zone.dataset.borderSizeOriginale);
+            if (!isNaN(borderSize)) {
+                let borderCorrigee = borderSize / zoomFactor;
+                zone.style.borderWidth = `${borderCorrigee}px`;
+                console.log(`🎨 Ajustement bordure Desktop : ${zone.style.borderWidth}`);
+            }
+        });
+    }
 }
 
-// ✅ Appliquer la correction au chargement et aux redimensionnements
-window.addEventListener("resize", ajusterConteneurElements);
-window.addEventListener("DOMContentLoaded", ajusterConteneurElements);
-window.addEventListener("orientationchange", ajusterConteneurElements);
+
+function repositionnerEtAjuster() {
+    console.log("🔄 Repositionnement des zones en cours...");
+    
+    positionnerZonesEtElements();
+
+    // ✅ Attendre 100ms après le placement des zones avant d'ajuster le conteneur
+    setTimeout(() => {
+        ajusterConteneurElements();
+    }, 100);
+}
+
+
+// ✅ Remplace les appels séparés par un appel unique à `repositionnerEtAjuster()`
+window.addEventListener("resize", repositionnerEtAjuster);
+window.addEventListener("DOMContentLoaded", repositionnerEtAjuster);
+window.addEventListener("orientationchange", repositionnerEtAjuster);
