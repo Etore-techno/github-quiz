@@ -3,6 +3,37 @@
 window.app = window.app || {};
 window.app.positionsElements = {}; // Stockage des positions des éléments
 
+
+// 📌 Initialisation des réponses attendues pour le diagramme
+window.app.reponsesAttendues = {};
+
+function initialiserReponsesAttendues() {
+    if (!window.exerciceData || !window.exerciceData.diagrammezone || !window.exerciceData.diagrammeElements) {
+        console.error("❌ Erreur : Les données de l'exercice ne sont pas encore chargées !");
+        return;
+    }
+
+    if (window.exerciceData.diagrammezone.length === window.exerciceData.diagrammeElements.length) {
+        window.exerciceData.diagrammezone.forEach((zone, index) => {
+            let element = window.exerciceData.diagrammeElements[index];
+            if (element) {
+                window.app.reponsesAttendues[zone.id] = element.nom;
+            }
+        });
+
+        console.log("✅ Réponses attendues chargées :", window.app.reponsesAttendues);
+    } else {
+        console.error("❌ Problème : Le nombre de zones et d'éléments ne correspond pas !");
+    }
+}
+
+// Appel de l'initialisation après le chargement des données
+window.addEventListener("DOMContentLoaded", () => {
+    initialiserReponsesAttendues();
+});
+
+
+
 window.addEventListener("DOMContentLoaded", () => {
     const diagrammeImage = document.querySelector("#diagramme-container img");
 
@@ -26,107 +57,134 @@ window.addEventListener("DOMContentLoaded", () => {
         diagrammeImage.addEventListener('load', () => attendreChargement(demarrerExercices));
     }
 
-
-    
     function demarrerExercices() {
         setTimeout(() => {
             app.setupDiagramme();
+
+            app.setupTableau();
+
+
             console.log("✅ Exercices prêts !");
         }, 500);
     }
 
     document.getElementById("validate-1-button").addEventListener("click", () => {
-        console.log("Vérification des positions :", window.app.positionsElements);
+        verifierReponses();
     });
 });
+
+
 
 function detecterMode() {
     const largeur = window.innerWidth;
     const hauteur = window.innerHeight;
-    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent); // ✅ Vérifie si c'est un mobile
+    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-    if (isMobile) {
-        return hauteur > largeur ? "portrait" : "landscape"; // 📌 Portrait ou Paysage pour mobiles
-    } else {
-        return "desktop"; // ✅ Par défaut, tout le reste est Desktop
-    }
+    return isMobile ? (hauteur > largeur ? "portrait" : "landscape") : "desktop";
 }
 
-// Fonction pour détecter l'orientation et adapter l'affichage
-function adjustLayoutForOrientation() {
-    const mode = detecterMode(); // ✅ On utilise la même fonction que dans zonesElements.js
-    const diagramContainer = document.getElementById("diagramme-container");
-    const diagram = document.querySelector("#diagramme-container img");
+function detecterMode2() {
+    const largeur2 = window.innerWidth;
+    const hauteur2 = window.innerHeight;
+    const isMobile2 = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-    console.log("🔍 Mode détecté dans `main.js` :", mode); // ✅ Vérification
-
-
-    if (mode === "portrait") {
-        console.log("📲 Mode portrait détecté - Ajustement du diagramme");
-
-        diagramContainer.style.width = "100vw";  // 🔹 Prend toute la largeur de l'écran
-        diagram.style.width = "100vw";  // Largeur complète
-        diagram.style.height = "auto";  // Ajustement proportionnel
-    } else {
-        console.log("🖥️ Mode Desktop/Paysage détecté - Rétablissement de la mise en page");
-
-        diagramContainer.style.width = "50vw";   // 🔹 Largeur normale en paysage ou desktop
-        diagram.style.width = "100%";            // 🔹 Ajustement automatique
-        diagram.style.height = "auto";           // 🔹 Hauteur ajustée automatiquement
-    }
-
-
-    // Repositionnement des zones interactives après l'ajustement
-    setTimeout(updateDropzonesPosition, 300);
+    return isMobile2 ? (hauteur2 > largeur2 ? "portrait" : "landscape") : "desktop";
 }
 
-// Fonction pour repositionner dynamiquement les dropzones
-function updateDropzonesPosition() {
-    const dropzones = document.querySelectorAll(".dropzone");
+// 📌 Fonction pour mettre à jour la liste des éléments placés
+function mettreAJourPositionsElements() {
+    window.app.positionsElements = {}; // Réinitialisation de la liste des positions
 
-    dropzones.forEach(zone => {
-        // On utilise les valeurs relatives au diagramme pour recalculer la position
-        const originalX = parseFloat(zone.dataset.originalX);
-        const originalY = parseFloat(zone.dataset.originalY);
-        const diagram = document.querySelector("#diagramme-container img");
-
-        // Mise à l'échelle proportionnelle
-        const scaleX = diagram.clientWidth / diagram.naturalWidth;
-        const scaleY = diagram.clientHeight / diagram.naturalHeight;
-
-        zone.style.left = `${originalX * scaleX}px`;
-        zone.style.top = `${originalY * scaleY}px`;
+    document.querySelectorAll(".dropzone").forEach(zone => {
+        let elementPlace = zone.querySelector("span"); // On récupère l'élément placé
+        if (elementPlace) {
+            let nomElement = elementPlace.textContent.trim(); // Nom de l'élément
+            window.app.positionsElements[zone.id] = nomElement; // On stocke l'élément avec son ID de zone
+        }
     });
 
-    console.log("Repositionnement des zones terminé");
+    console.log("📌 Mise à jour des éléments placés :", window.app.positionsElements);
 }
+ 
 
-// Fonction pour sauvegarder l’état des zones avant un redimensionnement
-function saveDropzoneState() {
-    const dropzones = document.querySelectorAll(".dropzone");
+// 📌 Fonction pour mettre à jour la liste des éléments placés
+function mettreAJourPositionsElements2() {
+    window.app.positionsElements2 = {}; // Réinitialisation de la liste des positions
 
-    dropzones.forEach(zone => {
-        const rect = zone.getBoundingClientRect();
-        zone.dataset.originalX = rect.left;
-        zone.dataset.originalY = rect.top;
+    document.querySelectorAll(".dropzone2").forEach(zone2 => {
+        let elementPlace2 = zone2.querySelector("span"); // On récupère l'élément placé
+        if (elementPlace2) {
+            let nomElement2 = elementPlace2.textContent.trim(); // Nom de l'élément
+            window.app.positionsElements2[zone2.id] = nomElement2; // On stocke l'élément avec son ID de zone
+        }
     });
 
-    console.log("État des zones sauvegardé");
+    console.log("📌 Mise à jour des éléments placés :", window.app.positionsElements2);
 }
 
-// Événements pour détecter les changements de taille ou d’orientation
-window.addEventListener("resize", () => {
-    saveDropzoneState();
-    adjustLayoutForOrientation();
-});
 
-window.addEventListener("orientationchange", () => {
-    saveDropzoneState();
-    adjustLayoutForOrientation();
-});
+// 📌 Fonction de validation des réponses
+function verifierReponses() {
+    if (!window.app.reponsesAttendues || Object.keys(window.app.reponsesAttendues).length === 0) {
+        console.error("❌ Les réponses attendues ne sont pas disponibles !");
+        return;
+    }
 
-// Initialisation au chargement de la page
-window.addEventListener("DOMContentLoaded", () => {
-    saveDropzoneState();
-    adjustLayoutForOrientation();
-});
+    mettreAJourPositionsElements();
+
+    let totalZones = Object.keys(window.app.reponsesAttendues).length;
+    let reponsesCorrectes = 0;
+    let reponsesPlacees = Object.keys(window.app.positionsElements).length;
+
+    console.log("📊 Début de la vérification des réponses...");
+
+    Object.keys(window.app.positionsElements).forEach(zoneId => {
+        let nomElement = window.app.positionsElements[zoneId];
+        let reponseAttendue = window.app.reponsesAttendues[zoneId];
+
+        if (reponseAttendue && nomElement === reponseAttendue) {
+            reponsesCorrectes++;
+        } else {
+            console.warn(`❌ Mauvaise réponse dans ${zoneId}. Attendu : ${reponseAttendue}, trouvé : ${nomElement}`);
+        }
+    });
+
+    let message = document.getElementById("diagramme-message");
+    let boutonValidation = document.getElementById("validate-1-button");
+
+    if (reponsesPlacees === totalZones && reponsesCorrectes === totalZones) {
+        message.textContent = "✅ Bravo ! Toutes les réponses sont correctes.";
+        message.style.color = "green";
+
+        // 🔹 Transformation du bouton "Valider" en "Suivant"
+        boutonValidation.textContent = "Suivant";
+        boutonValidation.style.backgroundColor = "#28a745"; // Vert succès
+        boutonValidation.style.color = "white";
+        boutonValidation.onclick = passerEtapeSuivante;
+
+        // 🔹 Désactiver les zones (supprime bordures et interactions)
+        document.querySelectorAll(".dropzone").forEach(zone => {
+            zone.style.border = "none";
+            zone.style.backgroundColor = "transparent";
+            zone.style.pointerEvents = "none"; // Désactive le clic
+        });
+
+    } else if (reponsesPlacees < totalZones) {
+        message.textContent = `⚠️ Il manque ${totalZones - reponsesPlacees} réponses à placer.`;
+        message.style.color = "orange";
+    } else {
+        message.textContent = `❌ Certaines réponses sont incorrectes. Vous avez ${reponsesCorrectes} bonnes réponses sur ${totalZones}.`;
+        message.style.color = "red";
+    }
+
+    console.log(`📊 Validation complète : ${reponsesCorrectes} bonnes réponses / ${reponsesPlacees} placées sur ${totalZones} attendues.`);
+}
+
+// 📌 Fonction qui sera appelée lorsqu'on clique sur "Suivant"
+function passerEtapeSuivante() {
+    console.log("➡️ Passage à l'étape suivante...");
+    // Ajoute ici ce que tu veux faire quand on passe à l'étape suivante (redirection, affichage d'un autre exercice...)
+}
+
+// 📌 Ajoute l'événement sur le bouton de validation
+document.getElementById("validate-1-button").addEventListener("click", verifierReponses);

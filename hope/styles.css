@@ -22,7 +22,7 @@ html, body {
 }
 
 /* ✅ Conteneur principal */
-#header-container {
+#header-container, #header-container2 {
     
     display: flex;
     flex-direction: column;
@@ -33,26 +33,26 @@ html, body {
 }
 
 /* ✅ Espaces fixes basés sur `em` */
-.space-top {
+.space-top, .space-top2 {
     height: 1.5em; /* 🔥 Stable */
     flex-shrink: 0;
     background-color: rgba(0, 255, 0, 0.3); /* 🟢 Vert */
 }
 
-.space-between {
+.space-between, .space-between2 {
     height: 1em; /* 🔥 Stable */
     flex-shrink: 0;
     background-color: rgba(0, 0, 255, 0.3); /* 🔵 Bleu */
 }
 
-.space-bottom {
+.space-bottom, .space-bottom2 {
     height: 1.5em; /* 🔥 Stable */
     flex-shrink: 0;
     background-color: rgba(255, 255, 0, 0.3); /* 🟡 Jaune */
 }
 
 /* ✅ Titre et bouton avec tailles fixes */
-#titre-1 {
+#titre-1, #titre-2 {
     font-size: 2rem; /* 🔥 Stable */
     font-weight: bold;
     text-align: center;
@@ -62,7 +62,7 @@ html, body {
     background-color: rgba(255, 0, 255, 0.3); /* 🟣 Violet */
 }
 
-#validate-1-button {
+#validate-1-button, #validate-2-button {
     font-size: 1.5rem;
     border-radius: 0.5rem;
     background-color: #007bff;
@@ -77,7 +77,7 @@ html, body {
 }
 
 /* ✅ Empêche le bouton de bouger en zoomant */
-#validate-controls-1 {
+#validate-controls-1, #validate-controls-2 {
     height: auto;
     max-height: none;
 
@@ -140,7 +140,7 @@ img {
 
 
 /* ✅ Zones de dépôt */
-.dropzone {
+.dropzone,  .dropzone2 {
     position: absolute;
     display: flex;
     align-items: center;
@@ -164,7 +164,7 @@ img {
     line-height: 1.1em;
 }
 
-.dropzone span {
+.dropzone span, .dropzone2 span {
     display: block;
     width: 100%;
     padding: 0.1em; /* ✅ Plus de px */
@@ -183,7 +183,7 @@ img {
 }
 
 /* ✅ Ajustement des éléments dans le conteneur */
-.selection-button {
+.selection-button, .selection-button2 {
     display: block;
     width: 100%;
     margin: 0.5em 0; /* ✅ Espacement cohérent et stable */
@@ -198,7 +198,7 @@ img {
     word-wrap: break-word;
 }
 
-.selection-button:hover {
+.selection-button:hover, .selection-button2:hover {
     background-color: #45a049;
 }
 
@@ -226,4 +226,31 @@ img {
 }
 
 
+.menu-auto-size {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: auto;
+    max-width: 25vw;
+    min-width: 15vw;
+    height: auto;
+    padding: 0.5em;
+    box-sizing: border-box;
+}
 
+#selection-menu2 {
+    display: none;
+    position: absolute;
+    background: white;
+    border: 2px solid black;
+    z-index: 1000;
+    padding: 10px;
+    width: auto;
+    min-width: 15vw; /* ✅ Taille minimale pour éviter un menu trop petit */
+    max-width: 25vw; /* ✅ Limite la largeur à 25% de l’écran */
+    height: auto;
+    box-shadow: 0.2em 0.2em 0.8em rgba(0, 0, 0, 0.2);
+    overflow: auto; /* ✅ Ajoute un défilement si le menu est trop grand */
+    white-space: normal;
+}

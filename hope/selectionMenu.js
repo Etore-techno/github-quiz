@@ -73,8 +73,10 @@ app.initSelectionMenu = function () {
                     newText.textContent = element.nom;
                     zone.appendChild(newText);
 
-                    // Enregistrement de la position
-                    window.app.positionsElements[element.id] = zone.id;
+
+
+    // 🔄 Mise à jour des positions après l'ajout d'un élément
+    mettreAJourPositionsElements();
 
                     // Fermeture du menu
                     selectionMenu.style.display = "none";

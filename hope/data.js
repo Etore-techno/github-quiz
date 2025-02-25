@@ -6,14 +6,11 @@ window.exerciceData = {};
 window.exerciceData = {
     diagrammezone: window.diagrammezone || [],
     diagrammeElements: window.diagrammeElements || [],
-    tableauzones1: window.tableauzones1 || [],
-    tableauzones2: window.tableauzones2 || [],
-    tableauElementsEtape1: window.tableauElementsEtape1 || [],
-    tableauElementsEtape2: window.tableauElementsEtape2 || []
+    tableauzone: window.tableauzone || [],
+    tableauElements: window.tableauElements || [],
 };
 
-// Vérification de la présence des données
-console.log("📊 Vérification des données de `diagrammezone` :", window.exerciceData.diagrammezone);
+
 
 
 
@@ -42,80 +39,76 @@ window.diagrammeElements = [
 ];
 
 // Zones de dépôt pour le tableau (étape 1 - fonctions)
-window.tableauzones1 = [
-    { id: "fonction-1", relativeTop: 0.0493, relativeLeft: 0.0765, relativeWidth: 0.2899, relativeHeight: 0.1233, etape1: true },
-    { id: "fonction-2", relativeTop: 0.1763, relativeLeft: 0.0765, relativeWidth: 0.2899, relativeHeight: 0.1862, etape1: true },
-    { id: "fonction-3", relativeTop: 0.3662, relativeLeft: 0.0765, relativeWidth: 0.2899, relativeHeight: 0.1874, etape1: true },
-    { id: "fonction-4", relativeTop: 0.5561, relativeLeft: 0.0765, relativeWidth: 0.2899, relativeHeight: 0.3144, etape1: true },
-    { id: "fonction-5", relativeTop: 0.8730, relativeLeft: 0.0765, relativeWidth: 0.2899, relativeHeight: 0.1233, etape1: true }
+window.tableauzone = [
+    { id: "fonction-1", relativeTop: 0.0493, relativeLeft: 0.0765, relativeWidth: 0.2899, relativeHeight: 0.1233, colonne: 1 },
+    { id: "fonction-2", relativeTop: 0.1763, relativeLeft: 0.0765, relativeWidth: 0.2899, relativeHeight: 0.1862, colonne: 1 },
+    { id: "fonction-3", relativeTop: 0.3662, relativeLeft: 0.0765, relativeWidth: 0.2899, relativeHeight: 0.1874, colonne: 1 },
+    { id: "fonction-4", relativeTop: 0.5561, relativeLeft: 0.0765, relativeWidth: 0.2899, relativeHeight: 0.3144, colonne: 1 },
+    { id: "fonction-5", relativeTop: 0.8730, relativeLeft: 0.0765, relativeWidth: 0.2899, relativeHeight: 0.1233, colonne: 1 },
+  
+    { id: "critere-1", relativeTop: 0.1134, relativeLeft: 0.3713, relativeWidth: 0.2801, relativeHeight: 0.0592, colonne: 2 },
+    { id: "critere-2", relativeTop: 0.2392, relativeLeft: 0.3713, relativeWidth: 0.2801, relativeHeight: 0.0604, colonne: 2 },
+    { id: "critere-3", relativeTop: 0.3033, relativeLeft: 0.3713, relativeWidth: 0.2801, relativeHeight: 0.0592, colonne: 2 },
+    { id: "critere-4", relativeTop: 0.3662, relativeLeft: 0.3713, relativeWidth: 0.2801, relativeHeight: 0.0604, colonne: 2 },
+    { id: "critere-5", relativeTop: 0.4932, relativeLeft: 0.3713, relativeWidth: 0.2801, relativeHeight: 0.0604, colonne: 2 },
+    { id: "critere-6", relativeTop: 0.6202, relativeLeft: 0.3713, relativeWidth: 0.2801, relativeHeight: 0.0592, colonne: 2 },
+    { id: "critere-7", relativeTop: 0.6831, relativeLeft: 0.3713, relativeWidth: 0.2801, relativeHeight: 0.0604, colonne: 2 },
+    { id: "critere-8", relativeTop: 0.7472, relativeLeft: 0.3713, relativeWidth: 0.2801, relativeHeight: 0.0592, colonne: 2 },
+    { id: "critere-9", relativeTop: 0.9371, relativeLeft: 0.3713, relativeWidth: 0.2801, relativeHeight: 0.0592, colonne: 2 },
+   
+    { id: "level-1", relativeTop: 0.0493, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0604, colonne: 3 },
+    { id: "level-2", relativeTop: 0.1134, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0592, colonne: 3 },
+    { id: "level-3", relativeTop: 0.1763, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0592, colonne: 3 },
+    { id: "level-4", relativeTop: 0.3033, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0592, colonne: 3 },
+    { id: "level-5", relativeTop: 0.4303, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0592, colonne: 3 },
+    { id: "level-6", relativeTop: 0.4932, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0604, colonne: 3 },
+    { id: "level-7", relativeTop: 0.5561, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0604, colonne: 3 },
+    { id: "level-8", relativeTop: 0.6831, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0604, colonne: 3 },
+    { id: "level-9", relativeTop: 0.8101, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0604, colonne: 3 },
+    { id: "level-10", relativeTop: 0.8730, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0604, colonne: 3 },
+    { id: "level-11", relativeTop: 0.9371, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0592, colonne: 3 }
 ];
 
-// Zones de dépôt pour le tableau (étape 2 - critères et niveaux)
-window.tableauzones2 = [
-    { id: "critere-1", relativeTop: 0.1134, relativeLeft: 0.3713, relativeWidth: 0.2801, relativeHeight: 0.0592, etape2: true },
-    { id: "critere-2", relativeTop: 0.2392, relativeLeft: 0.3713, relativeWidth: 0.2801, relativeHeight: 0.0604, etape2: true },
-    { id: "critere-3", relativeTop: 0.3033, relativeLeft: 0.3713, relativeWidth: 0.2801, relativeHeight: 0.0592, etape2: true },
-    { id: "critere-4", relativeTop: 0.3662, relativeLeft: 0.3713, relativeWidth: 0.2801, relativeHeight: 0.0604, etape2: true },
-    { id: "critere-5", relativeTop: 0.4932, relativeLeft: 0.3713, relativeWidth: 0.2801, relativeHeight: 0.0604, etape2: true },
-    { id: "critere-6", relativeTop: 0.6202, relativeLeft: 0.3713, relativeWidth: 0.2801, relativeHeight: 0.0592, etape2: true },
-    { id: "critere-7", relativeTop: 0.6831, relativeLeft: 0.3713, relativeWidth: 0.2801, relativeHeight: 0.0604, etape2: true },
-    { id: "critere-8", relativeTop: 0.7472, relativeLeft: 0.3713, relativeWidth: 0.2801, relativeHeight: 0.0592, etape2: true },
-    { id: "critere-9", relativeTop: 0.9371, relativeLeft: 0.3713, relativeWidth: 0.2801, relativeHeight: 0.0592, etape2: true },
+// Éléments déplaçables pour le tableau 
+window.tableauElements = [
+    { id: "element-f1", nom: "Permettre aux élèves de présenter leur sujet au public", colonne: 1 },
+    { id: "element-f2", nom: "Respecter le temps imparti", colonne: 1 },
+    { id: "element-f3", nom: "Être compatible avec le matériel du collège", colonne: 1 },
+    { id: "element-f4", nom: "Être agréable à regarder pour le public", colonne: 1 },
+    { id: "element-f5", nom: "Faciliter la présentation orale des élèves", colonne: 1 },
 
-    { id: "level-1", relativeTop: 0.0493, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0604, etape2: true },
-    { id: "level-2", relativeTop: 0.1134, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0592, etape2: true },
-    { id: "level-3", relativeTop: 0.1763, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0592, etape2: true },
-    { id: "level-4", relativeTop: 0.3033, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0592, etape2: true },
-    { id: "level-5", relativeTop: 0.4303, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0592, etape2: true },
-    { id: "level-6", relativeTop: 0.4932, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0604, etape2: true },
-    { id: "level-7", relativeTop: 0.5561, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0604, etape2: true },
-    { id: "level-8", relativeTop: 0.6831, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0604, etape2: true },
-    { id: "level-9", relativeTop: 0.8101, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0604, etape2: true },
-    { id: "level-10", relativeTop: 0.8730, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0604, etape2: true },
-    { id: "level-11", relativeTop: 0.9371, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0592, etape2: true }
-];
+    { id: "element-c1", nom: "Contenu des diapositives suivantes", colonne: 2 },
+    { id: "element-c2", nom: "Répartition du temps de parole", colonne: 2 },
+    { id: "element-c3", nom: "Nombre de diapositives", colonne: 2 },
+    { id: "element-c4", nom: "Format du fichier", colonne: 2 },
+    { id: "element-c5", nom: "Support de stockage", colonne: 2 },
+    { id: "element-c6", nom: "Police d’écriture", colonne: 2 },
+    { id: "element-c7", nom: "Taille d’écriture", colonne: 2 },
+    { id: "element-c8", nom: "Cohérence visuelle", colonne: 2 },
+    { id: "element-c9", nom: "Présence d’animation ou transition", colonne: 2  },
 
-// Éléments déplaçables pour le tableau - Étape 1
-window.tableauElementsEtape1 = [
-    { id: "draggable-f1", nom: "Permettre aux élèves de présenter leur sujet au public" },
-    { id: "draggable-f2", nom: "Respecter le temps imparti" },
-    { id: "draggable-f3", nom: "Être compatible avec le matériel du collège" },
-    { id: "draggable-f4", nom: "Être agréable à regarder pour le public" },
-    { id: "draggable-f5", nom: "Faciliter la présentation orale des élèves" }
-];
-
-// Éléments déplaçables pour le tableau - Étape 2
-window.tableauElementsEtape2 = [
-    { id: "draggable-c1", nom: "Contenu des diapositives suivantes" },
-    { id: "draggable-c2", nom: "Répartition du temps de parole" },
-    { id: "draggable-c3", nom: "Nombre de diapositives" },
-    { id: "draggable-c4", nom: "Format du fichier" },
-    { id: "draggable-c5", nom: "Support de stockage" },
-    { id: "draggable-c6", nom: "Police d’écriture" },
-    { id: "draggable-c7", nom: "Taille d’écriture" },
-    { id: "draggable-c8", nom: "Cohérence visuelle" },
-    { id: "draggable-c9", nom: "Présence d’animation ou transition" },
-
-    { id: "draggable-l1", nom: "titre, noms, prénoms, classe et 1 image" },
-    { id: "draggable-l2", nom: "titres, mots-clés, images avec légendes" },
-    { id: "draggable-l3", nom: "5 minutes" },
-    { id: "draggable-l4", nom: "8 maximum" },
-    { id: "draggable-l5", nom: "16:9" },
-    { id: "draggable-l6", nom: "Clé USB ou réseau du collège" },
-    { id: "draggable-l7", nom: "Fond sobre, texte contrasté, couleurs adaptées" },
-    { id: "draggable-l8", nom: "24 pts minimum" },
-    { id: "draggable-l9", nom: "4 maximum" },
-    { id: "draggable-l10", nom: "Mots-clés et images" },
-    { id: "draggable-l11", nom: "Non autorisée" }
+    { id: "element-l1", nom: "titre, noms, prénoms, classe et 1 image", colonne: 3  },
+    { id: "element-l2", nom: "titres, mots-clés, images avec légendes", colonne: 3  },
+    { id: "element-l3", nom: "5 minutes", colonne: 3  },
+    { id: "element-l4", nom: "8 maximum", colonne: 3  },
+    { id: "element-l5", nom: "16:9", colonne: 3  },
+    { id: "element-l6", nom: "Clé USB ou réseau du collège", colonne: 3  },
+    { id: "element-l7", nom: "Fond sobre, texte contrasté, couleurs adaptées", colonne: 3  },
+    { id: "element-l8", nom: "24 pts minimum", colonne: 3  },
+    { id: "element-l9", nom: "4 maximum", colonne: 3  },
+    { id: "element-l10", nom: "Mots-clés et images", colonne: 3  },
+    { id: "element-l11", nom: "Non autorisée", colonne: 3  }
 ];
 
 
 // Fusion des données dans la structure attendue
 window.exerciceData.diagrammezone = window.diagrammezone;
 window.exerciceData.diagrammeElements = window.diagrammeElements;
-window.exerciceData.tableauzones1 = window.tableauzones1;
-window.exerciceData.tableauzones2 = window.tableauzones2;
-window.exerciceData.tableauElementsEtape1 = window.tableauElementsEtape1;
-window.exerciceData.tableauElementsEtape2 = window.tableauElementsEtape2;
+window.exerciceData.tableauzone = window.tableauzone;
+window.exerciceData.tableauElements = window.tableauElements;
 
+
+// Vérification de la présence des données
+console.log("📊 Vérification des données de `diagrammezone` :", window.exerciceData.diagrammezone);
+console.log("📊 Vérification des données de `tableauzone` :", window.exerciceData.tableauzone);
 console.log("✅ Données chargées dans `window.exerciceData` avec succès !");
