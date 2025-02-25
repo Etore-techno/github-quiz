@@ -20,78 +20,81 @@ app.setupTableau = function () {
         const largeur2 = window.innerWidth;
         const hauteur2 = window.innerHeight;
         const isMobile2 = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent); // ✅ Vérifie si c'est un mobile
-    
+            console.log(`📐 Détection du mode : ${isMobile2 ? "Mobile" : "Desktop"} - Dimensions : ${largeur2}x${hauteur2}`);
         if (isMobile2) {
             return hauteur2 > largeur2 ? "portrait" : "landscape"; // 📌 Portrait ou Paysage pour mobiles
         } else {
             return "desktop"; // ✅ Par défaut, tout le reste est Desktop
         }
     }
-
-    function trouverPlusPetiteGrandeZone2() {
-        const grandesZones2 = [...document.querySelectorAll('.dropzone2[data-colonne="1"]')];
-        if (grandesZones2.length === 0) return null;
-        return grandesZones2.reduce((plusPetite, zone2) => {
-            const surface2 = zone2.clientWidth * zone2.clientHeight;
-            return (!plusPetite || surface2 < plusPetite.surface2) ? { zone2, surface2 } : plusPetite;
-        }, null)?.zone2;
-    }
-
-    function trouverTexteLePlusLong2() {
-        const elementsCompatibles2 = window.exerciceData.tableauElements.filter(el => el.colonne === "1");
-        return elementsCompatibles2.reduce((longest, el) => el.nom.length > longest.length ? el.nom : longest, "");
-    }
-
     let tailleTexteMemoire2 = {
-        desktop: null,
-        portrait: null,
-        landscape: null
+        colonne1: { desktop: null, portrait: null, landscape: null },
+        colonne2: { desktop: null, portrait: null, landscape: null },
+        colonne3: { desktop: null, portrait: null, landscape: null }
     };
 
-    function calculerTailleTexteAuto2(zone2, mode2, callback) {
-        if (!zone2) {
-            console.warn("❌ Aucune zone trouvée pour le test !");
+    function trouverPlusPetiteZoneParColonne(colonne) {
+        const zones = [...document.querySelectorAll(`.dropzone2[data-colonne="${colonne}"]`)];
+        if (zones.length === 0) return null;
+        return zones.reduce((plusPetite, zone) => {
+            const surface = zone.clientWidth * zone.clientHeight;
+            return (!plusPetite || surface < plusPetite.surface) ? { zone, surface } : plusPetite;
+        }, null)?.zone;
+    }
+
+    function trouverTexteLePlusLongParColonne(colonne) {
+        const elementsCompatibles = window.exerciceData.tableauElements.filter(el => el.colonne === parseInt(colonne));
+        return elementsCompatibles.reduce((longest, el) => el.nom.length > longest.length ? el.nom : longest, "");
+    }
+
+    function calculerTailleTexteAutoParColonne(colonne, mode, callback) {
+        let zoneRef = trouverPlusPetiteZoneParColonne(colonne);
+        let texteMax = trouverTexteLePlusLongParColonne(colonne);
+
+        if (!zoneRef || !texteMax) {
+            console.warn(`⚠️ Impossible de calculer la taille pour la colonne ${colonne}`);
             callback("16px");
             return;
         }
 
-        let texteMax2 = trouverTexteLePlusLong2();
-        let testText2 = document.createElement("div");
-        testText2.innerText = texteMax2;
+        let testText = document.createElement("div");
+        testText.innerText = texteMax;
+        testText.style.position = "absolute";
+        testText.style.width = "100%";
+        testText.style.height = "100%";
+        testText.style.display = "flex";
+        testText.style.justifyContent = "center";
+        testText.style.alignItems = "center";
+        testText.style.textAlign = "center";
+        testText.style.wordWrap = "break-word";
+        testText.style.overflow = "hidden";
+        testText.style.fontSize = "5px";
 
-        testText2.style.position = "absolute";
-        testText2.style.width = "100%";
-        testText2.style.height = "100%";
-        testText2.style.display = "flex";
-        testText2.style.justifyContent = "center";
-        testText2.style.alignItems = "center";
-        testText2.style.textAlign = "center";
-        testText2.style.wordWrap = "break-word";
-        testText2.style.overflow = "hidden";
-        testText2.style.fontSize = "5px";
-
-        zone2.appendChild(testText2);
+        zoneRef.appendChild(testText);
 
         requestAnimationFrame(() => {
-            let fontSize2 = 5;
-            testText2.style.fontSize = fontSize2 + "px";
+            let fontSize = 5;
+            testText.style.fontSize = fontSize + "px";
 
-            let zoneHeight2 = zone2.clientHeight;
-            let zoneWidth2 = zone2.clientWidth;
-            let maxFontSize2 = 100;
+            let zoneHeight = zoneRef.clientHeight;
+            let zoneWidth = zoneRef.clientWidth;
+            let maxFontSize = 100;
 
-            while (testText2.scrollHeight <= zoneHeight2 && testText2.scrollWidth <= zoneWidth2 && fontSize2 < maxFontSize2) {
-                fontSize2 += 1;
-                testText2.style.fontSize = fontSize2 + "px";
+            while (testText.scrollHeight <= zoneHeight && testText.scrollWidth <= zoneWidth && fontSize < maxFontSize) {
+                fontSize += 1;
+                testText.style.fontSize = fontSize + "px";
             }
 
-            fontSize2 -= 1;
-            let adjustedFontSize2 = Math.round(fontSize2 * 0.90);
-            console.log("✅ Taille optimale trouvée pour " + mode2 + " : " + fontSize2 + "px");
-            zone2.removeChild(testText2);
-            callback(adjustedFontSize2 + "px");
+            fontSize -= 1;
+            let adjustedFontSize = Math.round((fontSize - 1) * 0.80);
+
+            console.log(`✅ Taille optimale pour colonne ${colonne} en ${mode} : ${adjustedFontSize}px`);
+            zoneRef.removeChild(testText);
+            callback(adjustedFontSize + "px");
         });
     }
+
+
 
 function positionnerZonesEtElements2() {
     if (recalculEnCours2) return;
@@ -102,7 +105,7 @@ function positionnerZonesEtElements2() {
         recalculEnCours2 = false;
         return;
     }
-
+    console.log("🖼️ Dimensions de l'image détectées :", rect2.width, "x", rect2.height);
     const imgWidth2 = rect2.width;
     const imgHeight2 = rect2.height;
     let mode2 = detecterMode2();
@@ -114,7 +117,7 @@ function positionnerZonesEtElements2() {
             elementsSauvegardes2[zone2.id] = zone2.innerHTML;
         }
     });
-
+    console.log("🔄 Suppression des anciennes zones...");
     document.querySelectorAll('.dropzone2').forEach(zone2 => zone2.remove());
 
     window.exerciceData.tableauzone.forEach(zoneData2 => {
@@ -139,33 +142,47 @@ function positionnerZonesEtElements2() {
         if (elementsSauvegardes2[zoneData2.id]) {
             zoneDiv2.innerHTML = elementsSauvegardes2[zoneData2.id];
         }
+ 
+            // ✅ Ajout d'un event listener pour détecter les clics
+            zoneDiv2.addEventListener("click", () => {
+                console.log(`📌 Zone cliquée : ${zoneDiv2.id} (Colonne ${zoneData2.colonne})`);
+            });
     });
-
+    console.log("✅ Toutes les zones ont été repositionnées.");
     recalculerTaillesEtTexte2(mode2);
 }
 
 
-    function recalculerTaillesEtTexte2(mode2) {
-        let zoneRef2 = trouverPlusPetiteGrandeZone2();
-        if (!zoneRef2) {
-            console.warn("⚠️ Impossible de trouver une zone de référence pour le test.");
-            recalculEnCours2 = false;
-            return;
-        }
+function recalculerTaillesEtTexte2(mode2) {
 
-        calculerTailleTexteAuto2(zoneRef2, mode2, (tailleOptimale2) => {
-            tailleTexteMemoire2[mode2] = tailleOptimale2;
+    console.log("🔄 Recalcul des tailles de texte...");
+    let colonnes = [1, 2, 3];
 
-            document.querySelectorAll('.dropzone2').forEach(zone2 => {
-                zone2.style.fontSize = tailleTexteMemoire2[mode2];
-            });
+    colonnes.forEach(colonne => {
+        console.log(`🧐 Calcul pour la colonne ${colonne} en mode ${mode2}...`);
+        calculerTailleTexteAutoParColonne(colonne, mode2, (tailleOptimale) => {
+            if (!tailleOptimale) {
+                console.warn(`⚠️ Aucune taille optimale trouvée pour la colonne ${colonne}`);
+                return;
+            }
+            tailleTexteMemoire2[`colonne${colonne}`][mode2] = tailleOptimale;
 
-            app.initSelectionMenu2();
-            recalculEnCours2 = false;
+            setTimeout(() => {
+                document.querySelectorAll(`.dropzone2[data-colonne="${colonne}"]`).forEach(zone => {
+                    zone.style.fontSize = tailleTexteMemoire2[`colonne${colonne}`][mode2];
+                });
+
+                console.log(`✅ Texte mis à jour pour colonne ${colonne} en mode ${mode2} : ${tailleOptimale}`);
+            }, 10);
         });
-    }
+    });
+    app.initSelectionMenu2();
+
+    recalculEnCours2 = false;
+}
 
     function repositionnerEtAjuster2() {
+        console.log("🔄 Repositionnement et ajustement des zones...");
         positionnerZonesEtElements2();
     }
 
@@ -176,7 +193,7 @@ function positionnerZonesEtElements2() {
 
         if (attenteMode2) return;
         attenteMode2 = true;
-
+        console.log("🔄 Changement d'orientation détecté, mise à jour...");
         setTimeout(() => {
             repositionnerEtAjuster2();
             attenteMode2 = false;
@@ -184,8 +201,10 @@ function positionnerZonesEtElements2() {
     }
 
     if (img2.complete) {
+        console.log("✅ Image déjà chargée, positionnement immédiat !");
         attendreChargementEtPositionner2();
     } else {
+        console.log("🕒 Attente du chargement de l'image...");
         img2.onload = () => attendreChargementEtPositionner2();
     }
 
