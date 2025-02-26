@@ -29,7 +29,7 @@ app.initSelectionMenu2 = function () {
             }
             console.log(`🔍 Colonne détectée : ${colonneZone2}`);
 
-            ajusterStylesSelectionMenu(selectionMenu2);
+            ajusterStylesSelectionMenu2(selectionMenu2);
 
 
             selectionMenu2.innerHTML = "";
@@ -145,9 +145,9 @@ function ajusterTailleEtPositionMenu(zone2, selectionMenu2, elementsCompatibles2
     setTimeout(() => {
         selectionMenu2.classList.add("menu-auto-size"); // ✅ Applique la classe pour ajuster la hauteur
         selectionMenu2.style.height = "auto"; // ✅ Autorise la hauteur dynamique exacte
-        ajusterLargeurMenu(selectionMenu2);
+        ajusterLargeurMenu2(selectionMenu2);
         // ✅ Recalcule la position après le redimensionnement
-        setTimeout(() => repositionnerMenu(zone2, selectionMenu2), 10);
+        setTimeout(() => repositionnerMenu2(zone2, selectionMenu2), 10);
     }, 0);
 }
 
@@ -159,7 +159,7 @@ function detecterMode2() {
     return isMobile2 ? (hauteur2 > largeur2 ? "portrait" : "landscape") : "desktop";
 }
 
-function ajusterLargeurMenu(selectionMenu2) {
+function ajusterLargeurMenu2(selectionMenu2) {
     if (!selectionMenu2) return;
 
     console.log("🔄 Ajustement de la largeur du menu en fonction des éléments et de l’écran...");
@@ -181,7 +181,7 @@ function ajusterLargeurMenu(selectionMenu2) {
 
 
 
-function repositionnerMenu(zone2, selectionMenu2) {
+function repositionnerMenu2(zone2, selectionMenu2) {
     const rectZone = zone2.getBoundingClientRect(); // 📌 Position de la zone
     const rectTableau = document.querySelector("#tableau-container img").getBoundingClientRect(); // 📌 Position du tableau
     const scrollY = window.scrollY; // ✅ Prend en compte le scroll
@@ -212,13 +212,13 @@ function repositionnerMenu(zone2, selectionMenu2) {
     selectionMenu2.style.left = `${posX}px`;
     selectionMenu2.style.top = `${posY}px`;
 
-    ajusterStylesSelectionMenu(selectionMenu2); // ✅ Appliquer les styles ajustés
+    ajusterStylesSelectionMenu2(selectionMenu2); // ✅ Appliquer les styles ajustés
 }
 
 
 
 
-function ajusterStylesSelectionMenu(selectionMenu2) {
+function ajusterStylesSelectionMenu2(selectionMenu2) {
     if (!selectionMenu2) return;
 
     console.log("🔄 Recalcul des styles du menu de sélection...");
@@ -236,8 +236,8 @@ function ajusterStylesSelectionMenu(selectionMenu2) {
 window.addEventListener("orientationchange", () => {
     const selectionMenu2 = document.getElementById("selection-menu2");
     if (selectionMenu2 && selectionMenu2.style.display === "block") {
-        ajusterLargeurMenu(selectionMenu2);
-        repositionnerMenu(lastClickedZone, selectionMenu2); // Utiliser une variable globale
+        ajusterLargeurMenu2(selectionMenu2);
+        repositionnerMenu2(lastClickedZone, selectionMenu2); // Utiliser une variable globale
     }
 });
 

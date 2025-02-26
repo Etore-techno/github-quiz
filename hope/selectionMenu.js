@@ -52,7 +52,11 @@ app.initSelectionMenu = function () {
                 const button = document.createElement("button");
                 button.className = "selection-button";
                 button.textContent = element.nom;
-                button.style.fontSize = "1.5vw"; 
+                const mode = detecterMode();
+        if (mode === "portrait") {
+            button.style.fontSize = "3vw";
+        } else { button.style.fontSize = "1.5vw";
+        }
 
                 button.addEventListener("click", function () {
                     console.log(`✅ Élément sélectionné : ${element.nom} → Zone: ${zone.id}`);
@@ -84,9 +88,69 @@ app.initSelectionMenu = function () {
 
                 selectionMenu.appendChild(button);
             });
+            ajusterLargeurMenu(selectionMenu);
+            repositionnerMenu(zone, selectionMenu);
         });
     });
 };
+
+function detecterMode() {
+    const largeur = window.innerWidth;
+    const hauteur = window.innerHeight;
+    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    return isMobile ? (hauteur > largeur ? "portrait" : "landscape") : "desktop";
+}
+
+function repositionnerMenu(zone, selectionMenu) {
+    const rectZone = zone.getBoundingClientRect(); // 📌 Position de la zone
+    const rectDiagramme = document.querySelector("#diagramme-container img").getBoundingClientRect(); // 📌 Position du tableau
+    const scrollY = window.scrollY; // ✅ Prend en compte le scroll
+
+    const menuWidth = selectionMenu.offsetWidth; // 📌 Largeur du menu
+    const menuHeight = selectionMenu.offsetHeight; // 📌 Hauteur du menu
+
+    // ✅ Calcul de la position initiale (menu centré sous la zone)
+    let posX = rectZone.left + rectZone.width / 2 - menuWidth / 2;
+    let posY = rectZone.bottom + 10 + scrollY; // 📌 10px en dessous de la zone
+
+    // ✅ Vérifier si le menu dépasse en bas du tableau
+    if (posY + menuHeight > rectDiagramme.bottom + scrollY) {
+        posY = rectZone.top - menuHeight + scrollY - 10; // 📌 Place le menu au-dessus
+    }
+
+    // ✅ Vérifier si le menu touche le bord gauche du tableau
+    if (posX < rectDiagramme.left) {
+        posX = rectDiagramme.left; // 📌 Aligner à gauche du tableau
+    }
+
+    // ✅ Vérifier si le menu dépasse à droite du tableau
+    if (posX + menuWidth > rectDiagramme.right) {
+        posX = rectDiagramme.right - menuWidth; // 📌 Aligner à droite du tableau
+    }
+
+    // ✅ Appliquer les nouvelles positions
+    selectionMenu.style.left = `${posX}px`;
+    selectionMenu.style.top = `${posY}px`;
+
+    ajusterStylesSelectionMenu(selectionMenu); // ✅ Appliquer les styles ajustés
+}
+
+function ajusterLargeurMenu(selectionMenu) {
+    if (!selectionMenu) return;
+
+    console.log("🔄 Ajustement de la largeur du menu en fonction des éléments et de l’écran...");
+
+    const diagramme = document.querySelector("#diagramme-container img");
+    if (!diagramme) return;
+
+    const mode = detecterMode(); // Détecte si on est en portrait ou en paysage
+    const screenWidth = window.innerWidth;
+    const maxMenuWidth = mode === "portrait" ? screenWidth * 0.5 : screenWidth * 0.25; // 📌 50% en portrait, 25% sinon
+    selectionMenu.style.maxWidth = `${maxMenuWidth}px`; // 🔥 Applique directement
+       
+    console.log(`📏 Largeur ajustée : ${selectionMenu.style.width} (Max: ${maxMenuWidth}px, Mode: ${mode})`);
+}
 
 function ajusterStylesSelectionMenu(selectionMenu) {
     if (!selectionMenu) return;
@@ -102,3 +166,17 @@ function ajusterStylesSelectionMenu(selectionMenu) {
 
     console.log(`📏 Nouvelle bordure : ${selectionMenu.style.borderWidth}, Padding : ${selectionMenu.style.padding}`);
 }
+// ✅ Ferme le menu si l'utilisateur clique ailleurs
+document.addEventListener("click", function (event) {
+    const selectionMenu = document.getElementById("selection-menu");
+    
+    if (!selectionMenu || selectionMenu.style.display !== "block") return; // 🔹 Ne fait rien si le menu est déjà fermé
+    
+    const isClickInsideMenu = selectionMenu.contains(event.target); // Vérifie si on clique dans le menu
+    const isClickOnDropzone = event.target.classList.contains("dropzone"); // Vérifie si on clique sur une zone
+
+    if (!isClickInsideMenu && !isClickOnDropzone) {
+        console.log("❌ Fermeture du menu (clic en dehors)");
+        selectionMenu.style.display = "none";
+    }
+});
