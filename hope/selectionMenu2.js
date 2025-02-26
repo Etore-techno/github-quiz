@@ -1,3 +1,5 @@
+let lastClickedZone = null;
+
 app.initSelectionMenu2 = function () {
     console.log("🚀 Initialisation du menu de sélection...");
 
@@ -7,13 +9,7 @@ app.initSelectionMenu2 = function () {
     selectionMenu2 = document.createElement("div");
     selectionMenu2.id = "selection-menu2";
     selectionMenu2.style.display = "none";
-    selectionMenu2.style.position = "absolute";
-    selectionMenu2.style.zIndex = "1000";
-    selectionMenu2.style.background = "white";
-    selectionMenu2.style.border = "0.15em solid black";
-    selectionMenu2.style.padding = "0.5em";
-    selectionMenu2.style.boxShadow = "0.2em 0.2em 0.8em rgba(0, 0, 0, 0.3)";
-    selectionMenu2.style.minWidth = "200px";
+    
     document.body.appendChild(selectionMenu2);
 
     if (!window.exerciceData || !window.exerciceData.tableauElements) {
@@ -23,6 +19,7 @@ app.initSelectionMenu2 = function () {
 
     document.querySelectorAll(".dropzone2").forEach(zone2 => {
         zone2.addEventListener("click", function (event) {
+            lastClickedZone = zone2; // 🔥 Sauvegarde la dernière zone cliquée
             console.log(`📌 Zone cliquée : ${zone2.id}`);
 
             const colonneZone2 = zone2.getAttribute("data-colonne");
@@ -31,6 +28,9 @@ app.initSelectionMenu2 = function () {
                 return;
             }
             console.log(`🔍 Colonne détectée : ${colonneZone2}`);
+
+            ajusterStylesSelectionMenu(selectionMenu2);
+
 
             selectionMenu2.innerHTML = "";
             selectionMenu2.style.display = "block"; // On affiche avant le calcul
@@ -51,12 +51,8 @@ app.initSelectionMenu2 = function () {
                 const button2 = document.createElement("button");
                 button2.className = "selection-button2";
                 button2.textContent = element2.nom;
-                button2.style.fontSize = "1.5vw";
-                button2.style.display = "block";
-                button2.style.width = "100%";
-                button2.style.padding = "0.5em";
-                button2.style.margin = "0.2em 0";
-                selectionMenu2.appendChild(button2);
+                button2.style.fontSize = "3.5vw";
+                
 
                 button2.addEventListener("click", function () {
                     console.log(`✅ Élément sélectionné : ${element2.nom} → Zone: ${zone2.id}`);
@@ -78,12 +74,14 @@ app.initSelectionMenu2 = function () {
 
                     selectionMenu2.style.display = "none";
                 });
+
             });
 
             // **2️⃣ Ajuster la taille du menu après avoir inséré les boutons**
-            setTimeout(() => {
-                ajusterTailleEtPositionMenu(zone2, selectionMenu2, elementsCompatibles2);
-            }, 0); // Permet au DOM de se mettre à jour avant de mesurer la taille
+             setTimeout(() => {
+                 ajusterTailleEtPositionMenu(zone2, selectionMenu2, elementsCompatibles2);
+             }, 0); // Permet au DOM de se mettre à jour avant de mesurer la taille
+
         });
     });
 };
@@ -103,27 +101,21 @@ function ajusterTailleEtPositionMenu(zone2, selectionMenu2, elementsCompatibles2
     // ✅ Ajout temporaire dans le DOM pour calculer la taille réelle
     document.body.appendChild(selectionMenu2);
     selectionMenu2.style.display = "block";
-    selectionMenu2.style.maxWidth = "25vw"; // ✅ Largeur max fixée
     selectionMenu2.style.whiteSpace = "normal"; // ✅ Permet le retour à la ligne si besoin
     selectionMenu2.style.position = "absolute";
-    selectionMenu2.style.background = "white";
-    selectionMenu2.style.border = "0.15em solid black";
-    selectionMenu2.style.padding = "0.8em";
-    selectionMenu2.style.boxShadow = "0.2em 0.2em 0.8em rgba(0, 0, 0, 0.2)";
-    selectionMenu2.style.zIndex = "1000";
+     selectionMenu2.style.zIndex = "1000";
 
     // ✅ Ajout des boutons AVANT de mesurer la taille
     elementsCompatibles2.forEach(element2 => {
         const button2 = document.createElement("button");
         button2.className = "selection-button2";
         button2.textContent = element2.nom;
-        button2.style.fontSize = "1.5vw";
-        button2.style.display = "block";
-        button2.style.width = "100%";
-        button2.style.wordBreak = "break-word"; // ✅ Permet la coupure sur plusieurs lignes
-        button2.style.textAlign = "center";
-        button2.style.padding = "0.5em";
-        button2.style.margin = "0.2em 0";
+        
+        const mode2 = detecterMode2();
+        if (mode2 === "portrait") {
+            button2.style.fontSize = "3vw";
+        } else { button2.style.fontSize = "1.5vw";
+        }
 
         selectionMenu2.appendChild(button2);
 
@@ -153,48 +145,37 @@ function ajusterTailleEtPositionMenu(zone2, selectionMenu2, elementsCompatibles2
     setTimeout(() => {
         selectionMenu2.classList.add("menu-auto-size"); // ✅ Applique la classe pour ajuster la hauteur
         selectionMenu2.style.height = "auto"; // ✅ Autorise la hauteur dynamique exacte
-
+        ajusterLargeurMenu(selectionMenu2);
         // ✅ Recalcule la position après le redimensionnement
         setTimeout(() => repositionnerMenu(zone2, selectionMenu2), 10);
     }, 0);
 }
 
-function ajusterLargeurMenu(selectionMenu2, elementsCompatibles2) {
+function detecterMode2() {
+    const largeur2 = window.innerWidth;
+    const hauteur2 = window.innerHeight;
+    const isMobile2 = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    return isMobile2 ? (hauteur2 > largeur2 ? "portrait" : "landscape") : "desktop";
+}
+
+function ajusterLargeurMenu(selectionMenu2) {
     if (!selectionMenu2) return;
 
     console.log("🔄 Ajustement de la largeur du menu en fonction des éléments et de l’écran...");
 
     const tableau = document.querySelector("#tableau-container img");
     if (!tableau) return;
+    const menu = document.querySelector(".menu-auto-size");
 
     const mode = detecterMode2(); // Détecte si on est en portrait ou en paysage
-    const screenWidth = window.innerWidth; // Largeur de l’écran
-    const tableauWidth = (mode === "portrait") ? screenWidth : screenWidth * 0.5; // 📌 50% sur desktop, 100% en portrait
-    const maxMenuWidth = (mode === "portrait") ? screenWidth * 0.5 : screenWidth * 0.25; // 📌 50% en portrait, 25% sinon
-
-    // 🔹 Trouver l'élément le plus long
-    let longestElement = elementsCompatibles2.reduce((longest, el) => {
-        return el.nom.length > longest.length ? el.nom : longest;
-    }, "");
-
-    // 🔹 Créer un test pour mesurer la largeur nécessaire
-    let testSpan = document.createElement("span");
-    testSpan.style.position = "absolute";
-    testSpan.style.visibility = "hidden";
-    testSpan.style.whiteSpace = "nowrap";
-    testSpan.style.fontSize = "1.5vw"; // Même taille que les boutons
-    testSpan.textContent = longestElement;
-    document.body.appendChild(testSpan);
-
-    let minMenuWidth = testSpan.offsetWidth + 20; // 📌 Largeur minimale = largeur du texte + padding
-    document.body.removeChild(testSpan);
-
-    // 🔹 Appliquer les valeurs finales
-    let finalWidth = Math.min(maxMenuWidth, Math.max(minMenuWidth, 150)); // 📌 Minimum 150px, maximum 25%/50%
-
-    selectionMenu2.style.width = `${finalWidth}px`;
-
-    console.log(`📏 Largeur ajustée : ${selectionMenu2.style.width} (Min: ${minMenuWidth}px, Max: ${maxMenuWidth}px, Mode: ${mode})`);
+    const screenWidth = window.innerWidth;
+    const maxMenuWidth = mode === "portrait" ? screenWidth * 0.5 : screenWidth * 0.25; // 📌 50% en portrait, 25% sinon
+    selectionMenu2.style.width = `${maxMenuWidth}px`; // 🔥 Applique directement
+   
+    menu.style.width = `${maxMenuWidth}px`; // 🔥 Applique directement
+    
+    console.log(`📏 Largeur ajustée : ${selectionMenu2.style.width} (Max: ${maxMenuWidth}px, Mode: ${mode})`);
 }
 
 
@@ -250,3 +231,26 @@ function ajusterStylesSelectionMenu(selectionMenu2) {
     console.log(`📏 Nouvelle bordure : ${selectionMenu2.style.borderWidth}, Padding : ${selectionMenu2.style.padding}`);
 }
 
+window.addEventListener("orientationchange", () => {
+    const selectionMenu2 = document.getElementById("selection-menu2");
+    if (selectionMenu2 && selectionMenu2.style.display === "block") {
+        ajusterLargeurMenu(selectionMenu2);
+        repositionnerMenu(lastClickedZone, selectionMenu2); // Utiliser une variable globale
+    }
+});
+
+
+// ✅ Ferme le menu si l'utilisateur clique ailleurs
+document.addEventListener("click", function (event) {
+    const selectionMenu2 = document.getElementById("selection-menu2");
+    
+    if (!selectionMenu2 || selectionMenu2.style.display !== "block") return; // 🔹 Ne fait rien si le menu est déjà fermé
+    
+    const isClickInsideMenu = selectionMenu2.contains(event.target); // Vérifie si on clique dans le menu
+    const isClickOnDropzone = event.target.classList.contains("dropzone2"); // Vérifie si on clique sur une zone
+
+    if (!isClickInsideMenu && !isClickOnDropzone) {
+        console.log("❌ Fermeture du menu (clic en dehors)");
+        selectionMenu2.style.display = "none";
+    }
+});
