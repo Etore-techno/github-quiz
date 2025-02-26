@@ -88,8 +88,8 @@ app.initSelectionMenu = function () {
 
                 selectionMenu.appendChild(button);
             });
-            ajusterLargeurMenu(selectionMenu);
-            repositionnerMenu(zone, selectionMenu);
+        ajusterLargeurMenu(selectionMenu, zone);
+        repositionnerMenu(zone, selectionMenu);
         });
     });
 };
@@ -136,8 +136,8 @@ function repositionnerMenu(zone, selectionMenu) {
     ajusterStylesSelectionMenu(selectionMenu); // ✅ Appliquer les styles ajustés
 }
 
-function ajusterLargeurMenu(selectionMenu) {
-    if (!selectionMenu) return;
+function ajusterLargeurMenu(selectionMenu, zone) {
+    if (!selectionMenu || !zone) return;
 
     console.log("🔄 Ajustement de la largeur du menu en fonction des éléments et de l’écran...");
 
@@ -146,10 +146,24 @@ function ajusterLargeurMenu(selectionMenu) {
 
     const mode = detecterMode(); // Détecte si on est en portrait ou en paysage
     const screenWidth = window.innerWidth;
-    const maxMenuWidth = mode === "portrait" ? screenWidth * 0.5 : screenWidth * 0.25; // 📌 50% en portrait, 25% sinon
-    selectionMenu.style.maxWidth = `${maxMenuWidth}px`; // 🔥 Applique directement
-       
-    console.log(`📏 Largeur ajustée : ${selectionMenu.style.width} (Max: ${maxMenuWidth}px, Mode: ${mode})`);
+    const tailleZone = zone.getAttribute("data-taille"); // 📌 Récupère la taille de la zone cliquée ("petite" ou "grande")
+
+    // ✅ Définition des largeurs min et max selon le mode et la taille de la zone
+    let minMenuWidth, maxMenuWidth;
+
+    if (mode === "portrait") {
+        minMenuWidth = (tailleZone === "grande") ? screenWidth * 0.45 : screenWidth * 0.25; // 40% si grande, 25% si petite
+        maxMenuWidth = screenWidth * 0.50; // Max toujours 50% en portrait
+    } else {
+        minMenuWidth = (tailleZone === "grande") ? screenWidth * 0.25 : screenWidth * 0.15; // 25% si grande, 15% si petite
+        maxMenuWidth = screenWidth * 0.25; // Max toujours 25% en landscape
+    }
+
+    // ✅ Appliquer les styles au menu
+    selectionMenu.style.minWidth = `${minMenuWidth}px`;
+    selectionMenu.style.maxWidth = `${maxMenuWidth}px`;
+
+    console.log(`📏 Largeur ajustée : min = ${minMenuWidth}px, max = ${maxMenuWidth}px (Mode: ${mode}, Taille: ${tailleZone})`);
 }
 
 function ajusterStylesSelectionMenu(selectionMenu) {

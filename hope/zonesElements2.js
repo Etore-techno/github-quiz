@@ -134,9 +134,7 @@ function positionnerZonesEtElements2() {
 
         zoneDiv2.style.opacity = "1";
 
-        // ✅ Correction : Fixer la bordure proportionnellement à la largeur de l'image
-        let borderSize = Math.max(0.5, imgWidth2 * 0.002); // 0.2% de la largeur de l'image
-        zoneDiv2.style.borderWidth = `${borderSize}px`;
+
         container2.appendChild(zoneDiv2);
 
         if (elementsSauvegardes2[zoneData2.id]) {

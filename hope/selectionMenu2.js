@@ -191,11 +191,11 @@ function repositionnerMenu2(zone2, selectionMenu2) {
 
     // ✅ Calcul de la position initiale (menu centré sous la zone)
     let posX = rectZone.left + rectZone.width / 2 - menuWidth / 2;
-    let posY = rectZone.bottom + 10 + scrollY; // 📌 10px en dessous de la zone
+    let posY = rectZone.bottom + 2 + scrollY; // 📌 10px en dessous de la zone
 
     // ✅ Vérifier si le menu dépasse en bas du tableau
     if (posY + menuHeight > rectTableau.bottom + scrollY) {
-        posY = rectZone.top - menuHeight + scrollY - 10; // 📌 Place le menu au-dessus
+        posY = rectZone.top - menuHeight + scrollY - 2; // 📌 Place le menu au-dessus
     }
 
     // ✅ Vérifier si le menu touche le bord gauche du tableau
@@ -229,7 +229,6 @@ function ajusterStylesSelectionMenu2(selectionMenu2) {
     selectionMenu2.style.borderWidth = `${0.15 * (100 / zoomLevel)}em`;
     selectionMenu2.style.padding = `${0.8 * (100 / zoomLevel)}em`;
     selectionMenu2.style.boxShadow = `${0.2 * (100 / zoomLevel)}em ${0.2 * (100 / zoomLevel)}em ${0.8 * (100 / zoomLevel)}em rgba(0, 0, 0, 0.2)`;
-
     console.log(`📏 Nouvelle bordure : ${selectionMenu2.style.borderWidth}, Padding : ${selectionMenu2.style.padding}`);
 }
 

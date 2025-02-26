@@ -152,7 +152,6 @@ img {
     word-wrap: break-word;
 
     /* 🔹 Taille des bordures et arrière-plan fixes au zoom */
-    border: 0.15em solid black; /* ✅ Plus de px */
     background-color: rgba(0, 255, 0, 0.2);
     
     /* ✅ Suppression des marges inutiles */

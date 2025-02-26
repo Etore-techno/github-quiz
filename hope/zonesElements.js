@@ -131,6 +131,10 @@ app.setupDiagramme = function () {
 
             zoneDiv.style.opacity = "1";
 
+        // ✅ Ajout de la taille de bordure en fonction du mode
+        const screenWidth = window.innerWidth;
+        zoneDiv.style.border = `${mode === "portrait" ? 0.001 * imgWidth : 0.002 * imgWidth}px solid black`;
+
             container.appendChild(zoneDiv);
 
             if (elementsSauvegardes[zoneData.id]) {

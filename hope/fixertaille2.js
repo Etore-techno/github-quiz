@@ -293,10 +293,10 @@ function fixHeaderOnMobile2() {
 
                             console.log(`✅ 📱 Phase 4 : Bouton et message positionnés`);
                             console.log(`✅ 📱 Mobile - Mode ${isPortrait ? "Portrait" : "Paysage"} ajusté avec succès.`);
-                        }, 2000);
-                    }, 2000);
-                }, 2000);
-            }, 2000);
+                        }, 0);
+                    }, 0);
+                }, 0);
+            }, 0);
         }
 
 // ✅ Fonction globale pour recalculer les tailles après un zoom (Desktop) ou un changement d'orientation (Mobile)
