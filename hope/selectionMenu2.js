@@ -182,37 +182,39 @@ function ajusterLargeurMenu(selectionMenu2) {
 
 
 function repositionnerMenu(zone2, selectionMenu2) {
-    const rectZone = zone2.getBoundingClientRect();
-    const windowWidth = window.innerWidth;
-    const scrollY = window.scrollY; // ✅ Prend en compte le scroll vertical
+    const rectZone = zone2.getBoundingClientRect(); // 📌 Position de la zone
+    const rectTableau = document.querySelector("#tableau-container img").getBoundingClientRect(); // 📌 Position du tableau
+    const scrollY = window.scrollY; // ✅ Prend en compte le scroll
 
-    const tableau = document.querySelector("#tableau-container img");
-    const tableauRect = tableau.getBoundingClientRect();
-    const tableauBottom = tableauRect.bottom + scrollY; // ✅ Limite basse (bas du tableau)
+    const menuWidth = selectionMenu2.offsetWidth; // 📌 Largeur du menu
+    const menuHeight = selectionMenu2.offsetHeight; // 📌 Hauteur du menu
 
-    let posX = rectZone.right + 10;
-    let posY = rectZone.top + (rectZone.height / 2) - (selectionMenu2.offsetHeight / 2) + scrollY;
-
-    // ✅ Vérifier si le menu dépasse à droite
-    if (posX + selectionMenu2.offsetWidth > windowWidth) {
-        posX = rectZone.left - selectionMenu2.offsetWidth - 10;
-    }
+    // ✅ Calcul de la position initiale (menu centré sous la zone)
+    let posX = rectZone.left + rectZone.width / 2 - menuWidth / 2;
+    let posY = rectZone.bottom + 10 + scrollY; // 📌 10px en dessous de la zone
 
     // ✅ Vérifier si le menu dépasse en bas du tableau
-    if (posY + selectionMenu2.offsetHeight > tableauBottom) {
-        posY = tableauBottom - selectionMenu2.offsetHeight - 10;
+    if (posY + menuHeight > rectTableau.bottom + scrollY) {
+        posY = rectZone.top - menuHeight + scrollY - 10; // 📌 Place le menu au-dessus
     }
 
-    // ✅ Vérifier si le menu dépasse en haut
-    if (posY < scrollY) {
-        posY = scrollY + 10;
+    // ✅ Vérifier si le menu touche le bord gauche du tableau
+    if (posX < rectTableau.left) {
+        posX = rectTableau.left; // 📌 Aligner à gauche du tableau
     }
 
+    // ✅ Vérifier si le menu dépasse à droite du tableau
+    if (posX + menuWidth > rectTableau.right) {
+        posX = rectTableau.right - menuWidth; // 📌 Aligner à droite du tableau
+    }
+
+    // ✅ Appliquer les nouvelles positions
     selectionMenu2.style.left = `${posX}px`;
     selectionMenu2.style.top = `${posY}px`;
 
-    ajusterStylesSelectionMenu(selectionMenu2);
+    ajusterStylesSelectionMenu(selectionMenu2); // ✅ Appliquer les styles ajustés
 }
+
 
 
 
