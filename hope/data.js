@@ -8,9 +8,10 @@ window.exerciceData = {
     diagrammeElements: window.diagrammeElements || [],
     tableauzone: window.tableauzone || [],
     tableauElements: window.tableauElements || [],
+    tableauImageReelle: window.tableauImageReelle || [],
 };
 
-
+window.tableauImageReelle = [614];
 
 
 

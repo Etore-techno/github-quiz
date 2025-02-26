@@ -3,7 +3,6 @@ app.setupDiagramme = function () {
     const img = container.querySelector("img");
 
     let repositionnementEnCours = false;
-    let recalculEnCours = false;
     let derniereOrientation = detecterMode();
     let attenteMode = false;
 
@@ -28,80 +27,32 @@ app.setupDiagramme = function () {
         }
     }
 
-    function trouverPlusPetiteGrandeZone() {
-        const grandesZones = [...document.querySelectorAll('.dropzone[data-taille="grande"]')];
-        if (grandesZones.length === 0) return null;
-        return grandesZones.reduce((plusPetite, zone) => {
-            const surface = zone.clientWidth * zone.clientHeight;
-            return (!plusPetite || surface < plusPetite.surface) ? { zone, surface } : plusPetite;
-        }, null)?.zone;
-    }
-
-    function trouverTexteLePlusLong() {
-        const elementsCompatibles = window.exerciceData.diagrammeElements.filter(el => el.taille === "grande");
-        return elementsCompatibles.reduce((longest, el) => el.nom.length > longest.length ? el.nom : longest, "");
-    }
-
     let tailleTexteMemoire = {
-        desktop: null,
-        portrait: null,
-        landscape: null
+        petite: {desktop: null, portrait: null, landscape: null },
+        grande: {desktop: null, portrait: null, landscape: null },
     };
 
-    function calculerTailleTexteAuto(zone, mode, callback) {
-        if (!zone) {
-            console.warn("❌ Aucune zone trouvée pour le test !");
-            callback("16px");
-            return;
-        }
-
-        let texteMax = trouverTexteLePlusLong();
-        let testText = document.createElement("div");
-        testText.innerText = texteMax;
-
-        testText.style.position = "absolute";
-        testText.style.width = "100%";
-        testText.style.height = "100%";
-        testText.style.display = "flex";
-        testText.style.justifyContent = "center";
-        testText.style.alignItems = "center";
-        testText.style.textAlign = "center";
-        testText.style.wordWrap = "break-word";
-        testText.style.overflow = "hidden";
-        testText.style.fontSize = "5px";
-
-        zone.appendChild(testText);
-
-        requestAnimationFrame(() => {
-            let fontSize = 5;
-            testText.style.fontSize = fontSize + "px";
-
-            let zoneHeight = zone.clientHeight;
-            let zoneWidth = zone.clientWidth;
-            let maxFontSize = 100;
-
-            while (testText.scrollHeight <= zoneHeight && testText.scrollWidth <= zoneWidth && fontSize < maxFontSize) {
-                fontSize += 1;
-                testText.style.fontSize = fontSize + "px";
+    function calculerTailleTexteAuto(mode, callback) {
+            
+        // ✅ Définition des tailles par colonne et mode
+            let tailleTexteBase;
+            let tailleTexte;
+            if (mode === "portrait") {
+                tailleTexteBase = 2.8;   
+            } else {                 
+                tailleTexteBase = 1.4;
             }
-
-            fontSize -= 1;
-            let adjustedFontSize = Math.round(fontSize * 0.90);
-            console.log("✅ Taille optimale trouvée pour " + mode + " : " + fontSize + "px");
-            zone.removeChild(testText);
-            callback(adjustedFontSize + "px");
-        });
+            
+            tailleTexte = (tailleTexteBase) + "vw";
+          
+            console.log(`✅ Taille de texte calculée pour diagramme en ${mode} : ${tailleTexte}`);
+            callback(tailleTexte);
     }
 
     function positionnerZonesEtElements() {
-        if (recalculEnCours) return;
-        recalculEnCours = true;
 
         const rect = img.getBoundingClientRect();
-        if (rect.width === 0 || rect.height === 0) {
-            recalculEnCours = false;
-            return;
-        }
+
 
         const imgWidth = rect.width;
         const imgHeight = rect.height;
@@ -146,14 +97,8 @@ app.setupDiagramme = function () {
     }
 
     function recalculerTaillesEtTexte(mode) {
-        let zoneRef = trouverPlusPetiteGrandeZone();
-        if (!zoneRef) {
-            console.warn("⚠️ Impossible de trouver une zone de référence pour le test.");
-            recalculEnCours = false;
-            return;
-        }
 
-        calculerTailleTexteAuto(zoneRef, mode, (tailleOptimale) => {
+        calculerTailleTexteAuto(mode, (tailleOptimale) => {
             tailleTexteMemoire[mode] = tailleOptimale;
 
             document.querySelectorAll('.dropzone').forEach(zone => {
@@ -161,7 +106,6 @@ app.setupDiagramme = function () {
             });
 
             app.initSelectionMenu();
-            recalculEnCours = false;
         });
     }
 

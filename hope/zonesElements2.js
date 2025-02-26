@@ -33,68 +33,33 @@ app.setupTableau = function () {
         colonne3: { desktop: null, portrait: null, landscape: null }
     };
 
-    function trouverPlusPetiteZoneParColonne(colonne) {
-        const zones = [...document.querySelectorAll(`.dropzone2[data-colonne="${colonne}"]`)];
-        if (zones.length === 0) return null;
-        return zones.reduce((plusPetite, zone) => {
-            const surface = zone.clientWidth * zone.clientHeight;
-            return (!plusPetite || surface < plusPetite.surface) ? { zone, surface } : plusPetite;
-        }, null)?.zone;
-    }
+    function calculerTailleTexteAutoParColonne(colonne, mode, callback) {  
+   
+            // ✅ Définition des tailles par colonne et mode
+            let tailleTexteBase;
+            let tailleTexte;
 
-    function trouverTexteLePlusLongParColonne(colonne) {
-        const elementsCompatibles = window.exerciceData.tableauElements.filter(el => el.colonne === parseInt(colonne));
-        return elementsCompatibles.reduce((longest, el) => el.nom.length > longest.length ? el.nom : longest, "");
-    }
-
-    function calculerTailleTexteAutoParColonne(colonne, mode, callback) {
-        let zoneRef = trouverPlusPetiteZoneParColonne(colonne);
-        let texteMax = trouverTexteLePlusLongParColonne(colonne);
-
-        if (!zoneRef || !texteMax) {
-            console.warn(`⚠️ Impossible de calculer la taille pour la colonne ${colonne}`);
-            callback("16px");
-            return;
-        }
-
-        let testText = document.createElement("div");
-        testText.innerText = texteMax;
-        testText.style.position = "absolute";
-        testText.style.width = "100%";
-        testText.style.height = "100%";
-        testText.style.display = "flex";
-        testText.style.justifyContent = "center";
-        testText.style.alignItems = "center";
-        testText.style.textAlign = "center";
-        testText.style.wordWrap = "break-word";
-        testText.style.overflow = "hidden";
-        testText.style.fontSize = "5px";
-
-        zoneRef.appendChild(testText);
-
-        requestAnimationFrame(() => {
-            let fontSize = 5;
-            testText.style.fontSize = fontSize + "px";
-
-            let zoneHeight = zoneRef.clientHeight;
-            let zoneWidth = zoneRef.clientWidth;
-            let maxFontSize = 100;
-
-            while (testText.scrollHeight <= zoneHeight && testText.scrollWidth <= zoneWidth && fontSize < maxFontSize) {
-                fontSize += 1;
-                testText.style.fontSize = fontSize + "px";
+            if (mode === "portrait") {
+                switch (colonne) {
+                    case 1: tailleTexteBase = 2.8; break;
+                    case 2: tailleTexteBase = 2.4; break;
+                    case 3: tailleTexteBase = 2.4; break;
+                    default: tailleTexteBase = 0.2;     
+                }
+            } else { 
+                switch (colonne) {
+                    case 1: tailleTexteBase = 1.4; break;
+                    case 2: tailleTexteBase = 1.2; break;
+                    case 3: tailleTexteBase = 1.2; break;
+                    default: tailleTexteBase = 0.2;
+                }
             }
-
-            fontSize -= 1;
-            let adjustedFontSize = Math.round((fontSize - 1) * 0.80);
-
-            console.log(`✅ Taille optimale pour colonne ${colonne} en ${mode} : ${adjustedFontSize}px`);
-            zoneRef.removeChild(testText);
-            callback(adjustedFontSize + "px");
-        });
+                tailleTexte = (tailleTexteBase) + "vw";
+          
+            console.log(`✅ Taille de texte calculée pour colonne ${colonne} en ${mode} : ${tailleTexte}`);
+            callback(tailleTexte);
     }
-
-
+        
 
 function positionnerZonesEtElements2() {
     if (recalculEnCours2) return;
@@ -179,25 +144,6 @@ function recalculerTaillesEtTexte2(mode2) {
     recalculEnCours2 = false;
 }
 
-    function repositionnerEtAjuster2() {
-        console.log("🔄 Repositionnement et ajustement des zones...");
-        positionnerZonesEtElements2();
-    }
-
-    function gererChangementOrientation2() {
-        let nouveauMode2 = detecterMode2();
-        if (nouveauMode2 === derniereOrientation2) return;
-        derniereOrientation2 = nouveauMode2;
-
-        if (attenteMode2) return;
-        attenteMode2 = true;
-        console.log("🔄 Changement d'orientation détecté, mise à jour...");
-        setTimeout(() => {
-            repositionnerEtAjuster2();
-            attenteMode2 = false;
-        }, 50);
-    }
-
     if (img2.complete) {
         console.log("✅ Image déjà chargée, positionnement immédiat !");
         attendreChargementEtPositionner2();
@@ -206,9 +152,10 @@ function recalculerTaillesEtTexte2(mode2) {
         img2.onload = () => attendreChargementEtPositionner2();
     }
 
-    window.addEventListener("resize", repositionnerEtAjuster2);
-    window.addEventListener("orientationchange", gererChangementOrientation2);
-    window.addEventListener("DOMContentLoaded", repositionnerEtAjuster2);
+    window.addEventListener("resize", positionnerZonesEtElements2);
+
+    window.addEventListener("orientationchange", positionnerZonesEtElements2);
+    window.addEventListener("DOMContentLoaded", positionnerZonesEtElements2);
 };
 
 
@@ -240,7 +187,7 @@ function recalculerTaillesEtTexte2(mode2) {
 
 
     // Repositionnement des zones interactives après l'ajustement
-    setTimeout(updateDropzonesPosition2, 300);
+    setTimeout(updateDropzonesPosition2, 30);
 }
 
 // Fonction pour repositionner dynamiquement les dropzones2

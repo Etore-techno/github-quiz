@@ -21,63 +21,78 @@ html, body {
     touch-action: manipulation;
 }
 
+.ligne-noire {
+    border: none; /* Supprime la bordure par défaut */
+    height: 1vw; /* Épaisseur de la ligne */
+    background-color: black; /* Couleur noire */
+    width: 50%; /* Largeur de la ligne */
+    position: relative;
+    margin: 2vw auto; 
+
+}
+
+
+
 /* ✅ Conteneur principal */
-#header-container, #header-container2 {
+.header {
     
     display: flex;
     flex-direction: column;
     align-items: center;
     position: relative; /* ✅ Correction : Supprimer `justify-content: space-evenly;` */
     overflow: hidden;
-    background-color: rgba(255, 0, 0, 0.3); /* 🔴 Rouge */
+    margin: 0 auto; /* Centre horizontalement */
 }
 
 /* ✅ Espaces fixes basés sur `em` */
-.space-top, .space-top2 {
-    height: 1.5em; /* 🔥 Stable */
+.space-top {
+    height: 1vw; /* 🔥 Stable */
     flex-shrink: 0;
-    background-color: rgba(0, 255, 0, 0.3); /* 🟢 Vert */
 }
 
-.space-between, .space-between2 {
-    height: 1em; /* 🔥 Stable */
+.space-between {
+    height: 1vw; /* 🔥 Stable */
     flex-shrink: 0;
-    background-color: rgba(0, 0, 255, 0.3); /* 🔵 Bleu */
 }
 
-.space-bottom, .space-bottom2 {
-    height: 1.5em; /* 🔥 Stable */
+.space-bottom {
+    height: 1vw; /* 🔥 Stable */
     flex-shrink: 0;
-    background-color: rgba(255, 255, 0, 0.3); /* 🟡 Jaune */
 }
 
 /* ✅ Titre et bouton avec tailles fixes */
-#titre-1, #titre-2 {
-    font-size: 2rem; /* 🔥 Stable */
-    font-weight: bold;
+.titre {
+    font-family: "Poppins", sans-serif; /* Typographie moderne */
+    font-size: 2.5vw; /* 🔥 Stable */
+    font-weight: 700; /* Gras */
     text-align: center;
-    white-space: nowrap;
-    line-height: 1;
+    color: #333; /* Gris foncé moderne */
     flex-shrink: 0;
-    background-color: rgba(255, 0, 255, 0.3); /* 🟣 Violet */
 }
 
-#validate-1-button, #validate-2-button {
-    font-size: 1.5rem;
-    border-radius: 0.5rem;
-    background-color: #007bff;
+.bouton-valider {
+    font-size: 1.8vw;
+    border-radius: 1vw;
+    border: 0.2vw solid black;
+    background: linear-gradient(135deg, #007bff, #0056b3); /* Dégradé bleu */
     color: white;
-    border: none;
     cursor: pointer;
-    white-space: nowrap;
+    font-weight: 600; /* Texte un peu épais */
     flex-shrink: 0;
-    background-color: rgba(0, 255, 255, 0.3); /* 🟠 Cyan */
-    flex-shrink: 0;
+    margin: 0 1vw;
+    padding: 0.5vw 1vw; /* 🔹 Plus d’espace horizontal */
+    transition: all 0.3s ease-in-out; /* Animation fluide */
+}
 
+/* ✅ Effet au survol */
+.bouton-valider:hover {
+    background: linear-gradient(135deg, #0056b3, #003d80); /* Bleu plus foncé */
+    transform: scale(1.05); /* Effet zoom léger */
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3); /* Ombre plus marquée */
 }
 
 /* ✅ Empêche le bouton de bouger en zoomant */
-#validate-controls-1, #validate-controls-2 {
+.zone-validate {
     height: auto;
     max-height: none;
 
@@ -96,12 +111,17 @@ html, body {
 
 
 /* ✅ Messages */
-#diagramme-message, #tableau-message {
-    font-size: 1rem; /* ✅ Taille fixe */
+.message {
+    font-size: 1.8vw; /* ✅ Taille fixe */
+    font-weight: 500;
     text-align: center;
-    white-space: nowrap;
     flex-shrink: 0;
-    background-color: chocolate;
+    color: #0056b3; /* Bleu profond */
+    background-color: rgba(0, 123, 255, 0.1); /* Bleu clair transparent */
+    font-family: "Poppins", sans-serif;
+    width: fit-content;
+    max-width: 80%;
+
 }
 
 

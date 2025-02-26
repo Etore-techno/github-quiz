@@ -6,47 +6,44 @@
         <title>3ème - CdCF - Diaporama</title>
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-    <div id="header-container">
+    <div id="header-container" class="header">
         <div class="space-top"></div> <!-- 🔥 Espace au-dessus du titre -->
-        <div id="titre-1">1. Diagramme des interactions :</div>
+        <div id="titre-1" class="titre">1. Diagramme des interactions :</div>
         <div class="space-between"></div> <!-- 🔥 Espace entre le titre et le bouton -->
-        <div id="validate-controls-1">
-            <button id="validate-1-button">Valider</button>
-            <p id="diagramme-message">Compléter le diagramme en sélectionnant les bons éléments !</p>
+        <div id="validate-controls-1" class="zone-validate">
+            <button id="validate-1-button" class="bouton-valider">Valider</button>
+            <p id="diagramme-message" class="message">Compléter le diagramme !</p>
                 </div> 
-        <div class="space-bottom"></div> <!-- 🔥 Espace sous le bouton -->
+                <div class="space-bottom"></div> <!-- 🔥 Espace sous le bouton -->
     </div>
-    
-    
+
     <div class="main-container">
         <div id="diagramme-container">
             <img src="images/diagramme.jpg" alt="Diagramme">
         </div>
     </div>
+    
+    <hr class="ligne-noire">
 
 
-    <div id="header-container2">
-        <div class="space-top2"></div> <!-- 🔥 Espace au-dessus du titre -->
-        <div id="titre-2">2. Tableau de caractérisation :</div>
-        <div class="space-between2"></div> <!-- 🔥 Espace entre le titre et le bouton -->
-        <div id="validate-controls-2">
-            <button id="validate-2-button">Valider</button>
-            <p id="tableau-message">Compléter le tableau en sélectionnant les bons éléments !</p>
+    <div id="header-container2" class="header">
+        <div class="space-top"></div> <!-- 🔥 Espace au-dessus du titre -->
+        <div id="titre-2" class="titre">2. Tableau de caractérisation :</div>
+        <div class="space-between"></div> <!-- 🔥 Espace entre le titre et le bouton -->
+        <div id="validate-controls-2" class="zone-validate">
+            <button id="validate-2-button" class="bouton-valider">Valider</button>
+            <p id="tableau-message" class="message">Compléter les fonctions du tableau !</p>
                 </div> 
-        <div class="space-bottom2"></div> <!-- 🔥 Espace sous le bouton -->
+        <div class="space-bottom"></div> <!-- 🔥 Espace sous le bouton -->
     </div>
-    
-    
+   
     <div class="main-container2">
         <div id="tableau-container">
             <img src="images/tableau.jpg" alt="Tableau">
         </div>
     </div>
-
-
-
-
 
 <!-- Scripts -->
 <script>
@@ -56,18 +53,10 @@
 <script src="data.js" defer></script>
 <script src="zonesElements.js" defer></script>
 <script src="selectionMenu2.js" defer></script>
-
 <script src="zonesElements2.js" defer></script>
-
 <script src="selectionMenu.js" defer></script>
-
-
 <script src="main.js" defer></script>
 <script src="fixertaille.js" defer></script>
-<script src="fixertaille2.js" defer></script>
-
-
-
 
 </body>
 </html>
