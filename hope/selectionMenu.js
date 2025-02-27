@@ -48,6 +48,17 @@ app.initSelectionMenu = function () {
                 return;
             }
 
+            // 📌 Mélange un tableau avec l'algorithme de Fisher-Yates
+function melangerArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1)); // Index aléatoire
+        [array[i], array[j]] = [array[j], array[i]]; // Échange des éléments
+    }
+}
+// ✅ Mélanger la liste des éléments avant de les ajouter au menu
+melangerArray(elementsCompatibles);
+
+
             elementsCompatibles.forEach(element => {
                 const button = document.createElement("button");
                 button.className = "selection-button";
@@ -80,7 +91,7 @@ app.initSelectionMenu = function () {
 
 
     // 🔄 Mise à jour des positions après l'ajout d'un élément
-    mettreAJourPositionsElements();
+    mettreAJourListePositionsDiagramme();
 
                     // Fermeture du menu
                     selectionMenu.style.display = "none";

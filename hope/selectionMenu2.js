@@ -46,6 +46,19 @@ app.initSelectionMenu2 = function () {
                 return;
             }
 
+// 📌 Mélange un tableau avec l'algorithme de Fisher-Yates
+function melangerArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1)); // Index aléatoire
+        [array[i], array[j]] = [array[j], array[i]]; // Échange des éléments
+    }
+}
+// ✅ Mélanger la liste des éléments avant de les ajouter au menu
+melangerArray(elementsCompatibles2);
+
+
+
+
             // **1️⃣ Ajouter les réponses AVANT de mesurer la taille**
             elementsCompatibles2.forEach(element2 => {
                 const button2 = document.createElement("button");
@@ -70,7 +83,7 @@ app.initSelectionMenu2 = function () {
                     newText2.textContent = element2.nom;
                     zone2.appendChild(newText2);
 
-                    mettreAJourPositionsElements2();
+                    mettreAJourListePositionsTableau();
 
                     selectionMenu2.style.display = "none";
                 });
@@ -135,7 +148,7 @@ function ajusterTailleEtPositionMenu(zone2, selectionMenu2, elementsCompatibles2
             newText2.textContent = element2.nom;
             zone2.appendChild(newText2);
 
-            mettreAJourPositionsElements2();
+            mettreAJourListePositionsTableau();
 
             selectionMenu2.style.display = "none";
         });

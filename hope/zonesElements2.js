@@ -85,7 +85,18 @@ function positionnerZonesEtElements2() {
     console.log("🔄 Suppression des anciennes zones...");
     document.querySelectorAll('.dropzone2').forEach(zone2 => zone2.remove());
 
+ // 📌 Vérification de l'étape actuelle
+ let etapeActuelle = parseInt(window.app.etape); // Convertir en nombre pour éviter des erreurs
+ console.log(`🔄 Génération des zones pour l'étape ${etapeActuelle}...`);
+
+
     window.exerciceData.tableauzone.forEach(zoneData2 => {
+         // ✅ Vérifier si la zone appartient à l'étape actuelle
+         if (
+            (etapeActuelle === 2 && zoneData2.colonne === 1) ||
+            (etapeActuelle === 3 && zoneData2.colonne === 2) ||
+            (etapeActuelle === 4 && zoneData2.colonne === 3)
+        ) {    
         const zoneDiv2 = document.createElement("div");
         zoneDiv2.className = "dropzone2";
         zoneDiv2.id = zoneData2.id;
@@ -110,6 +121,8 @@ function positionnerZonesEtElements2() {
             zoneDiv2.addEventListener("click", () => {
                 console.log(`📌 Zone cliquée : ${zoneDiv2.id} (Colonne ${zoneData2.colonne})`);
             });
+        }
+   
     });
     console.log("✅ Toutes les zones ont été repositionnées.");
     recalculerTaillesEtTexte2(mode2);

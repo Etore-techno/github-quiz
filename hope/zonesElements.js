@@ -133,8 +133,15 @@ app.setupDiagramme = function () {
         img.onload = () => attendreChargementEtPositionner();
     }
 
-    window.addEventListener("resize", repositionnerEtAjuster);
-    window.addEventListener("orientationchange", gererChangementOrientation);
+    window.addEventListener("resize", () => {
+        repositionnerEtAjuster();        
+        bloquerzones();
+     });
+     
+     window.addEventListener("orientationchange", () => {
+        gererChangementOrientation();
+         bloquerzones();
+     });
     window.addEventListener("DOMContentLoaded", repositionnerEtAjuster);
 };
 
@@ -204,16 +211,32 @@ function saveDropzoneState() {
 
     console.log("État des zones sauvegardé");
 }
+function bloquerzones() {
+     // 📌 Vérification de l'étape actuelle
+     let etapeActuelle = parseInt(window.app.etape); // Convertir en nombre pour éviter des erreurs
+    if (etapeActuelle != 1) 
+        { 
+            // 🔹 Désactiver les zones (supprime bordures et interactions)
+    document.querySelectorAll(".dropzone").forEach(zone => {
+    zone.style.border = "none";
+    zone.style.backgroundColor = "transparent";
+    zone.style.pointerEvents = "none"; // Désactive le clic
+    });
+};
 
+
+}
 // Événements pour détecter les changements de taille ou d’orientation
 window.addEventListener("resize", () => {
    saveDropzoneState();
    adjustLayoutForOrientation();
+   bloquerzones();
 });
 
 window.addEventListener("orientationchange", () => {
     saveDropzoneState();
     adjustLayoutForOrientation();
+    bloquerzones();
 });
 
 // Initialisation au chargement de la page

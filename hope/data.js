@@ -41,7 +41,7 @@ window.diagrammeElements = [
 
 // Zones de dépôt pour le tableau (étape 1 - fonctions)
 window.tableauzone = [
-    { id: "fonction-1", relativeTop: 0.0493, relativeLeft: 0.0765, relativeWidth: 0.2899, relativeHeight: 0.1233, colonne: 1 },
+    { id: "element-f1", relativeTop: 0.0493, relativeLeft: 0.0765, relativeWidth: 0.2899, relativeHeight: 0.1233, colonne: 1 },
     { id: "fonction-2", relativeTop: 0.1763, relativeLeft: 0.0765, relativeWidth: 0.2899, relativeHeight: 0.1862, colonne: 1 },
     { id: "fonction-3", relativeTop: 0.3662, relativeLeft: 0.0765, relativeWidth: 0.2899, relativeHeight: 0.1874, colonne: 1 },
     { id: "fonction-4", relativeTop: 0.5561, relativeLeft: 0.0765, relativeWidth: 0.2899, relativeHeight: 0.3144, colonne: 1 },
