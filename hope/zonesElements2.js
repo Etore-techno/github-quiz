@@ -1,9 +1,11 @@
+let recalculEnCours2 = false;
+
 app.setupTableau = function () {
     const container2 = document.getElementById("tableau-container");
     const img2 = container2.querySelector("img");
 
     let repositionnementEnCours2 = false;
-    let recalculEnCours2 = false;
+
     let derniereOrientation2 = detecterMode2();
     let attenteMode2 = false;
 
@@ -16,55 +18,105 @@ app.setupTableau = function () {
         repositionnementEnCours2 = false;
     }
 
-    function detecterMode2() {
-        const largeur2 = window.innerWidth;
-        const hauteur2 = window.innerHeight;
-        const isMobile2 = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent); // ✅ Vérifie si c'est un mobile
-            console.log(`📐 Détection du mode : ${isMobile2 ? "Mobile" : "Desktop"} - Dimensions : ${largeur2}x${hauteur2}`);
-        if (isMobile2) {
-            return hauteur2 > largeur2 ? "portrait" : "landscape"; // 📌 Portrait ou Paysage pour mobiles
-        } else {
-            return "desktop"; // ✅ Par défaut, tout le reste est Desktop
+
+
+
+
+    if (img2.complete) {
+        console.log("✅ Image déjà chargée, positionnement immédiat !");
+        attendreChargementEtPositionner2();
+    } else {
+        console.log("🕒 Attente du chargement de l'image...");
+        img2.onload = () => attendreChargementEtPositionner2();
+    }
+
+   // window.addEventListener("resize", positionnerZonesEtElements2);
+
+    //window.addEventListener("orientationchange", positionnerZonesEtElements2);
+    //window.addEventListener("DOMContentLoaded", positionnerZonesEtElements2);
+};
+
+function detecterMode2() {
+    const largeur2 = window.innerWidth;
+    const hauteur2 = window.innerHeight;
+    const isMobile2 = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent); // ✅ Vérifie si c'est un mobile
+        console.log(`📐 Détection du mode : ${isMobile2 ? "Mobile" : "Desktop"} - Dimensions : ${largeur2}x${hauteur2}`);
+    if (isMobile2) {
+        return hauteur2 > largeur2 ? "portrait" : "landscape"; // 📌 Portrait ou Paysage pour mobiles
+    } else {
+        return "desktop"; // ✅ Par défaut, tout le reste est Desktop
+    }
+}
+
+let tailleTexteMemoire2 = {
+    colonne1: { desktop: null, portrait: null, landscape: null },
+    colonne2: { desktop: null, portrait: null, landscape: null },
+    colonne3: { desktop: null, portrait: null, landscape: null }
+};
+
+
+function calculerTailleTexteAutoParColonne(colonne, mode, callback) {  
+   
+    // ✅ Définition des tailles par colonne et mode
+    let tailleTexteBase;
+    let tailleTexte;
+
+    if (mode === "portrait") {
+        switch (colonne) {
+            case 1: tailleTexteBase = 2.8; break;
+            case 2: tailleTexteBase = 2.4; break;
+            case 3: tailleTexteBase = 2.4; break;
+            default: tailleTexteBase = 0.2;     
+        }
+    } else { 
+        switch (colonne) {
+            case 1: tailleTexteBase = 1.4; break;
+            case 2: tailleTexteBase = 1.2; break;
+            case 3: tailleTexteBase = 1.2; break;
+            default: tailleTexteBase = 0.2;
         }
     }
-    let tailleTexteMemoire2 = {
-        colonne1: { desktop: null, portrait: null, landscape: null },
-        colonne2: { desktop: null, portrait: null, landscape: null },
-        colonne3: { desktop: null, portrait: null, landscape: null }
-    };
+        tailleTexte = (tailleTexteBase) + "vw";
+  
+    console.log(`✅ Taille de texte calculée pour colonne ${colonne} en ${mode} : ${tailleTexte}`);
+    callback(tailleTexte);
+}
 
-    function calculerTailleTexteAutoParColonne(colonne, mode, callback) {  
-   
-            // ✅ Définition des tailles par colonne et mode
-            let tailleTexteBase;
-            let tailleTexte;
 
-            if (mode === "portrait") {
-                switch (colonne) {
-                    case 1: tailleTexteBase = 2.8; break;
-                    case 2: tailleTexteBase = 2.4; break;
-                    case 3: tailleTexteBase = 2.4; break;
-                    default: tailleTexteBase = 0.2;     
-                }
-            } else { 
-                switch (colonne) {
-                    case 1: tailleTexteBase = 1.4; break;
-                    case 2: tailleTexteBase = 1.2; break;
-                    case 3: tailleTexteBase = 1.2; break;
-                    default: tailleTexteBase = 0.2;
-                }
+function recalculerTaillesEtTexte2(mode2) {
+
+    console.log("🔄 Recalcul des tailles de texte...");
+    let colonnes = [1, 2, 3];
+
+    colonnes.forEach(colonne => {
+        console.log(`🧐 Calcul pour la colonne ${colonne} en mode ${mode2}...`);
+        calculerTailleTexteAutoParColonne(colonne, mode2, (tailleOptimale) => {
+            if (!tailleOptimale) {
+                console.warn(`⚠️ Aucune taille optimale trouvée pour la colonne ${colonne}`);
+                return;
             }
-                tailleTexte = (tailleTexteBase) + "vw";
-          
-            console.log(`✅ Taille de texte calculée pour colonne ${colonne} en ${mode} : ${tailleTexte}`);
-            callback(tailleTexte);
-    }
-        
+            tailleTexteMemoire2[`colonne${colonne}`][mode2] = tailleOptimale;
+
+            setTimeout(() => {
+                document.querySelectorAll(`.dropzone2[data-colonne="${colonne}"]`).forEach(zone => {
+                    zone.style.fontSize = tailleTexteMemoire2[`colonne${colonne}`][mode2];
+                });
+
+                console.log(`✅ Texte mis à jour pour colonne ${colonne} en mode ${mode2} : ${tailleOptimale}`);
+            }, 10);
+        });
+    });
+    app.initSelectionMenu2();
+
+    recalculEnCours2 = false;
+}
+
 
 function positionnerZonesEtElements2() {
     if (recalculEnCours2) return;
     recalculEnCours2 = true;
-
+    const container2 = document.getElementById("tableau-container");
+    const img2 = container2.querySelector("img");
     const rect2 = img2.getBoundingClientRect();
     if (rect2.width === 0 || rect2.height === 0) {
         recalculEnCours2 = false;
@@ -172,52 +224,6 @@ if (window.exerciceData.placedElements[zoneData2.id]) {
 }
 
 
-function recalculerTaillesEtTexte2(mode2) {
-
-    console.log("🔄 Recalcul des tailles de texte...");
-    let colonnes = [1, 2, 3];
-
-    colonnes.forEach(colonne => {
-        console.log(`🧐 Calcul pour la colonne ${colonne} en mode ${mode2}...`);
-        calculerTailleTexteAutoParColonne(colonne, mode2, (tailleOptimale) => {
-            if (!tailleOptimale) {
-                console.warn(`⚠️ Aucune taille optimale trouvée pour la colonne ${colonne}`);
-                return;
-            }
-            tailleTexteMemoire2[`colonne${colonne}`][mode2] = tailleOptimale;
-
-            setTimeout(() => {
-                document.querySelectorAll(`.dropzone2[data-colonne="${colonne}"]`).forEach(zone => {
-                    zone.style.fontSize = tailleTexteMemoire2[`colonne${colonne}`][mode2];
-                });
-
-                console.log(`✅ Texte mis à jour pour colonne ${colonne} en mode ${mode2} : ${tailleOptimale}`);
-            }, 10);
-        });
-    });
-    app.initSelectionMenu2();
-
-    recalculEnCours2 = false;
-}
-
-    if (img2.complete) {
-        console.log("✅ Image déjà chargée, positionnement immédiat !");
-        attendreChargementEtPositionner2();
-    } else {
-        console.log("🕒 Attente du chargement de l'image...");
-        img2.onload = () => attendreChargementEtPositionner2();
-    }
-
-    window.addEventListener("resize", positionnerZonesEtElements2);
-
-    window.addEventListener("orientationchange", positionnerZonesEtElements2);
-    window.addEventListener("DOMContentLoaded", positionnerZonesEtElements2);
-};
-
-
-
-
-
  // Fonction pour détecter l'orientation et adapter l'affichage
  function adjustLayoutForOrientation2() {
     const mode2 = detecterMode2(); // ✅ On utilise la même fonction que dans zonesElements.js
@@ -284,12 +290,14 @@ function saveDropzoneState2() {
 function bloquerColonnesTableau() {
     let etapeActuelle = parseInt(window.app.etape);
     console.log(`🔒 Vérification des colonnes à bloquer pour l'étape ${etapeActuelle}...`);
-
+let bouton = document.getElementById("validate-2-button");
     document.querySelectorAll(".dropzone2").forEach(zone => {
         let colonneZone = parseInt(zone.getAttribute("data-colonne"));
 
-        if (
-            (etapeActuelle > 2 && colonneZone === 1) ||  // 🔥 Change ">= 2" en "> 2"
+        if ((bouton.textContent === "Suivant" && etapeActuelle === 2 && colonneZone === 1) || 
+        (bouton.textContent === "Suivant" && etapeActuelle === 3 && colonneZone === 2) || 
+        (bouton.textContent === "Suivant" && etapeActuelle === 4 && colonneZone === 3) || 
+            (etapeActuelle > 2 && colonneZone === 1) || 
             (etapeActuelle > 3 && colonneZone === 2) || 
             (etapeActuelle > 4 && colonneZone === 3)
         ) {
@@ -317,8 +325,11 @@ function bloquerColonnesTableau() {
 
 // Événements pour détecter les changements de taille ou d’orientation
 window.addEventListener("resize", () => {
-   saveDropzoneState2();
+    saveDropzoneState2();
+
    adjustLayoutForOrientation2();
+   positionnerZonesEtElements2();
+
    bloquerColonnesTableau(); // ✅ Bloquer dynamiquement après changement d'orientation
 });
 

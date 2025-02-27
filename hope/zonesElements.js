@@ -216,8 +216,7 @@ function saveDropzoneState() {
 function bloquerzones() {
      // 📌 Vérification de l'étape actuelle
      let etapeActuelle = parseInt(window.app.etape); // Convertir en nombre pour éviter des erreurs
-    if (etapeActuelle != 1) 
-        { 
+     if (etapeActuelle != 1 || document.getElementById("validate-1-button").textContent === "Suivant") {   
             // 🔹 Désactiver les zones (supprime bordures et interactions)
     document.querySelectorAll(".dropzone").forEach(zone => {
     zone.style.border = "none";

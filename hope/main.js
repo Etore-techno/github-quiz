@@ -261,8 +261,14 @@ function verifierReponsesTableau() {
         message.style.color = "green";
 
         // 🔹 Transformation du bouton "Valider" en "Suivant"
+        
         boutonValidation.textContent = "Suivant";
-
+        if (window.app.etape === 4) {
+            boutonValidation.style.display = "none";
+            message.textContent = "Exercice terminé ! Recopier les 2 parties sur votre feuille !";
+            message.style.color = "black";
+        }
+        bloquerColonnesTableau();
 // 🔹 Désactiver uniquement les zones de la colonne concernée
 if (colonneCible) {
     document.querySelectorAll(`.dropzone2${colonneCible}`).forEach(zone => {
