@@ -176,7 +176,7 @@ app.setupDiagramme = function () {
 
 
     // Repositionnement des zones interactives après l'ajustement
-    setTimeout(updateDropzonesPosition, 300);
+    setTimeout(updateDropzonesPosition, 30);
 }
 
 // Fonction pour repositionner dynamiquement les dropzones

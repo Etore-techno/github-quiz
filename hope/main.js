@@ -95,7 +95,7 @@ window.addEventListener("DOMContentLoaded", () => {
             app.setupDiagramme();
 
             console.log("✅ Exercices prêts !");
-        }, 500);
+        }, 50);
     }
 });
 
@@ -320,8 +320,7 @@ document.getElementById("validate-2-button").disabled = false;
 // ✅ Si on passe à l'étape 5, bloquer la colonne 3 et masquer le bouton
 if (window.app.etape === 5) {
     document.querySelectorAll('.dropzone2[data-colonne="3"]').forEach(zone => {
-        zone.style.backgroundColor = "rgba(200, 200, 200, 0.3)"; 
-        zone.style.border = "1px solid gray"; 
+        zone.style.backgroundColor = "rgba(200, 200, 200, 0.7)"; 
         zone.style.pointerEvents = "none"; 
         zone.style.opacity = "1"; 
         console.log(`🔒 Colonne 3 bloquée et toujours visible.`);
@@ -357,7 +356,7 @@ if (window.app.etape === 5) {
     setTimeout(() => {
         window.app.etapeEnCours = false; // 🔄 Permet d'avancer à la prochaine étape
         console.log(`✅ Étape ${window.app.etape} prête, l'utilisateur peut continuer.`);
-    }, 1000); // Un léger délai pour éviter un enchaînement trop rapide    
+    }, 50); // Un léger délai pour éviter un enchaînement trop rapide    
     
 
 }
