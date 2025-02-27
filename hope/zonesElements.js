@@ -60,12 +60,14 @@ app.setupDiagramme = function () {
         console.log("Mode détecté :", mode);
 
         let elementsSauvegardes = {};
-        document.querySelectorAll('.dropzone').forEach(zone => {
+        document.querySelectorAll(".dropzone").forEach(zone => {
             if (zone.children.length > 0) {
                 elementsSauvegardes[zone.id] = zone.innerHTML;
             }
+            
+            // 🔥 Supprimer le blocage des interactions pour permettre le changement de réponse
+            zone.style.pointerEvents = "auto";
         });
-
         document.querySelectorAll('.dropzone').forEach(zone => zone.remove());
 
         window.exerciceData.diagrammezone.forEach(zoneData => {

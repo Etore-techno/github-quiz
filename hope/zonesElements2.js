@@ -82,21 +82,37 @@ function positionnerZonesEtElements2() {
             elementsSauvegardes2[zone2.id] = zone2.innerHTML;
         }
     });
-    console.log("🔄 Suppression des anciennes zones...");
-    document.querySelectorAll('.dropzone2').forEach(zone2 => zone2.remove());
+    
+    if (!window.exerciceData.placedElements) {
+        window.exerciceData.placedElements = {}; // 📌 Initialisation si nécessaire
+    }
+    
+    // 📌 Sauvegarde des éléments placés avant suppression
+    document.querySelectorAll('.dropzone2').forEach(zone2 => {
+        if (zone2.children.length > 0) {
+            window.exerciceData.placedElements[zone2.id] = zone2.innerHTML; // ✅ Sauvegarde
+        }
+    });
+    console.log("📌 Éléments sauvegardés :", window.exerciceData.placedElements);
+   
+    console.log("🔄 Suppression des anciennes zones avant repositionnement...");
+    document.querySelectorAll(".dropzone2").forEach(zone2 => zone2.remove()); // ✅ Supprime toutes les anciennes zones
+
+    
 
  // 📌 Vérification de l'étape actuelle
  let etapeActuelle = parseInt(window.app.etape); // Convertir en nombre pour éviter des erreurs
  console.log(`🔄 Génération des zones pour l'étape ${etapeActuelle}...`);
 
 
-    window.exerciceData.tableauzone.forEach(zoneData2 => {
-         // ✅ Vérifier si la zone appartient à l'étape actuelle
-         if (
-            (etapeActuelle === 2 && zoneData2.colonne === 1) ||
-            (etapeActuelle === 3 && zoneData2.colonne === 2) ||
-            (etapeActuelle === 4 && zoneData2.colonne === 3)
-        ) {    
+ window.exerciceData.tableauzone.forEach(zoneData2 => {
+    // ✅ Vérifie si la zone correspond à l'étape actuelle
+    if (
+        (window.app.etape === 2 && zoneData2.colonne === 1) ||
+        (window.app.etape === 3 && (zoneData2.colonne === 1 || zoneData2.colonne === 2)) ||
+        (window.app.etape === 4 && (zoneData2.colonne === 1 || zoneData2.colonne === 2 || zoneData2.colonne === 3))
+    ) {
+    
         const zoneDiv2 = document.createElement("div");
         zoneDiv2.className = "dropzone2";
         zoneDiv2.id = zoneData2.id;
@@ -109,23 +125,50 @@ function positionnerZonesEtElements2() {
         zoneDiv2.style.height = (zoneData2.relativeHeight * imgHeight2) + "px";
 
         zoneDiv2.style.opacity = "1";
-
-
         container2.appendChild(zoneDiv2);
+
+// 📌 Vérifie si un élément a été placé avant et le remet dans la zone
+if (window.exerciceData.placedElements[zoneData2.id]) {
+    zoneDiv2.innerHTML = window.exerciceData.placedElements[zoneData2.id];
+    console.log(`✅ Élément restauré pour ${zoneData2.id} :`, window.exerciceData.placedElements[zoneData2.id]);
+}
+
 
         if (elementsSauvegardes2[zoneData2.id]) {
             zoneDiv2.innerHTML = elementsSauvegardes2[zoneData2.id];
         }
- 
-            // ✅ Ajout d'un event listener pour détecter les clics
-            zoneDiv2.addEventListener("click", () => {
-                console.log(`📌 Zone cliquée : ${zoneDiv2.id} (Colonne ${zoneData2.colonne})`);
-            });
+
+        // ✅ Désactiver les colonnes déjà validées
+        let colonneZone = parseInt(zoneData2.colonne);
+        if (
+            (etapeActuelle > 2 && colonneZone === 1) ||  
+            (etapeActuelle > 3 && colonneZone === 2) || 
+            (etapeActuelle > 4 && colonneZone === 3)
+        ) {
+            zoneDiv2.style.backgroundColor = "rgba(200, 200, 200, 0.3)"; 
+            zoneDiv2.style.border = "1px solid gray"; 
+            zoneDiv2.style.pointerEvents = "none"; 
+            zoneDiv2.style.opacity = "1"; 
+            console.log(`🔒 Colonne ${colonneZone} bloquée et toujours visible.`);
+            // 📌 Assure que les éléments placés restent visibles même si la colonne est inactive
+            if (window.exerciceData.placedElements[zoneData2.id]) {
+                console.log(`🔒 Rendu inactif mais visible : ${zoneData2.id}`);
+            }
         }
-   
-    });
+        
+        
+
+
+        // ✅ Ajout d'un event listener pour détecter les clics
+        zoneDiv2.addEventListener("click", () => {
+            console.log(`📌 Zone cliquée : ${zoneDiv2.id} (Colonne ${zoneData2.colonne})`);
+        });
+    }
+});
+
     console.log("✅ Toutes les zones ont été repositionnées.");
     recalculerTaillesEtTexte2(mode2);
+    recalculEnCours2 = false;
 }
 
 
@@ -238,15 +281,51 @@ function saveDropzoneState2() {
     console.log("État des zones sauvegardé");
 }
 
+function bloquerColonnesTableau() {
+    let etapeActuelle = parseInt(window.app.etape);
+    console.log(`🔒 Vérification des colonnes à bloquer pour l'étape ${etapeActuelle}...`);
+
+    document.querySelectorAll(".dropzone2").forEach(zone => {
+        let colonneZone = parseInt(zone.getAttribute("data-colonne"));
+
+        if (
+            (etapeActuelle > 2 && colonneZone === 1) ||  // 🔥 Change ">= 2" en "> 2"
+            (etapeActuelle > 3 && colonneZone === 2) || 
+            (etapeActuelle > 4 && colonneZone === 3)
+        ) {
+            zone.style.backgroundColor = "rgba(200, 200, 200, 0.3)"; 
+            zone.style.pointerEvents = "none"; 
+            zone.style.opacity = "1"; 
+            zone.style.border = "1px solid gray"; 
+        
+            console.log(`🔒 Colonne ${colonneZone} bloquée et toujours visible.`);
+        }
+        
+    });
+
+    // 🔥 Correction : Désactiver les événements de clic sur les zones bloquées
+    document.querySelectorAll(".zone-bloquee").forEach(zone => {
+        zone.removeEventListener("click", handleClick); // ✅ Supprime l'événement de clic
+    });
+
+    console.log("✅ Zones bloquées désactivées.");
+
+}
+
+
+
+
 // Événements pour détecter les changements de taille ou d’orientation
 window.addEventListener("resize", () => {
    saveDropzoneState2();
    adjustLayoutForOrientation2();
+   bloquerColonnesTableau(); // ✅ Bloquer dynamiquement après changement d'orientation
 });
 
 window.addEventListener("orientationchange", () => {
     saveDropzoneState2();
     adjustLayoutForOrientation2();
+    bloquerColonnesTableau(); // ✅ Bloquer dynamiquement après changement d'orientation
 });
 
 // Initialisation au chargement de la page

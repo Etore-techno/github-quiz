@@ -1,4 +1,4 @@
-let lastClickedZone = null;
+let lastClickedZone2 = null;
 
 app.initSelectionMenu2 = function () {
     console.log("🚀 Initialisation du menu de sélection...");
@@ -19,7 +19,7 @@ app.initSelectionMenu2 = function () {
 
     document.querySelectorAll(".dropzone2").forEach(zone2 => {
         zone2.addEventListener("click", function (event) {
-            lastClickedZone = zone2; // 🔥 Sauvegarde la dernière zone cliquée
+            lastClickedZone2 = zone2; // 🔥 Sauvegarde la dernière zone cliquée
             console.log(`📌 Zone cliquée : ${zone2.id}`);
 
             const colonneZone2 = zone2.getAttribute("data-colonne");
@@ -249,7 +249,7 @@ window.addEventListener("orientationchange", () => {
     const selectionMenu2 = document.getElementById("selection-menu2");
     if (selectionMenu2 && selectionMenu2.style.display === "block") {
         ajusterLargeurMenu2(selectionMenu2);
-        repositionnerMenu2(lastClickedZone, selectionMenu2); // Utiliser une variable globale
+        repositionnerMenu2(lastClickedZone2, selectionMenu2); // Utiliser une variable globale
     }
 });
 

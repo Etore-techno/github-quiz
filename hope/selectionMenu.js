@@ -1,3 +1,5 @@
+let lastClickedZone = null; // 🔥 Sauvegarde de la dernière zone cliquée
+
 app.initSelectionMenu = function () {
     console.log("🚀 Initialisation du menu de sélection...");
 
@@ -20,9 +22,15 @@ app.initSelectionMenu = function () {
 
     document.querySelectorAll(".dropzone").forEach(zone => {
         zone.addEventListener("click", function (event) {
+            event.stopPropagation(); // ✅ Empêche le texte de bloquer l'événement
             console.log(`📌 Zone cliquée : ${zone.id}`);
-            
+            lastClickedZone = zone; // ✅ Sauvegarde la dernière zone cliquée
             // Vérification que la dropzone a bien un `data-taille`
+            // 🔍 Vérifie si un élément est déjà présent dans la zone
+if (zone.children.length > 0) {
+    console.log(`🔄 Zone ${zone.id} déjà remplie, ouverture du menu pour modification.`);
+}
+
             const tailleZone = zone.getAttribute("data-taille");
             if (!tailleZone) {
                 console.warn(`⚠️ La zone ${zone.id} n'a pas d'attribut 'data-taille' défini !`);
@@ -73,9 +81,10 @@ melangerArray(elementsCompatibles);
                     console.log(`✅ Élément sélectionné : ${element.nom} → Zone: ${zone.id}`);
 
                     // Supprime l'ancien élément dans la zone
-                    zone.innerHTML = "";
-
-                    // Vérifier si l'élément est déjà placé ailleurs et le retirer
+                    if (lastClickedZone) {
+                        lastClickedZone.innerHTML = ""; // ✅ Supprime l'ancien élément
+                    }
+                                        // Vérifier si l'élément est déjà placé ailleurs et le retirer
                     document.querySelectorAll(".dropzone span").forEach(placedEl => {
                         if (placedEl.textContent === element.nom) {
                             console.log(`❌ Suppression de ${element.nom} d'une autre zone`);

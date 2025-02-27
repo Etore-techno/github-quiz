@@ -2,8 +2,7 @@
 
 window.app = window.app || {};
 
-window.app.etape = "1";
-
+window.app.etape = 1; // ✅ Remplace "1" (string) par 1 (number)
 
 window.app.positionsElementsDiagramme = {}; // Stockage des positions des éléments
 window.app.reponsesAttenduesDiagramme = {};
@@ -98,26 +97,28 @@ window.addEventListener("DOMContentLoaded", () => {
             console.log("✅ Exercices prêts !");
         }, 500);
     }
-
-    document.getElementById("validate-1-button").addEventListener("click", () => {
-        const button = document.getElementById("validate-1-button")
-        if (button.innerHTML = "Valider") {
-            verifierReponsesDiagramme();
-         } else {
-            passerEtapesuivante();
-         } 
-    });
-    document.getElementById("validate-2-button").addEventListener("click", () => {
-        const button = document.getElementById("validate-2-button")
-        if (button.innerHTML = "Valider") {
-            verifierReponsesTableau();
-         } else {
-            passerEtapesuivante();
-         } 
-    });
-
-
 });
+
+document.getElementById("validate-1-button").addEventListener("click", () => {
+    const button = document.getElementById("validate-1-button");
+    if (button.textContent === "Valider") {
+        verifierReponsesDiagramme();
+    } else {
+        button.disabled = true; // 🔥 Empêche le multi-clic
+        passerEtapesuivante();
+    }
+});
+
+document.getElementById("validate-2-button").addEventListener("click", () => {
+    const button = document.getElementById("validate-2-button");
+    if (button.textContent === "Valider") {
+        verifierReponsesTableau();
+    } else {
+        button.disabled = true; // 🔥 Empêche le multi-clic
+        passerEtapesuivante();
+    }
+});
+
 
 // 📌 Fonction pour mettre à jour la liste des éléments placés
 function mettreAJourListePositionsDiagramme() {
@@ -191,11 +192,9 @@ function verifierReponsesDiagramme() {
     if (reponsesPlacees === totalZones && reponsesCorrectes === totalZones) {
         message.textContent = "✅ Bravo ! Toutes les réponses sont correctes.";
         message.style.color = "green";
-        window.app.etape = "2";
 
         // 🔹 Transformation du bouton "Valider" en "Suivant"
         boutonValidation.textContent = "Suivant";
-        boutonValidation.onclick = passerEtapesuivante;
 
         // 🔹 Désactiver les zones (supprime bordures et interactions)
         document.querySelectorAll(".dropzone").forEach(zone => {
@@ -221,62 +220,60 @@ function verifierReponsesTableau() {
 
     let totalZones = 0;
     let reponsesCorrectes = 0;
-    let reponsesPlacees = Object.keys(window.app.positionsElementsTableau).length;
-    
-    let reponsesAttendues = {}; // Stockage temporaire des réponses selon l'étape
+    let erreurs = [];
 
-    // ✅ Sélection des réponses attendues en fonction de l'étape
-    if (etapeActuelle === 2) {  
-        reponsesAttendues = window.app.reponsesAttenduesTableau1;
-        totalZones = Object.keys(reponsesAttendues).length;
+    let reponsesAttendues = [];
+    let colonneCible = "";
+    if (etapeActuelle === 2) {
+        reponsesAttendues = Object.values(window.app.reponsesAttenduesTableau1);
+        colonneCible = ".colonne-1";
     } else if (etapeActuelle === 3) {
-        reponsesAttendues = window.app.reponsesAttenduesTableau2;
-        totalZones = Object.keys(reponsesAttendues).length;
+        reponsesAttendues = Object.values(window.app.reponsesAttenduesTableau2);
+        colonneCible = ".colonne-2";
     } else if (etapeActuelle === 4) {
-        reponsesAttendues = window.app.reponsesAttenduesTableau3;
-        totalZones = Object.keys(reponsesAttendues).length;
+        reponsesAttendues = Object.values(window.app.reponsesAttenduesTableau3);
+        colonneCible = ".colonne-3";
     }
+
+    let reponsesPlacees = Object.values(window.app.positionsElementsTableau);
+
+    totalZones = reponsesAttendues.length;
 
     console.log(`📊 Vérification pour l'étape ${etapeActuelle}...`);
     console.log("📋 Réponses attendues :", reponsesAttendues);
-    console.log("📌 Éléments placés :", window.app.positionsElementsTableau);
+    console.log("📌 Réponses placées :", reponsesPlacees);
 
-    let erreurs = [];
-
-    // ✅ Comparaison basée sur le texte et validation des erreurs
-    Object.keys(reponsesAttendues).forEach(zoneId => {
-        let reponseAttendue = reponsesAttendues[zoneId];
-        let reponsePlacee = window.app.positionsElementsTableau[zoneId];
-
-        if (reponsePlacee === reponseAttendue) {
+    // ✅ Comparaison des textes en respectant l'ordre exact
+    for (let i = 0; i < totalZones; i++) {
+        if (reponsesPlacees[i] === reponsesAttendues[i]) {
             reponsesCorrectes++;
         } else {
-            erreurs.push(`❌ Mauvaise réponse dans ${zoneId}. Attendu : "${reponseAttendue}", trouvé : "${reponsePlacee}"`);
+            erreurs.push(`❌ Mauvaise réponse à la position ${i + 1}. Attendu : "${reponsesAttendues[i]}", trouvé : "${reponsesPlacees[i] || 'Aucune réponse'}".`);
         }
-    });
+    }
 
     // 🔹 Affichage du message selon le résultat
     let message = document.getElementById("tableau-message");
     let boutonValidation = document.getElementById("validate-2-button");
 
-    if (reponsesPlacees === totalZones && reponsesCorrectes === totalZones) {
+    if (reponsesCorrectes === totalZones) {
         message.textContent = "✅ Bravo ! Toutes les réponses sont correctes.";
         message.style.color = "green";
-        window.app.etape += 1;
 
         // 🔹 Transformation du bouton "Valider" en "Suivant"
         boutonValidation.textContent = "Suivant";
-        boutonValidation.onclick = passerEtapesuivante;
 
-        // 🔹 Désactiver les zones de dépôt
-        document.querySelectorAll(".dropzone2").forEach(zone => {
-            zone.style.border = "none";
-            zone.style.backgroundColor = "transparent";
-            zone.style.pointerEvents = "none";
-        });
+// 🔹 Désactiver uniquement les zones de la colonne concernée
+if (colonneCible) {
+    document.querySelectorAll(`.dropzone2${colonneCible}`).forEach(zone => {
+        zone.style.border = "none";
+        zone.style.backgroundColor = "transparent";
+        zone.style.pointerEvents = "none";
+    });
+}
 
-    } else if (reponsesPlacees < totalZones) {
-        message.textContent = `⚠️ Il manque ${totalZones - reponsesPlacees} réponses à placer.`;
+    } else if (reponsesPlacees.length < totalZones) {
+        message.textContent = `⚠️ Il manque ${totalZones - reponsesPlacees.length} réponses à placer.`;
         message.style.color = "orange";
     } else {
         message.textContent = `❌ Certaines réponses sont incorrectes. Vous avez ${reponsesCorrectes} bonnes réponses sur ${totalZones}.`;
@@ -284,30 +281,87 @@ function verifierReponsesTableau() {
         console.warn(erreurs.join("\n"));
     }
 
-    console.log(`📊 Validation complète : ${reponsesCorrectes} bonnes réponses / ${reponsesPlacees} placées sur ${totalZones} attendues.`);
+    console.log(`📊 Validation complète : ${reponsesCorrectes} bonnes réponses sur ${totalZones}.`);
 }
 
 
 
-// 📌 Fonction qui sera appelée lorsqu'on clique sur "Suivant"
 function passerEtapesuivante() {
-      // 📌 Vérification de l'étape actuelle
-      let etapeActuelle = parseInt(window.app.etape); // Convertir en nombre pour éviter des erreurs
-      if (etapeActuelle === 2) 
-          {  
-    console.log("➡️ Passage à l'étape 2");
-    app.setupTableau();}
-    else if (etapeActuelle === 3)  {
-    console.log("➡️ Passage à l'étape 3");
-    app.setupTableau();}
-    else if (etapeActuelle === 4)  {
-    console.log("➡️ Passage à l'étape 4");
-    app.setupTableau();}
-    else if (etapeActuelle === 5)  {
-    console.log("➡️ Fin !!!");
-};
+
+    // ✅ Bloquer toute nouvelle action si l'étape est déjà en cours
+    if (window.app.etapeEnCours) {
+        console.warn("⚠️ Étape déjà en cours, action ignorée !");
+        return;
+    }
+    window.app.etapeEnCours = true; // 🔥 Empêche les appels multiples
+    
+// ✅ Vérifier si on ne dépasse pas l’étape 5
+if (window.app.etape >= 5) {
+    console.log("🎯 Exercice terminé !");
+    window.app.etapeEnCours = false;
+    return;
 }
 
-// 📌 Ajoute l'événement sur le bouton de validation
-document.getElementById("validate-1-button").addEventListener("click", verifierReponsesDiagramme);
-document.getElementById("validate-2-button").addEventListener("click", verifierReponsesTableau);
+
+    // ✅ Incrémentation de l’étape
+    window.app.etape += 1;
+    
+    console.log(`➡️ Passage à l'étape ${window.app.etape}`);
+
+// ✅ Remise des boutons "Valider" pour éviter un blocage
+document.getElementById("validate-1-button").style.display = "none"; // ✅ Masque complètement le bouton
+const message = document.getElementById("diagramme-message");
+message.textContent = "Compléter le tableau en-dessous !";
+message.style.color = "black";
+
+document.getElementById("validate-2-button").textContent = "Valider";
+document.getElementById("validate-2-button").disabled = false;
+
+// ✅ Si on passe à l'étape 5, bloquer la colonne 3 et masquer le bouton
+if (window.app.etape === 5) {
+    document.querySelectorAll('.dropzone2[data-colonne="3"]').forEach(zone => {
+        zone.style.backgroundColor = "rgba(200, 200, 200, 0.3)"; 
+        zone.style.border = "1px solid gray"; 
+        zone.style.pointerEvents = "none"; 
+        zone.style.opacity = "1"; 
+        console.log(`🔒 Colonne 3 bloquée et toujours visible.`);
+    });
+
+    // ✅ Cacher le bouton de validation
+    document.getElementById("validate-2-button").style.display = "none";
+}
+
+
+    // ✅ Mise à jour du message affiché
+    const message2 = document.getElementById("tableau-message");
+    
+    if (message2) {
+        if (window.app.etape === 3) {
+            message2.textContent = "Compléter les critères du tableau !";
+            message2.style.color = "black";
+        } else if (window.app.etape === 4) {
+            message2.textContent = "Compléter les niveaux du tableau !";
+            message2.style.color = "black";
+        } else if (window.app.etape === 5) {
+            message2.textContent = "Exercice terminé ! Recopier les 2 parties sur votre feuille !";
+            message2.style.color = "black";
+        }
+    }
+    
+
+
+    // ✅ Afficher uniquement les zones de la colonne correspondant à l'étape
+    app.setupTableau();
+
+    // 🔄 **Ajoute cette ligne à la fin pour débloquer l'étape suivante**
+    setTimeout(() => {
+        window.app.etapeEnCours = false; // 🔄 Permet d'avancer à la prochaine étape
+        console.log(`✅ Étape ${window.app.etape} prête, l'utilisateur peut continuer.`);
+    }, 1000); // Un léger délai pour éviter un enchaînement trop rapide    
+    
+
+}
+
+
+console.log(`📌 Fonction passerEtapesuivante() appelée - Étape actuelle : ${window.app.etape}`);
+console.trace("📌 Appel de passerEtapesuivante()");
