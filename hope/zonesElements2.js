@@ -336,6 +336,8 @@ window.addEventListener("resize", () => {
 window.addEventListener("orientationchange", () => {
     saveDropzoneState2();
     adjustLayoutForOrientation2();
+    positionnerZonesEtElements2();
+
     bloquerColonnesTableau(); // ✅ Bloquer dynamiquement après changement d'orientation
 });
 

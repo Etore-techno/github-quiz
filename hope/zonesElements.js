@@ -115,20 +115,6 @@ app.setupDiagramme = function () {
         positionnerZonesEtElements();
     }
 
-    function gererChangementOrientation() {
-        let nouveauMode = detecterMode();
-        if (nouveauMode === derniereOrientation) return;
-        derniereOrientation = nouveauMode;
-
-        if (attenteMode) return;
-        attenteMode = true;
-
-        setTimeout(() => {
-            repositionnerEtAjuster();
-            attenteMode = false;
-        }, 50);
-    }
-
     if (img.complete) {
         attendreChargementEtPositionner();
     } else {
@@ -141,7 +127,7 @@ app.setupDiagramme = function () {
      });
      
      window.addEventListener("orientationchange", () => {
-        gererChangementOrientation();
+        repositionnerEtAjuster();        
          bloquerzones();
      });
     window.addEventListener("DOMContentLoaded", repositionnerEtAjuster);

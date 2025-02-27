@@ -320,6 +320,8 @@ const message = document.getElementById("diagramme-message");
 message.textContent = "Compléter le tableau en-dessous !";
 message.style.color = "black";
 
+document.getElementById("validate-controls-2").style.display = "block";
+
 document.getElementById("validate-2-button").textContent = "Valider";
 document.getElementById("validate-2-button").disabled = false;
 
