@@ -109,7 +109,3 @@ window.exerciceData.tableauzone = window.tableauzone;
 window.exerciceData.tableauElements = window.tableauElements;
 
 
-// Vérification de la présence des données
-console.log("📊 Vérification des données de `diagrammezone` :", window.exerciceData.diagrammezone);
-console.log("📊 Vérification des données de `tableauzone` :", window.exerciceData.tableauzone);
-console.log("✅ Données chargées dans `window.exerciceData` avec succès !");

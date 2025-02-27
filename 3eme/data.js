@@ -1,150 +1,111 @@
-// Définition des zones de dépôt pour l'exercice du diagramme
+// Données pour l'exercice interactif avec coordonnées relatives
+window.exerciceData = {};
+
+
+// Initialisation de la structure attendue par le script
+window.exerciceData = {
+    diagrammezone: window.diagrammezone || [],
+    diagrammeElements: window.diagrammeElements || [],
+    tableauzone: window.tableauzone || [],
+    tableauElements: window.tableauElements || [],
+    tableauImageReelle: window.tableauImageReelle || [],
+};
+
+window.tableauImageReelle = [614];
+
+
+
+// Zones de dépôt pour l'exercice du diagramme
 window.diagrammezone = [
-    { id: "zone-1", top: 23, left: 469, width: 137, height: 100 }, // Zone en haut à droite
-    { id: "zone-2", top: 132, left: 263, width: 83, height: 40 },  // Petite zone centrale gauche
-    { id: "zone-3", top: 183, left: 497, width: 84, height: 40 },  // Petite zone centrale droite
-    { id: "zone-4", top: 188, left: 131, width: 83, height: 39 },  // Petite zone à gauche
-    { id: "zone-5", top: 228, left: 286, width: 137, height: 100 }, // Zone centrale
-    { id: "zone-6", top: 295, left: 150, width: 83, height: 39 },  // Petite zone en bas à gauche
-    { id: "zone-7", top: 368, left: 44, width: 137, height: 100 },  // Zone en bas à gauche
-    { id: "zone-8", top: 368, left: 522, width: 136, height: 100 }  // Zone en bas à droite
+    { id: "zone-1", relativeTop: 0.0467, relativeLeft: 0.6662, relativeWidth: 0.1946, relativeHeight: 0.2033, taille: "grande" },
+    { id: "zone-2", relativeTop: 0.2683, relativeLeft: 0.3736, relativeWidth: 0.1179, relativeHeight: 0.0813, taille: "petite" },
+    { id: "zone-3", relativeTop: 0.3720, relativeLeft: 0.7060, relativeWidth: 0.1193, relativeHeight: 0.0813, taille: "petite" },
+    { id: "zone-4", relativeTop: 0.3821, relativeLeft: 0.1861, relativeWidth: 0.1179, relativeHeight: 0.0793, taille: "petite" },
+    { id: "zone-5", relativeTop: 0.4634, relativeLeft: 0.4062, relativeWidth: 0.1946, relativeHeight: 0.2033, taille: "grande" },
+    { id: "zone-6", relativeTop: 0.5996, relativeLeft: 0.2131, relativeWidth: 0.1179, relativeHeight: 0.0793, taille: "petite" },
+    { id: "zone-7", relativeTop: 0.7480, relativeLeft: 0.0625, relativeWidth: 0.1946, relativeHeight: 0.2033, taille: "grande" },
+    { id: "zone-8", relativeTop: 0.7480, relativeLeft: 0.7415, relativeWidth: 0.1932, relativeHeight: 0.2033, taille: "grande" }
 ];
 
-
-// Liste des éléments déplaçables pour l'exercice du diagramme avec des identifiants uniques
+// Éléments déplaçables pour l'exercice du diagramme
 window.diagrammeElements = [
-    { id: "element-1", nom: "Public (élèves et professeur)" },
-    { id: "element-2", nom: "FP1" },
-    { id: "element-3", nom: "FC3" },
-    { id: "element-4", nom: "FC4" },
-    { id: "element-5", nom: "Diaporama" },
-    { id: "element-6", nom: "FC2" },
-    { id: "element-7", nom: "Matériel du collège" },
-    { id: "element-8", nom: "Temps" }
+    { id: "element-1", nom: "Public (élèves et professeur)", taille: "grande" },
+    { id: "element-2", nom: "FP1", taille: "petite" },
+    { id: "element-3", nom: "FC3", taille: "petite" },
+    { id: "element-4", nom: "FC4", taille: "petite"},
+    { id: "element-5", nom: "Diaporama", taille: "grande" },
+    { id: "element-6", nom: "FC2", taille: "petite" },
+    { id: "element-7", nom: "Matériel du collège", taille: "grande" },
+    { id: "element-8", nom: "Temps", taille: "grande" }
+];
 
+// Zones de dépôt pour le tableau (étape 1 - fonctions)
+window.tableauzone = [
+    { id: "element-f1", relativeTop: 0.0493, relativeLeft: 0.0765, relativeWidth: 0.2899, relativeHeight: 0.1233, colonne: 1 },
+    { id: "fonction-2", relativeTop: 0.1763, relativeLeft: 0.0765, relativeWidth: 0.2899, relativeHeight: 0.1862, colonne: 1 },
+    { id: "fonction-3", relativeTop: 0.3662, relativeLeft: 0.0765, relativeWidth: 0.2899, relativeHeight: 0.1874, colonne: 1 },
+    { id: "fonction-4", relativeTop: 0.5561, relativeLeft: 0.0765, relativeWidth: 0.2899, relativeHeight: 0.3144, colonne: 1 },
+    { id: "fonction-5", relativeTop: 0.8730, relativeLeft: 0.0765, relativeWidth: 0.2899, relativeHeight: 0.1233, colonne: 1 },
+  
+    { id: "critere-1", relativeTop: 0.1134, relativeLeft: 0.3713, relativeWidth: 0.2801, relativeHeight: 0.0592, colonne: 2 },
+    { id: "critere-2", relativeTop: 0.2392, relativeLeft: 0.3713, relativeWidth: 0.2801, relativeHeight: 0.0604, colonne: 2 },
+    { id: "critere-3", relativeTop: 0.3033, relativeLeft: 0.3713, relativeWidth: 0.2801, relativeHeight: 0.0592, colonne: 2 },
+    { id: "critere-4", relativeTop: 0.3662, relativeLeft: 0.3713, relativeWidth: 0.2801, relativeHeight: 0.0604, colonne: 2 },
+    { id: "critere-5", relativeTop: 0.4932, relativeLeft: 0.3713, relativeWidth: 0.2801, relativeHeight: 0.0604, colonne: 2 },
+    { id: "critere-6", relativeTop: 0.6202, relativeLeft: 0.3713, relativeWidth: 0.2801, relativeHeight: 0.0592, colonne: 2 },
+    { id: "critere-7", relativeTop: 0.6831, relativeLeft: 0.3713, relativeWidth: 0.2801, relativeHeight: 0.0604, colonne: 2 },
+    { id: "critere-8", relativeTop: 0.7472, relativeLeft: 0.3713, relativeWidth: 0.2801, relativeHeight: 0.0592, colonne: 2 },
+    { id: "critere-9", relativeTop: 0.9371, relativeLeft: 0.3713, relativeWidth: 0.2801, relativeHeight: 0.0592, colonne: 2 },
+   
+    { id: "level-1", relativeTop: 0.0493, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0604, colonne: 3 },
+    { id: "level-2", relativeTop: 0.1134, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0592, colonne: 3 },
+    { id: "level-3", relativeTop: 0.1763, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0592, colonne: 3 },
+    { id: "level-4", relativeTop: 0.3033, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0592, colonne: 3 },
+    { id: "level-5", relativeTop: 0.4303, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0592, colonne: 3 },
+    { id: "level-6", relativeTop: 0.4932, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0604, colonne: 3 },
+    { id: "level-7", relativeTop: 0.5561, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0604, colonne: 3 },
+    { id: "level-8", relativeTop: 0.6831, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0604, colonne: 3 },
+    { id: "level-9", relativeTop: 0.8101, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0604, colonne: 3 },
+    { id: "level-10", relativeTop: 0.8730, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0604, colonne: 3 },
+    { id: "level-11", relativeTop: 0.9371, relativeLeft: 0.6564, relativeWidth: 0.3388, relativeHeight: 0.0592, colonne: 3 }
+];
+
+// Éléments déplaçables pour le tableau 
+window.tableauElements = [
+    { id: "element-f1", nom: "Permettre aux élèves de présenter leur sujet au public", colonne: 1 },
+    { id: "element-f2", nom: "Respecter le temps imparti", colonne: 1 },
+    { id: "element-f3", nom: "Être compatible avec le matériel du collège", colonne: 1 },
+    { id: "element-f4", nom: "Être agréable à regarder pour le public", colonne: 1 },
+    { id: "element-f5", nom: "Faciliter la présentation orale des élèves", colonne: 1 },
+
+    { id: "element-c1", nom: "Contenu des diapositives suivantes", colonne: 2 },
+    { id: "element-c2", nom: "Répartition du temps de parole", colonne: 2 },
+    { id: "element-c3", nom: "Nombre de diapositives", colonne: 2 },
+    { id: "element-c4", nom: "Format du fichier", colonne: 2 },
+    { id: "element-c5", nom: "Support de stockage", colonne: 2 },
+    { id: "element-c6", nom: "Police d’écriture", colonne: 2 },
+    { id: "element-c7", nom: "Taille d’écriture", colonne: 2 },
+    { id: "element-c8", nom: "Cohérence visuelle", colonne: 2 },
+    { id: "element-c9", nom: "Présence d’animation ou transition", colonne: 2  },
+
+    { id: "element-l1", nom: "titre, noms, prénoms, classe et 1 image", colonne: 3  },
+    { id: "element-l2", nom: "titres, mots-clés, images avec légendes", colonne: 3  },
+    { id: "element-l3", nom: "5 minutes", colonne: 3  },
+    { id: "element-l4", nom: "8 maximum", colonne: 3  },
+    { id: "element-l5", nom: "16:9", colonne: 3  },
+    { id: "element-l6", nom: "Clé USB ou réseau du collège", colonne: 3  },
+    { id: "element-l7", nom: "Fond sobre, texte contrasté, couleurs adaptées", colonne: 3  },
+    { id: "element-l8", nom: "24 pts minimum", colonne: 3  },
+    { id: "element-l9", nom: "4 maximum", colonne: 3  },
+    { id: "element-l10", nom: "Mots-clés et images", colonne: 3  },
+    { id: "element-l11", nom: "Non autorisée", colonne: 3  }
 ];
 
 
-// Correspondances attendues pour l'étape 1 (zones bleues)
-window.placementsCorrects = [
-    { nom: "Public (élèves et professeur)", zone: "zone-1" },
-    { nom: "FP1", zone: "zone-2" },
-    { nom: "FC3", zone: "zone-3" },
-    { nom: "FC4", zone: "zone-4" },
-    { nom: "Diaporama", zone: "zone-5" },
-    { nom: "FC2", zone: "zone-6" },
-    { nom: "Matériel du collège", zone: "zone-7" },
-    { nom: "Temps", zone: "zone-8" }
-];
+// Fusion des données dans la structure attendue
+window.exerciceData.diagrammezone = window.diagrammezone;
+window.exerciceData.diagrammeElements = window.diagrammeElements;
+window.exerciceData.tableauzone = window.tableauzone;
+window.exerciceData.tableauElements = window.tableauElements;
 
 
-
-
-
-// TABLEAU :
-
-window.tableauzones1 = [
-    // Fonctions (zones rouges)
-    { id: 'fonction-1', top: 40, left: 47, width: 178, height: 100, etape1: true},
-    { id: 'fonction-2', top: 143, left: 47, width: 178, height: 151, etape1: true },
-    { id: 'fonction-3', top: 297, left: 47, width: 178, height: 152, etape1: true },
-    { id: 'fonction-4', top: 451, left: 47, width: 178, height: 255, etape1: true },
-    { id: 'fonction-5', top: 708, left: 47, width: 178, height: 100, etape1: true },
-]
-
-window.tableauzones2 = [
-
-    // Critères (zones vertes - colonne du milieu)
-    { id: 'critere-1', top: 92, left: 228, width: 172, height: 48, etape2: true },
-    { id: 'critere-2', top: 194, left: 228, width: 172, height: 49, etape2: true },
-    { id: 'critere-3', top: 246, left: 228, width: 172, height: 48, etape2: true },
-    { id: 'critere-4', top: 297, left: 228, width: 172, height: 49, etape2: true },
-    { id: 'critere-5', top: 400, left: 228, width: 172, height: 49, etape2: true },
-    { id: 'critere-6', top: 503, left: 228, width: 172, height: 48, etape2: true },
-    { id: 'critere-7', top: 554, left: 228, width: 172, height: 49, etape2: true },
-    { id: 'critere-8', top: 606, left: 228, width: 172, height: 48, etape2: true },
-    { id: 'critere-9', top: 760, left: 228, width: 172, height: 48, etape2: true },
-
-    // Niveaux (zones vertes - colonne de droite)
-    { id: 'level-1', top: 40, left: 403, width: 208, height: 49, etape2: true },
-    { id: 'level-2', top: 92, left: 403, width: 208, height: 48, etape2: true },
-    { id: 'level-3', top: 143, left: 403, width: 208, height: 48, etape2: true },
-    { id: 'level-4', top: 246, left: 403, width: 208, height: 48, etape2: true },
-    { id: 'level-5', top: 349, left: 403, width: 208, height: 48, etape2: true },
-    { id: 'level-6', top: 400, left: 403, width: 208, height: 49, etape2: true },
-    { id: 'level-7', top: 451, left: 403, width: 208, height: 49, etape2: true },
-    { id: 'level-8', top: 554, left: 403, width: 208, height: 49, etape2: true },
-    { id: 'level-9', top: 657, left: 403, width: 208, height: 49, etape2: true },
-    { id: 'level-10', top: 708, left: 403, width: 208, height: 49, etape2: true },
-    { id: 'level-11', top: 760, left: 403, width: 208, height: 48, etape2: true }
-];
-
-window.tableauElementsEtape1 = [
-    { id: 'draggable-f1', nom: 'Permettre aux élèves de présenter leur sujet au public' },
-    { id: 'draggable-f2', nom: 'Respecter le temps imparti' },
-    { id: 'draggable-f3', nom: 'Être compatible avec le matériel du collège' },
-    { id: 'draggable-f4', nom: 'Être agréable à regarder pour le public' },
-    { id: 'draggable-f5', nom: 'Faciliter la présentation orale des élèves' }
-
-];
-
-window.tableauElementsEtape2 = [
-    { id: 'draggable-c1', nom: 'Contenu des diapositives suivantes' },
-    { id: 'draggable-c2', nom: 'Répartition du temps de parole' },
-    { id: 'draggable-c3', nom: 'Nombre de diapositives' },
-    { id: 'draggable-c4', nom: 'Format du fichier' },
-    { id: 'draggable-c5', nom: 'Support de stockage' },
-    { id: 'draggable-c6', nom: 'Police d’écriture' },
-    { id: 'draggable-c7', nom: 'Taille d’écriture' },
-    { id: 'draggable-c8', nom: 'Cohérence visuelle' },
-    { id: 'draggable-c9', nom: 'Présence d’animation ou transition' },
-
-    { id: 'draggable-l1', nom: 'titre, noms, prénoms, classe et 1 image' },
-    { id: 'draggable-l2', nom: 'titres, mots-clés, images avec légendes' },
-    { id: 'draggable-l3', nom: '5 minutes' },
-    { id: 'draggable-l4', nom: '8 maximum' },
-    { id: 'draggable-l5', nom: '16:9' },
-    { id: 'draggable-l6', nom: 'Clé USB ou réseau du collège' },
-    { id: 'draggable-l7', nom: 'Fond sobre, texte contrasté, couleurs adaptées' },
-    { id: 'draggable-l8', nom: '24 pts minimum' },
-    { id: 'draggable-l9', nom: '4 maximum' },
-    { id: 'draggable-l10', nom: 'Mots-clés et images' },
-    { id: 'draggable-l11', nom: 'Non autorisée' }
-
-];
-
-
-// Correspondances correctes pour l'étape 1 : Fonctions
-window.placementsCorrectsTableauEtape1 = {
-    'fonction-1': 'draggable-f1',
-    'fonction-2': 'draggable-f2',
-    'fonction-3': 'draggable-f3',
-    'fonction-4': 'draggable-f4',
-    'fonction-5': 'draggable-f5'
-};
-
-// Correspondances correctes pour l'étape 2 : Critères et niveaux
-window.placementsCorrectsTableauEtape2 = {
-    'critere-1': 'draggable-c1',
-    'critere-2': 'draggable-c2',
-    'critere-3': 'draggable-c3',
-    'critere-4': 'draggable-c4',
-    'critere-5': 'draggable-c5',
-    'critere-6': 'draggable-c6',
-    'critere-7': 'draggable-c7',
-    'critere-8': 'draggable-c8',
-    'critere-9': 'draggable-c9',
-
-    'level-1': 'draggable-l1',
-    'level-2': 'draggable-l2',
-    'level-3': 'draggable-l3',
-    'level-4': 'draggable-l4',
-    'level-5': 'draggable-l5',
-    'level-6': 'draggable-l6',
-    'level-7': 'draggable-l7',
-    'level-8': 'draggable-l8',
-    'level-9': 'draggable-l9',
-    'level-10': 'draggable-l10',
-    'level-11': 'draggable-l11'
-
-};
