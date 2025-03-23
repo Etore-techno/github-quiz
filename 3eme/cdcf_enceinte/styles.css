@@ -1,0 +1,245 @@
+/* Suppression des marges et paddings par défaut */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+/* ✅ Taille de référence stable */
+html {
+    font-size: 16px; /* Base stable */
+}
+
+html, body {
+    touch-action: manipulation;
+}
+
+.ligne-noire {
+    border: none; /* Supprime la bordure par défaut */
+    height: 1vw; /* Épaisseur de la ligne */
+    background-color: black; /* Couleur noire */
+    width: 50%; /* Largeur de la ligne */
+    position: relative;
+    margin: 2vw auto; 
+
+}
+
+
+
+/* ✅ Conteneur principal */
+.header {
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative; /* ✅ Correction : Supprimer `justify-content: space-evenly;` */
+    overflow: hidden;
+    margin: 0 auto; /* Centre horizontalement */
+}
+
+/* ✅ Espaces fixes basés sur `em` */
+.space-top {
+    height: 1vw; /* 🔥 Stable */
+    flex-shrink: 0;
+}
+
+.space-between {
+    height: 1vw; /* 🔥 Stable */
+    flex-shrink: 0;
+}
+
+.space-bottom {
+    height: 1vw; /* 🔥 Stable */
+    flex-shrink: 0;
+}
+
+/* ✅ Titre et bouton avec tailles fixes */
+.titre {
+    font-family: "Poppins", sans-serif; /* Typographie moderne */
+    font-size: 2.5vw; /* 🔥 Stable */
+    font-weight: 700; /* Gras */
+    text-align: center;
+    color: #333; /* Gris foncé moderne */
+    flex-shrink: 0;
+}
+
+.bouton-valider {
+    font-size: 1.8vw;
+    border-radius: 1vw;
+    border: 0.2vw solid black;
+    background: linear-gradient(135deg, #007bff, #0056b3); /* Dégradé bleu */
+    color: white;
+    cursor: pointer;
+    font-weight: 600; /* Texte un peu épais */
+    flex-shrink: 0;
+    margin: 0 1vw;
+    padding: 0.5vw 1vw; /* 🔹 Plus d’espace horizontal */
+    transition: all 0.3s ease-in-out; /* Animation fluide */
+}
+
+/* ✅ Effet au survol */
+.bouton-valider:hover {
+    background: linear-gradient(135deg, #0056b3, #003d80); /* Bleu plus foncé */
+    transform: scale(1.05); /* Effet zoom léger */
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3); /* Ombre plus marquée */
+}
+
+/* ✅ Empêche le bouton de bouger en zoomant */
+.zone-validate {
+    height: auto;
+    max-height: none;
+
+    display: flex;
+    flex-direction: row; /* ✅ Alignement horizontal */
+    justify-content: flex-start; /* ✅ Place le bouton à gauche */
+    align-items: center; /* ✅ Centre verticalement */
+    width: 100%; /* ✅ Prend toute la largeur du header */
+    
+    flex-shrink: 0;
+    overflow: visible;
+
+}
+
+
+
+/* ✅ Messages */
+.message {
+    font-size: 1.8vw; /* ✅ Taille fixe */
+    font-weight: 500;
+    text-align: center;
+    flex-shrink: 0;
+    color: #0056b3; /* Bleu profond */
+    background-color: rgba(0, 123, 255, 0.1); /* Bleu clair transparent */
+    font-family: "Poppins", sans-serif;
+    width: fit-content;
+    max-width: 80%;
+
+}
+
+
+
+/* ✅ Correction sur .main-container */
+.main-container, .main-container2 {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 2vw;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: visible;
+    zoom: 1;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+#diagramme-container img, #tableau-container img {
+    min-width: 100%;
+    min-height: auto;
+}
+
+/* ✅ Image et zones de dépôt */
+#diagramme-container, #tableau-container {
+    height: auto;
+    position: relative;
+    overflow: visible;
+}
+
+
+
+/* ✅ Zones de dépôt */
+.dropzone,  .dropzone2 {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-weight: bold;
+    overflow: hidden;
+    white-space: normal;
+    word-wrap: break-word;
+
+    /* 🔹 Taille des bordures et arrière-plan fixes au zoom */
+    background-color: rgba(0, 255, 0, 0.2);
+    
+    /* ✅ Suppression des marges inutiles */
+    padding: 0;
+    margin: 0;
+
+    /* ✅ Taille du texte dynamique */
+    font-size: 1vw;
+    line-height: 1.1em;
+}
+
+.dropzone span, .dropzone2 span {
+    display: block;
+    width: 100%;
+    padding: 0.1em; /* ✅ Plus de px */
+    pointer-events: none; /* ✅ Ignore les clics sur le texte */
+}
+
+/* ✅ Menu de sélection */
+#selection-menu {
+    position: absolute;
+    background: white;
+    border: 0.15em solid black; /* ✅ Fixe */
+    padding: 0.8em; /* ✅ Adapté */
+    z-index: 1000;
+    display: none;
+    box-shadow: 0.2em 0.2em 0.8em rgba(0, 0, 0, 0.3); /* ✅ Plus de px */
+    min-width: 15vw; /* ✅ Taille minimale relative */
+}
+
+#selection-menu2 {
+    display: none;
+    position: absolute;
+    background: white;
+    border: 0.15em solid black; /* ✅ Fixe */
+    padding: 0.8em; /* ✅ Adapté */    z-index: 1000;
+    width: auto;
+    height: auto;
+    box-shadow: 0.2em 0.2em 0.8em rgba(0, 0, 0, 0.2);
+    overflow: auto; /* ✅ Ajoute un défilement si le menu est trop grand */
+}
+
+
+
+/* ✅ Ajustement des éléments dans le conteneur */
+.selection-button, .selection-button2 {
+    display: block;
+    width: 100%;
+    margin: 0.5em 0; /* ✅ Espacement cohérent et stable */
+    padding: 0.5em;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+.selection-button:hover, .selection-button2:hover {
+    background-color: #45a049;
+}
+
+
+.menu-auto-size {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    height: auto;
+    box-sizing: border-box;
+}
+
