@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Les types de portes</title>
+  <link rel="stylesheet" href="style2.css" />
+</head>
+<body>
+  <div class="total-container">
+    <div class="main-container">
+      <div class="left-column">
+        <div class="home-icon" onclick="window.location.href='index.html'">
+            <img src="images/home.png" alt="Accueil" title="Retour à l'accueil">
+        </div>
+        <div class="thumbnail" onclick="afficherInfos('pvc')">
+          <p>Porte en PVC</p>
+        </div>
+        <div class="thumbnail" onclick="afficherInfos('bois_standard')">
+          <p>Porte en bois</p>
+        </div>
+        <div class="thumbnail" onclick="afficherInfos('bois_renforce')">
+          <p>Porte en bois renforcé</p>
+        </div>
+        <div class="thumbnail" onclick="afficherInfos('acier')">
+          <p>Porte en acier</p>
+        </div>
+        <div class="thumbnail" onclick="afficherInfos('haute_performance')">
+          <p>Porte haute performance</p>
+        </div>
+      </div>
+
+      <div class="right-column">
+        <h1 class="titre-principal">Les types de portes d’entrée</h1>
+        <div id="info-panel" class="info-panel">
+          <div class="texte-colonne">
+            <h2 id="titre-porte">Porte en PVC</h2>
+
+            <h3>Explication :</h3>
+            <p id="explication">
+La porte en PVC est fabriquée à partir d’un plastique appelé polychlorure de vinyle. Ce matériau est léger, solide et résiste bien à l’humidité. Il ne rouille pas, ne se déforme pas facilement et ne demande presque aucun entretien. Le PVC peut être coloré ou moulé pour imiter d’autres matériaux, comme le bois.
+</p>
+<p id="epaisseur" class="texte-epaisseur">
+  <strong>Épaisseur :</strong> <span>30 mm — épaisseur la plus courante pour ce type de porte</span>
+</p>
+
+<h3>Historique :</h3>
+            <p id="historique">
+Les portes en PVC sont apparues dans les années 1970. Elles se sont rapidement répandues dans les maisons grâce à leur prix abordable, leur facilité d’installation et leur bonne tenue dans le temps.
+</p>
+          </div>
+          <div class="image-colonne">
+            <img id="image-explication" src="images/explication_pvc.jpg" alt="Image explication" />
+            <img id="image-historique" src="images/historique_pvc.jpg" alt="Image historique" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const donneesPortes = {
+    "pvc": {
+      titre: "Porte en PVC",
+      epaisseur: "30 mm — épaisseur la plus courante pour ce type de porte",
+      explication: "La porte en PVC est fabriquée à partir d’un plastique appelé polychlorure de vinyle. Ce matériau est léger, solide et résiste bien à l’humidité. Il ne rouille pas, ne se déforme pas facilement et ne demande presque aucun entretien. Le PVC peut être coloré ou moulé pour imiter d’autres matériaux, comme le bois.",
+      historique: "Les portes en PVC sont apparues dans les années 1970. Elles se sont rapidement répandues dans les maisons grâce à leur prix abordable, leur facilité d’installation et leur bonne tenue dans le temps."
+    },
+    "bois_standard": {
+      titre: "Porte en Bois",
+      epaisseur: "40 mm — épaisseur la plus courante pour ce type de porte",
+      explication: "Ce type de porte est réalisé en bois massif ou en panneaux collés, à partir d’essences comme le pin ou le sapin. Le bois offre un bon confort thermique et un aspect chaleureux. Ces portes peuvent être peintes ou vernies selon le style recherché. Le bois nécessite un entretien régulier pour bien vieillir.",
+      historique: "Le bois est l’un des premiers matériaux utilisés pour fabriquer des portes. Encore aujourd’hui, les portes en bois restent courantes, surtout dans les maisons traditionnelles ou de campagne."
+    },
+    "bois_renforce": {
+      titre: "Porte en bois renforcé",
+      epaisseur: "55 mm — épaisseur la plus courante pour ce type de porte",
+      explication: "La porte en bois renforcé utilise un bois solide comme le chêne ou un bois composite, associé à des éléments internes plus rigides : plaques métalliques, panneaux multicouches ou structures renforcées. Elle conserve l’apparence du bois naturel, tout en apportant plus de stabilité, de confort et de durabilité.",
+      historique: "Ce type de porte est apparu dans les années 1990, pour répondre aux besoins de maisons plus performantes. Elle combine le style traditionnel du bois avec des matériaux modernes à l’intérieur."
+    },
+    "acier": {
+      titre: "Porte en acier",
+      epaisseur: "40 mm — épaisseur la plus courante pour ce type de porte",
+      explication: "La porte en acier est faite de tôles métalliques pliées puis assemblées. L’acier peut être peint ou recouvert d’un film décoratif. Ce type de porte est souvent utilisé dans les immeubles, caves ou bâtiments anciens, pour sa solidité et sa durabilité.",
+      historique: "D’abord utilisée dans l’industrie, la porte en acier a ensuite été adoptée dans les logements collectifs pour des accès secondaires. Sa fabrication simple et sa résistance expliquent sa large utilisation."
+    },
+    "haute_performance": {
+      titre: "Porte haute performance",
+      epaisseur: "65 mm — épaisseur la plus courante pour ce type de porte",
+      explication: "Cette porte est fabriquée avec plusieurs matériaux : une coque extérieure en fibre de verre, un cœur en mousse rigide et un cadre métallique renforcé (souvent en acier). Elle isole bien, résiste aux chocs et garde sa forme dans le temps. Elle peut avoir différents styles et finitions.",
+      historique: "Apparue dans les années 2000, cette porte a été conçue pour répondre aux besoins des maisons neuves : bon confort, solidité et modernité. Elle est de plus en plus utilisée dans les constructions récentes."
+    }
+  };
+
+  function afficherInfos(type) {
+    const data = donneesPortes[type];
+    document.getElementById("titre-porte").textContent = data.titre;
+    document.getElementById("epaisseur").innerHTML = `<strong>Épaisseur :</strong> <span>${data.epaisseur}</span>`;
+    document.getElementById("explication").textContent = data.explication;
+    document.getElementById("historique").textContent = data.historique;
+    document.getElementById("image-explication").src = `images/explication_${type}.jpg`;
+    document.getElementById("image-historique").src = `images/historique_${type}.jpg`;
+  }
+</script>
+
+</body>
+</html>
