@@ -2,7 +2,7 @@ const projectile = document.getElementById("projectile");
 const vitre = document.getElementById("vitre");
 const hauteurAffichee = document.getElementById("hauteur-affichee");
 const energieCalc = document.getElementById("energieCalc");
-const etatVitre = ;
+const etatVitre = document.getElementById("etatVitre");
 const scene = document.getElementById("scene");
 const materiauSelect = document.getElementById("materiau");
 const impactToggle = document.getElementById("impactToggle");
@@ -338,150 +338,49 @@ function afficherEtat(materiau, niveau) {
   etatEl.className = `etat-vitre ${classe}`;
 }
 
-function ajusterTextesParRatio() {
-  const largeur = window.innerWidth;
-  const hauteur = window.innerHeight;
-
-  const ratioActuel = largeur / hauteur;
-  const ratioReference = 2; // à adapter à ton écran parfait
-
-  let facteur = ratioActuel / ratioReference;
-
-  // On limite le facteur à 1 (jamais plus grand que la taille normale)
-  facteur = Math.min(facteur, 1);
-
-  // On applique ce facteur aux textes en vh
-  document.querySelectorAll(".titre-1ligne").forEach(el => {
-    el.style.fontSize = `${5 * facteur}vh`; 
-  });
-
-  document.querySelectorAll(".info-button").forEach(el => {
-    el.style.fontSize = `${2 * facteur}vh`; 
-  });
-
-  document.querySelectorAll(".soustitre-1ligne").forEach(el => {
-    el.style.fontSize = `${3* facteur}vh`; 
-  });
-
-  document.querySelectorAll(".soustitre-reglages").forEach(el => {
-    el.style.fontSize = `${4* facteur}vh`; 
-  });
-
-  document.querySelectorAll(".textinfos").forEach(el => {
-    el.style.fontSize = `${2.7 * facteur}vh`; 
-  });
-
-  document.querySelectorAll(".texte-1ligne").forEach(el => {
-    el.style.fontSize = `${3 * facteur}vh`; 
-  });
-
-  document.querySelectorAll("#btn-simuler").forEach(el => {
-    el.style.fontSize = `${3 * facteur}vh`; 
-  });
-
-  document.querySelectorAll(".option").forEach(el => {
-    el.style.fontSize = `${2.4 * facteur}vh`; 
-  });
-  document.querySelectorAll(".option-group").forEach(el => {
-    el.style.fontSize = `${2.7 * facteur}vh`; 
-  });
-
-  document.querySelectorAll(".selected::after").forEach(el => {
-    el.style.fontSize = `${2.2 * facteur}vh`; 
-  });
-  
-  document.querySelectorAll(".fake-select").forEach(el => {
-    el.style.fontSize = `${2.5 * facteur}vh`; 
-  });
-
-  document.querySelectorAll(".arrow").forEach(el => {
-    el.style.fontSize = `${2 * facteur}vh`; 
-  });
-
-  document.querySelectorAll("#masse").forEach(el => {
-    el.style.fontSize = `${2.5 * facteur}vh`; 
-  });
-
-  document.querySelectorAll("#materiau").forEach(el => {
-    el.style.fontSize = `${2.5 * facteur}vh`; 
-  });
-
-  document.querySelectorAll("#hauteur-affichee").forEach(el => {
-    el.style.fontSize = `${2.5 * facteur}vh`; 
-  });
-
-    document.querySelectorAll(".switch-labels span").forEach(el => {
-    el.style.fontSize = `${2.5 * facteur}vh`; 
-  });
-
-
-}
-
-function ajusterSliderParRatio() {
-  const largeur = window.innerWidth;
-  const hauteur = window.innerHeight;
-  const ratioActuel = largeur / hauteur;
-  const ratioReference = 1.78; // ton ratio de référence idéal
-  let facteur = ratioActuel / ratioReference;
-  facteur = Math.min(facteur, 1); // on limite pour ne pas agrandir
-
-  // Curseur (le rond blanc)
-  const sliderBouton = document.querySelector(".slider.round::before"); // ne fonctionne pas avec ::before en JS
-  const slider = document.querySelector(".slider.round");
-
-  if (slider) {
-    // largeur et hauteur de la barre
-    slider.style.height = `${2.6 * facteur}vh`;
-    slider.style.borderRadius = `${1.3 * facteur}vh`;
-    slider.style.borderWidth = `${0.5 * facteur}vh`;
-
-    // Curseur interne (le rond blanc) — solution JS directe :
-    const curseur = slider.querySelector("::before"); // ⚠️ Problème ! ::before n’est pas accessible par JS
-    // 👉 à la place, transforme le ::before en un vrai <span> dans HTML/CSS
-  }
-
-  // Solution alternative (recommandée) : dans le CSS, remplace le ::before par un vrai élément :
-  // <span class="curseur-rond"></span> à l’intérieur du slider.
-}
-
-
 function toggleInfo(id) {
-  const target = document.getElementById(id);
-  const allInfos = document.querySelectorAll('.tooltip-box');
-
-  // Ferme les autres bulles
-  allInfos.forEach(box => {
-    if (box !== target) box.style.display = 'none';
+  // Fermer les autres bulles
+  document.querySelectorAll('.tooltip-box').forEach(el => {
+    if (el.id !== id) el.style.display = 'none';
   });
 
-  const button = document.querySelector(`[onclick="toggleInfo('${id}')"]`);
-  const rect = button.getBoundingClientRect();
-
-  // Affiche temporairement
-  target.style.display = 'block';
-
-  // Positionnement
-  const zoneWidth = target.offsetWidth;
-  const zoneHeight = target.offsetHeight;
-
-  if (id === 'info-reglages') {
-    target.style.top = `${window.scrollY + rect.top}px`;
-    target.style.left = `${window.scrollX + rect.right}px`;
-  } else {
-    const top = window.scrollY + rect.bottom - zoneHeight;
-    const left = window.scrollX + rect.right - zoneWidth;
-    target.style.top = `${top}px`;
-    target.style.left = `${left}px`;
+  const tooltip = document.getElementById(id);
+  const visible = tooltip.style.display === 'block';
+  if (visible) {
+    tooltip.style.display = 'none';
+    return;
   }
 
-  // Applique textFit après affichage
-  textFit(target.querySelectorAll(".bigtext"), {
-    alignVert: false,
-    multiLine: true,
-    maxFontSize: 18,
-    minFontSize: 8
-  });
+  // Affiche la bulle pour pouvoir mesurer sa taille
+  tooltip.style.display = 'block';
+  tooltip.style.visibility = 'hidden'; // invisible temporairement
+  tooltip.style.left = '0px';
+  tooltip.style.top = '0px';
+
+  const cadre = document.getElementById('cadre-fixe');
+  let cible, top, left;
+
+const decalageX = 15; // espace horizontal en pixels
+
+if (id === 'info-reglages') {
+  cible = document.getElementById('bloc-reglages');
+  top = cible.offsetTop;
+  left = cible.offsetLeft + cible.offsetWidth + decalageX;
+} else if (id === 'info-energie') {
+  cible = document.getElementById('bloc-energie');
+  top = cible.offsetTop + cible.offsetHeight - tooltip.offsetHeight;
+  left = cible.offsetLeft + cible.offsetWidth + decalageX;
+} else if (id === 'info-etat') {
+  cible = document.getElementById('bloc-etat');
+  top = cible.offsetTop + cible.offsetHeight - tooltip.offsetHeight;
+  left = cible.offsetLeft + cible.offsetWidth + decalageX;
 }
+
+  tooltip.style.top = `${top}px`;
+  tooltip.style.left = `${left}px`;
+  tooltip.style.visibility = 'visible';
+}
+
 
 
 // Fermer les infos si on clique ailleurs
@@ -539,13 +438,51 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
-window.onload = () => {
-  ajusterTextesParRatio();
-  ajusterSliderParRatio();
-  // autres fonctions éventuelles...
-};
 
-window.onresize = () => {
-  ajusterTextesParRatio();
-  ajusterSliderParRatio();
-};
+function scaleFixe() {
+  const cadre = document.getElementById("cadre-fixe");
+  const ratioRef = 1920 / 1080;
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  const ratioEcran = w / h;
+
+  let scale;
+  if (ratioEcran > ratioRef) {
+    scale = h / 1080;
+  } else {
+    scale = w / 1920;
+  }
+
+  cadre.style.transform = `scale(${scale})`;
+}
+
+function centrerCadreFixe() {
+  const cadre = document.getElementById("cadre-fixe");
+  const largeurEcran = window.innerWidth;
+  const hauteurEcran = window.innerHeight;
+  const largeurCadre = 1920;
+  const hauteurCadre = 1080;
+
+  const scale = Math.min(largeurEcran / largeurCadre, hauteurEcran / hauteurCadre);
+
+  // Appliquer le scale
+  cadre.style.transform = `scale(${scale})`;
+
+  // Calcul des marges restantes pour centrer
+  const margeHorizontale = (largeurEcran - largeurCadre * scale) / 2;
+  const margeVerticale = (hauteurEcran - hauteurCadre * scale) / 2;
+
+  cadre.style.left = `${margeHorizontale}px`;
+  cadre.style.top = `${margeVerticale}px`;
+}
+
+window.addEventListener('resize', () => {
+  scaleFixe();
+  centrerCadreFixe();  // ✅ appeler le centrage en même temps que le scale
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  scaleFixe();
+  centrerCadreFixe();
+});
+

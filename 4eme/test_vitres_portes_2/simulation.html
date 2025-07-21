@@ -2,14 +2,12 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
 
 
   <title>Simulation de résistance à l’impact</title>
   <link rel="stylesheet" href="style.css">
 </head>
-
-<script src="jquery-3.7.0.min.js"></script>
 
 <body>
 <div id="portrait-warning">Veuillez tourner votre appareil en mode paysage.</div>
@@ -31,8 +29,8 @@
     <div class="controls">
 
       <!-- Bloc Réglages -->
-      <div class="section-card">
-        <div class="reglages-header">
+<div id="bloc-reglages" class="section-card">
+          <div class="reglages-header">
 <div class="soustitre-reglages">🔧 Réglages</div>
           <span class="info-button" onclick="toggleInfo('info-reglages')">?</span>
         </div>
@@ -99,8 +97,8 @@
       </div>
 
       <!-- Bloc Énergie -->
-      <div class="section-card-energy">
-        <div class="soustitre-1ligne">
+<div id="bloc-energie" class="section-card-energy">
+          <div class="soustitre-1ligne">
           ⚡ Énergie : 
           <span id="energieCalc">...</span>
         </div>
@@ -118,8 +116,8 @@
       </div>
 
       <!-- Bloc État -->
-      <div class="section-card-energy">
-        <div class="soustitre-1ligne">
+<div id="bloc-etat" class="section-card-etat">
+          <div class="soustitre-1ligne">
           🧩 État du matériau : 
           <span id="etatVitre" class="etat-vitre">...</span>
         </div>
