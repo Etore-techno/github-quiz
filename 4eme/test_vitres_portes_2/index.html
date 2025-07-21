@@ -1,29 +1,66 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Découverte des matériaux</title>
-  <link rel="stylesheet" href="style2.css">
+  <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>Les familles de matériaux</title>
+  <link rel="stylesheet" href="style2.css" />
 </head>
 <body>
-  <h1>Découverte des matériaux</h1>
-  <div class="menu-container">
-        <a href="familles.html" class="menu-item">
-      <img src="images/familles.png" alt="Familles">
-      <span>Familles</span>
-    </a>
-    <a href="vitres.html" class="menu-item">
-      <img src="images/vitres.png" alt="Vitres">
-      <span>Vitres</span>
-    </a>
-    <a href="portes.html" class="menu-item">
-      <img src="images/portes.png" alt="Portes">
-      <span>Portes</span>
-    </a>
-        <a href="simulation.html" class="menu-item">
-      <img src="images/simulation.png" alt="Simulation">
-      <span>Familles</span>
-    </a>
+
+  <div id="portrait-warning">Veuillez tourner votre appareil en mode paysage.</div>
+
+  <div id="cadre-fixe">
+    <!-- ici tu gardes tout ton contenu inchangé (total-container, etc.) -->
+
+  <div class="total-container">
+    <div class="main-container">
+      <div class="left-column">
+        <div class="home-icon" onclick="window.location.href='index.html'">
+            <img src="images/home.png" alt="Accueil" title="Retour à l'accueil">
+        </div>
+        <div class="thumbnail" onclick="window.location.href='familles.html'">
+          <p>Les familles de matériaux</p>
+        </div>
+        <div class="thumbnail" onclick="window.location.href='vitres.html'">
+          <p>Les types de vitrages</p>
+        </div>
+        <div class="thumbnail" onclick="window.location.href='portes.html'">
+          <p>Les types de portes d’entrée</p>
+        </div>
+        <div class="thumbnail" onclick="window.location.href='simulation.html'">
+          <p>Simulation de résistance à l’impact</p>
+        </div>
+
+      </div>
+
+      <div class="right-column">
+        <h1 class="titre-principal">Titre principal</h1>
+        <div id="info-panel" class="info-panel">
+          <div class="texte-colonne">
+            <h2 id="titre-familles">Titre secondaire</h2>
+
+            <h3>Sous-titre :</h3>
+            <p id="explication">
+ Blabla.
+</p>
+
+<h3>Sous-titre 2 :</h3>
+            <p id="historique">
+ Blabla.
+</p>
+</div>
+          <div class="image-colonne">
+            <img id="image-explication" src="" alt="Image 1" />
+            <img id="image-historique" src="" alt="Image 2" />
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+  </div>
+
+<script src="script2.js" defer></script>
+
 </body>
 </html>

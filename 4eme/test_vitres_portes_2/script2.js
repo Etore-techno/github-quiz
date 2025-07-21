@@ -176,25 +176,22 @@ function centrerCadreFixe() {
 
 // Lors du chargement initial (avec un petit délai pour mobile)
 window.addEventListener('DOMContentLoaded', () => {
-  setTimeout(() => {
     scaleFixe();
     centrerCadreFixe();
-  }, 100);
 });
 
 // Lors du redimensionnement de la fenêtre (avec temporisation)
-let resizeTimeout;
 window.addEventListener('resize', () => {
-  clearTimeout(resizeTimeout);
-  resizeTimeout = setTimeout(() => {
     scaleFixe();
     centrerCadreFixe();
-  }, 100);
 });
 
 // Lors du changement d'orientation (mobile/tablette)
+let resizeTimeout;
+
 window.addEventListener('orientationchange', () => {
-  setTimeout(() => {
+    clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(() => {
     scaleFixe();
     centrerCadreFixe();
   }, 200);

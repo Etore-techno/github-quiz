@@ -483,7 +483,7 @@ window.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => {
     scaleFixe();
     centrerCadreFixe();
-  }, 100);
+  }, 10);
 });
 
 // Lors du redimensionnement de la fenêtre (avec temporisation)
@@ -493,7 +493,7 @@ window.addEventListener('resize', () => {
   resizeTimeout = setTimeout(() => {
     scaleFixe();
     centrerCadreFixe();
-  }, 100);
+  }, 10);
 });
 
 // Lors du changement d'orientation (mobile/tablette)
@@ -501,5 +501,5 @@ window.addEventListener('orientationchange', () => {
   setTimeout(() => {
     scaleFixe();
     centrerCadreFixe();
-  }, 200);
+  }, 20);
 });
