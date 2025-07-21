@@ -2,30 +2,34 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
   <title>Les types de vitrages</title>
   <link rel="stylesheet" href="style2.css" />
 </head>
 <body>
+  <div id="portrait-warning">Veuillez tourner votre appareil en mode paysage.</div>
+
+  <div id="cadre-fixe">
+    <!-- ici tu gardes tout ton contenu inchangé (total-container, etc.) -->
   <div class="total-container">
     <div class="main-container">
       <div class="left-column">
         <div class="home-icon" onclick="window.location.href='index.html'">
             <img src="images/home.png" alt="Accueil" title="Retour à l'accueil">
         </div>
-        <div class="thumbnail" onclick="afficherInfos('simple_vitrage')">
+        <div class="thumbnail" onclick="afficherInfosverre('simple_vitrage')">
           <p>Simple vitrage</p>
         </div>
-        <div class="thumbnail" onclick="afficherInfos('verre_feuillete')">
+        <div class="thumbnail" onclick="afficherInfosverre('verre_feuillete')">
           <p>Verre feuilleté</p>
         </div>
-        <div class="thumbnail" onclick="afficherInfos('verre_trempe')">
+        <div class="thumbnail" onclick="afficherInfosverre('verre_trempe')">
           <p>Verre trempé</p>
         </div>
-        <div class="thumbnail" onclick="afficherInfos('double_vitrage')">
+        <div class="thumbnail" onclick="afficherInfosverre('double_vitrage')">
           <p>Double vitrage</p>
         </div>
-        <div class="thumbnail" onclick="afficherInfos('polycarbonate')">
+        <div class="thumbnail" onclick="afficherInfosverre('polycarbonate')">
           <p>Vitrage polycarbonate</p>
         </div>
       </div>
@@ -56,61 +60,9 @@ Le simple vitrage est obtenu en chauffant un mélange de sable, de calcaire et d
       </div>
     </div>
   </div>
+  </div>
+  <script src="script2.js" defer></script>
 
-<script>
-  const donneesVerres = {
-    "simple_vitrage": {
-      titre: "Le simple vitrage",
-        epaisseur: "4 mm — épaisseur standard pour les anciens vitrages de fenêtres",
-        explication:
-          "Le simple vitrage est obtenu en chauffant un mélange de sable, de calcaire et de soude à environ 1500 °C jusqu’à fusion. Il forme une plaque de verre rigide, utilisée seule mais peu efficace pour l’isolation thermique.",
-        historique:
-          "Longtemps seul type de vitrage utilisé, le simple vitrage équipe les habitations depuis le XIXe siècle. Peu à peu délaissé à partir des années 1970, il reste encore présent dans certains bâtiments anciens ou non chauffés.",
-      },
-    "verre_feuillete": {
-      titre: "Le verre feuilleté",
-        epaisseur: "6,8 mm — composée de deux feuilles de 3 mm avec un intercalaire PVB de 0,38 mm",
-        explication:
-          "Le verre feuilleté est composé de deux vitres collées grâce à un ou plusieurs films plastiques (PVB). L’ensemble est pressé puis chauffé, formant un vitrage de sécurité qui retient les éclats en cas d’impact.",
-        historique:
-          "Développé au début du XXe siècle, le verre feuilleté a d’abord été utilisé dans les pare-brises d’automobile. Il est ensuite devenu un standard dans les bâtiments publics, banques et vitrines de magasins.",
-      },
-    "verre_trempe": {
-      titre: "Le verre trempé",
-        epaisseur: "6 mm — très courant pour les pare-douches, les portes vitrées intérieures et les parois",
-        explication:
-          "Le verre trempé est un verre chauffé à haute température puis refroidi rapidement. Ce traitement thermique renforce sa solidité et le rend plus sûr car il se brise en petits morceaux non coupants.",
-        historique:
-          "Le verre trempé est apparu au XXe siècle avec l’essor des technologies de sécurité. D’abord réservé à l’industrie, il est devenu courant dans l’ameublement, les cabines de douche et les espaces publics à partir des années 1960.",
-      },
-    "double_vitrage": {
-      titre: "Le double vitrage",
-        epaisseur: "24 mm — souvent utilisée dans les fenêtres de maison, deux vitres de 4 mm séparées par 16 mm de gaz isolant",
-        explication:
-          "Le double vitrage est constitué de deux vitres séparées par une lame d’air ou de gaz, enfermée dans une structure étanche. Ce système améliore les performances thermiques et acoustiques des fenêtres.",
-        historique:
-          "Apparu dans les années 1930, le double vitrage s’est répandu à partir des années 1970 grâce aux nouvelles réglementations thermiques. Il est aujourd’hui généralisé dans la construction neuve et les rénovations.",
-      },
-    "polycarbonate": {
-      titre: "Le vitrage polycarbonate",
-        epaisseur: "16 mm — très utilisé en toiture de véranda, abris ou verrières",
-        explication:
-          "Le polycarbonate est un matériau plastique fabriqué à partir de dérivés du pétrole. Il est moulé à chaud en plaques transparentes et rigides, appréciées pour leur légèreté et leur grande résistance aux chocs.",
-        historique:
-          "Créé dans les années 1950, le polycarbonate s’est d’abord imposé dans l’industrie. Il a ensuite trouvé sa place dans le bâtiment à partir des années 1980, notamment pour les toitures légères, abris ou verrières.",
-    }
-  };
-
-  function afficherInfos(type) {
-    const data = donneesVerres[type];
-    document.getElementById("titre-verre").textContent = data.titre;
-document.getElementById("epaisseur").innerHTML = `<strong>Épaisseur :</strong> <span>${data.epaisseur}</span>`;
-    document.getElementById("explication").textContent = data.explication;
-    document.getElementById("historique").textContent = data.historique;
-    document.getElementById("image-explication").src = `images/vitrage/explication_${type}.jpg`;
-    document.getElementById("image-historique").src = `images/vitrage/historique_${type}.jpg`;
-  }
-</script>
 
 </body>
 </html>
