@@ -476,13 +476,28 @@ function centrerCadreFixe() {
   cadre.style.top = `${margeVerticale}px`;
 }
 
-window.addEventListener('resize', () => {
-  scaleFixe();
-  centrerCadreFixe();  // ✅ appeler le centrage en même temps que le scale
-});
-
+// Lors du chargement initial (avec un petit délai pour mobile)
 window.addEventListener('DOMContentLoaded', () => {
-  scaleFixe();
-  centrerCadreFixe();
+  setTimeout(() => {
+    scaleFixe();
+    centrerCadreFixe();
+  }, 100);
 });
 
+// Lors du redimensionnement de la fenêtre (avec temporisation)
+let resizeTimeout;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(() => {
+    scaleFixe();
+    centrerCadreFixe();
+  }, 100);
+});
+
+// Lors du changement d'orientation (mobile/tablette)
+window.addEventListener('orientationchange', () => {
+  setTimeout(() => {
+    scaleFixe();
+    centrerCadreFixe();
+  }, 200);
+});
