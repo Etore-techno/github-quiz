@@ -310,6 +310,12 @@ input[type=number]::-webkit-outer-spin-button {
   margin: 0;
 }
 
+.noselect {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
 
 #masse {

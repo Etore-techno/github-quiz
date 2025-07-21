@@ -78,10 +78,12 @@ function decrementMasse() {
 
 projectile.addEventListener("mousedown", (e) => {
   isDragging = true;
+  document.body.classList.add("noselect");
 });
 
 document.addEventListener("mouseup", () => {
   isDragging = false;
+  document.body.classList.remove("noselect");
 });
 
 document.addEventListener("mousemove", (e) => {
@@ -102,6 +104,7 @@ pct = Math.min(48, Math.max(0, pct));
 
 projectile.addEventListener("touchstart", function (e) {
   isDragging = true;
+  document.body.classList.add("noselect");
   e.preventDefault(); // évite scroll
 }, { passive: false });
 
@@ -125,6 +128,7 @@ document.addEventListener("touchmove", function (e) {
 
 document.addEventListener("touchend", function () {
   isDragging = false;
+  document.body.classList.remove("noselect");
 });
 
 
