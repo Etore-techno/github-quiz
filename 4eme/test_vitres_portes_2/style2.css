@@ -254,3 +254,13 @@ margin: 40px 0;
   font-size: inherit;
 }
 
+
+@media screen and (orientation: portrait) {
+  #cadre-fixe {
+    display: none;
+  }
+
+  #portrait-warning {
+    display: block;
+  }
+}
