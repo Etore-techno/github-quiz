@@ -113,17 +113,15 @@ document.addEventListener("touchmove", function (e) {
 
   const touch = e.touches[0];
   const rect = scene.getBoundingClientRect();
-  const y = touch.clientY - rect.top;
-  const sceneHeight = rect.height;
+  let y = touch.clientY - rect.top;
+  let pct = (y / rect.height) * 100;
 
-  let pourcentage = (y / sceneHeight) * 100;
-  pourcentage = Math.max(20, Math.min(pourcentage, 80)); // bornes 1m à 2.5m
+  // Clamp entre 0% (2.5m) et 48% (1m)
+  pct = Math.min(48, Math.max(0, pct));
 
-  projectile.style.top = `${pourcentage}vh`;
-
-  hauteurMetres = 2.5 - ((pourcentage - 20) / 60) * 1.5;
-  hauteurAffichee.textContent = hauteurMetres.toFixed(2) + " m";
-  calculerEnergie();
+  hauteurMetres = topPourcentVersHauteur(pct);
+  updateProjectilePosition();
+  energieCalc.textContent = "...";
 }, { passive: false });
 
 document.addEventListener("touchend", function () {
