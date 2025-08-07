@@ -6,7 +6,7 @@
   <title>Les familles de matériaux</title>
   <link rel="stylesheet" href="style2.css" />
 </head>
-<body>
+<body data-type="famille" data-default="mineraux">
 
   <div id="portrait-warning">Veuillez tourner votre appareil en mode paysage.</div>
 
@@ -19,16 +19,16 @@
         <div class="home-icon" onclick="window.location.href='index.html'">
             <img src="images/home.png" alt="Accueil" title="Retour à l'accueil">
         </div>
-        <div class="thumbnail" onclick="afficherInfosfamille('mineraux')">
+        <div class="thumbnail" data-id="mineraux" onclick="afficherInfosfamille('mineraux')">
           <p>Les matériaux minéraux</p>
         </div>
-        <div class="thumbnail" onclick="afficherInfosfamille('organiques')">
+        <div class="thumbnail" data-id="organiques" onclick="afficherInfosfamille('organiques')">
           <p>Les matériaux organiques</p>
         </div>
-        <div class="thumbnail" onclick="afficherInfosfamille('metalliques')">
+        <div class="thumbnail" data-id="metalliques" onclick="afficherInfosfamille('metalliques')">
           <p>Les matériaux métalliques</p>
         </div>
-        <div class="thumbnail" onclick="afficherInfosfamille('composites')">
+        <div class="thumbnail" data-id="composites" onclick="afficherInfosfamille('composites')">
           <p>Les matériaux composites</p>
         </div>
 

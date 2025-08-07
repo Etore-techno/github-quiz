@@ -1,0 +1,60 @@
+/* ---------- Styles globaux ---------- */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: black;
+    font-family: "Segoe UI", sans-serif;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+#cadre-fixe {
+  width: 1920px;
+  height: 1080px;
+  position: absolute;
+    top: 0;
+  left: 0;
+  transform-origin: top left;
+  display: flex;
+
+}
+
+#portrait-warning {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  color: white;
+  font-size: 4vh;
+  text-align: center;
+  padding-top: 40vh;
+}
+
+.total-container {
+  width: 1820px;
+  height: 1000px;
+    margin: auto;                /* ✅ centre automatiquement dans cadre-fixe */
+  border: 22px solid #0f1bc4;
+  border-radius: 19px;
+  background-color: #0f1bc4;
+
+display: flex;
+  flex-direction: column;
+}
+
+@media screen and (orientation: portrait) {
+  #cadre-fixe {
+    display: none;
+  }
+
+  #portrait-warning {
+    display: block;
+  }
+}

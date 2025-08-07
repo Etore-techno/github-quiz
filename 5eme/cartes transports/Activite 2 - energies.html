@@ -2,10 +2,11 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
 
   <title></title>
   <link rel="stylesheet" href="data/styles.css">
+    <link rel="stylesheet" href="data/style_ecran.css">
 
   <script>
     // Add an event listener for the 'beforeunload' event
@@ -19,6 +20,13 @@
 
 </head>
 <body>
+  
+  <div id="portrait-warning">Veuillez tourner votre appareil en mode paysage.</div>
+
+  <div id="cadre-fixe">
+    <!-- ici tu gardes tout ton contenu inchangé (total-container, etc.) -->
+
+
   <div class="total-container" id="totalContainer">
   <div class="haut-container" id="hautContainer">
     <div class="titre" id="titrequiz"></div>
@@ -54,6 +62,9 @@
     </div>
 </div>
 </div>
+</div>
+<script src="data/script/script_ecran.js"></script>
+
 <script src="data/script/data_2.js"></script>
 <script src="data/script/script.js"></script>
 <script src="data/script/cocher.js"></script>

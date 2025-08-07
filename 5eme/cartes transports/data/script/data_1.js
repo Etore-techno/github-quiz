@@ -1,9 +1,9 @@
 var titrequiz = 'Activité 1 : Les familles des moyens de transport';
 var imagefond = 'data/images/Sans titre 2.jpeg'
-var couleur = '#1B76AD'
+var couleur = '#0f1bc4'
 
 var questions = [ 
-    
+
     {
       question: "Qui suis-je ?<br/> Un enseignant allemand m'a fabriqué entièrement en bois.",
       answers: ["1", "3", "4", "5", "12", "16", "20", "22", "23", "27", "30", "31", "32", "33", "34", "35", "38", "39", "40", "44", "45"],

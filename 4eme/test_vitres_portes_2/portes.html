@@ -6,7 +6,8 @@
   <title>Les types de portes</title>
   <link rel="stylesheet" href="style2.css" />
 </head>
-<body>
+<body data-type="porte" data-default="pvc">
+  
   <div id="portrait-warning">Veuillez tourner votre appareil en mode paysage.</div>
 
   <div id="cadre-fixe">
@@ -18,19 +19,19 @@
         <div class="home-icon" onclick="window.location.href='index.html'">
             <img src="images/home.png" alt="Accueil" title="Retour à l'accueil">
         </div>
-        <div class="thumbnail" onclick="afficherInfosporte('pvc')">
+        <div class="thumbnail" data-id="pvc" onclick="afficherInfosporte('pvc')">
           <p>Porte en PVC</p>
         </div>
-        <div class="thumbnail" onclick="afficherInfosporte('bois_standard')">
+        <div class="thumbnail" data-id="bois" onclick="afficherInfosporte('bois')">
           <p>Porte en bois</p>
         </div>
-        <div class="thumbnail" onclick="afficherInfosporte('bois_renforce')">
+        <div class="thumbnail" data-id="bois_renforce" onclick="afficherInfosporte('bois_renforce')">
           <p>Porte en bois renforcé</p>
         </div>
-        <div class="thumbnail" onclick="afficherInfosporte('acier')">
+        <div class="thumbnail" data-id="acier" onclick="afficherInfosporte('acier')">
           <p>Porte en acier</p>
         </div>
-        <div class="thumbnail" onclick="afficherInfosporte('haute_performance')">
+        <div class="thumbnail" data-id="haute_performance" onclick="afficherInfosporte('haute_performance')">
           <p>Porte haute performance</p>
         </div>
       </div>
@@ -39,7 +40,7 @@
         <h1 class="titre-principal">Les types de portes d’entrée</h1>
         <div id="info-panel" class="info-panel">
           <div class="texte-colonne">
-            <h2 id="titre-porte">Porte en PVC</h2>
+            <h2 id="titre-porte">La porte en PVC</h2>
 
             <h3>Explication :</h3>
             <p id="explication">
@@ -55,8 +56,8 @@ Les portes en PVC sont apparues dans les années 1970. Elles se sont rapidement 
 </p>
           </div>
           <div class="image-colonne">
-            <img id="image-explication" src="images/explication_pvc.jpg" alt="Image explication" />
-            <img id="image-historique" src="images/historique_pvc.jpg" alt="Image historique" />
+            <img id="image-explication" src="images/portes/explication_pvc.jpg" alt="Image explication" />
+            <img id="image-historique" src="images/portes/historique_pvc.jpg" alt="Image historique" />
           </div>
         </div>
       </div>

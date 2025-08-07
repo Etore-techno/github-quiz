@@ -2,47 +2,11 @@
   --main-color: initial; /* Pas de valeur initiale */
 }
 
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
 
-}
-
-body {
-  font-family: Arial, sans-serif;
-  background-color: black;
-  color: #fff;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-
-  margin: 0;
-  touch-action: none;
-}
-
-.total-container {
-  width: 90%;
-  height: 95%;
-  background-color: black;
-  border: 10px solid var(--main-color);
-  border-radius: 10px;
-  text-align: center;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  overflow: hidden; /* Assurez-vous que le conteneur ne déborde pas */
-
-}
 
 .haut-container {
   width: 100%;
-  height:5%;
+  height:50px;
   display: flex;
   justify-content: space-between;
   background-color: var(--main-color);
@@ -56,6 +20,7 @@ body {
 padding: 0px 20px;
 box-sizing: border-box;
 font-weight: bold;
+font-size: 30px;
 }
 
 .numeroquestion {
@@ -63,6 +28,8 @@ font-weight: bold;
 padding: 0px 20px;
 box-sizing: border-box;
 font-weight: bold;
+font-size: 30px;
+
 } 
 
 .quiz-container {
@@ -88,7 +55,7 @@ font-weight: bold;
   min-height: 87%;
   height: 87%;
   width: 100%;
-  padding: 0.5em 1em;
+  padding: 8px 16px;
   background-color: white;
   text-align: center;
   box-sizing: border-box;
@@ -100,18 +67,18 @@ font-weight: bold;
 }
 
 .question-container {
-  font-size: 1.6em;
-  margin-bottom: 10px;
+  font-size: 42px;
+  line-height: 1.2;
   text-align: left;
   color: black;
   font-weight: bold;
-  height: auto;
-  min-height : 3.4em;
+  height: 280px;
   overflow: hidden;
   display: flex;            /* Utilisation de Flexbox */
   flex-direction: column;   /* Alignement vertical */
-  
-  overflow-y: auto;
+  margin: 0px 30px;
+  vertical-align: middle;
+justify-content: center;
 }
 
 
@@ -138,15 +105,15 @@ font-weight: bold;
   flex-grow: 2;
   flex-shrink: 0;
   flex-basis: 60%;
-  padding: 1em;
-  padding-bottom: 0em;
+  padding: 16px;
+  padding-bottom: 0px;
   box-sizing: border-box;
   text-align: center;
   display: flex;
   flex-direction: column;   /* Par défaut vertical */
   justify-content: flex-start;
   align-items: center;
-  gap: 1.5em;
+  gap: 24px;
   overflow-y: auto;
   height: 100%;
 }
@@ -174,18 +141,18 @@ font-weight: bold;
   background-color: white;
   display: flex;
   justify-content: center;
-  gap: 2.5em;
-  height: 3em;
-  padding: 0.5em;
+  gap: 50px;
+  height: 90px;
+  padding: 20px;
 }
 
 .option-button {
   background-color: white;
   color: black;
-  border: 5px solid var(--main-color);
+  border: 10px solid var(--main-color);
   border-radius: 5px;
 
-  font-size: 1.4em;
+  font-size: 35px;
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s, color 0.3s;
@@ -212,10 +179,11 @@ font-weight: bold;
 .checkbox-option {
   background-color: white;
   color: black;
-  font-size: 1.5em;
-  font-weight: bold;
+  font-size: 42px;
+  line-height: 1.15;
   display: flex;
   align-items: center;
+  vertical-align: middle;
   margin: 0;   /* Réinitialiser les marges */
   padding: 0;  /* Réinitialiser les paddings */
 }
@@ -245,13 +213,15 @@ font-weight: bold;
   appearance: none;
   -webkit-appearance: none; /* Nécessaire pour certains navigateurs */
   background-color: white;
-  border: 2px solid var(--main-color);
+  border: 6px solid var(--main-color);
   padding: 10px;
-  width: 20px;
-  height: 20px;
-  border-radius: 5px; /* Pour arrondir les coins, 50% pour un cercle */
+  width: 40px;
+  height: 40px;
+  border-radius: 10px; /* Pour arrondir les coins, 50% pour un cercle */
   margin-right: 10px;
   cursor: pointer;
+    margin-bottom: 0px;
+
 }
 
 /* Style pour l'état coché */
@@ -283,7 +253,7 @@ font-weight: bold;
 }
 
 .photobloc {
-  margin-left: 1em; 
+  margin-left: 16px; 
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -295,8 +265,9 @@ font-weight: bold;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%; /* S'assurer que la hauteur du conteneur est définie */
-  width: 100%;  /* S'assurer que la largeur du conteneur est définie */
+  margin-top: 30px; 
+  height: 90%; /* S'assurer que la hauteur du conteneur est définie */
+  width: 90%;  /* S'assurer que la largeur du conteneur est définie */
   cursor: zoom-in;
 }
 
@@ -305,8 +276,8 @@ font-weight: bold;
   position: fixed; /* Position fixe pour occuper toute la fenêtre */
   top: 0;
   left: 0;
-  width: 100vw; /* Largeur 100% de la fenêtre du navigateur */
-  height: 100vh; /* Hauteur 100% de la fenêtre du navigateur */
+  width: 100%; /* Largeur 100% de la fenêtre du navigateur */
+  height: 100%; /* Hauteur 100% de la fenêtre du navigateur */
   background-color: rgba(0, 0, 0, 0.8); /* Fond semi-transparent pour un effet de superposition */
   background-size: contain; /* Conserve les proportions de l'image */
   background-repeat: no-repeat; /* Évite la répétition de l'image */
@@ -318,7 +289,7 @@ font-weight: bold;
 }
 
 .message {
-  font-size: 18px;
+  font-size: 30px;
   font-weight: bold;
   color: white;
   flex-grow: 1; /* Chaque colonne prendra autant d'espace disponible que possible */
@@ -327,6 +298,8 @@ font-weight: bold;
   box-sizing: border-box; /* Inclut la bordure dans la largeur totale de la colonne */
   text-align: center; /* Centre le texte à l'intérieur de chaque colonne */
   padding-top: 20px;
+    padding-bottom: 10px;
+
 }
 
 .score-container {
@@ -339,7 +312,7 @@ font-weight: bold;
 }
 
 .scoreclass {
-  font-size: 18px;
+  font-size: 30px;
   font-weight: bold;
   width: auto; /* Ajuster à la taille du texte */
   margin: auto;
@@ -370,8 +343,10 @@ font-weight: bold;
 
 .fixed-number {
   width: 30px; /* Largeur fixe pour le numéro */
-  margin-right: 1em;
+  margin-right: 35px;
   text-align: right;
+    font-size: 35px;
+
   font-weight: bold;
   color:black;
 }
@@ -379,13 +354,13 @@ font-weight: bold;
 .draggable-row {
   display: flex;
   align-items: center;
-  margin-bottom: 0em; /* Réduire l'espacement entre les lignes */
+  margin-bottom: 0px; /* Réduire l'espacement entre les lignes */
 
 }
 
 .draggable-option {
   flex-grow: 1;
-  font-size: 1.2em;
+  font-size: 35px;
 font-weight: bold;
   margin: 0px; /* Réduire la marge autour des options */
   padding: 5px 10px; /* Réduire l'espacement intérieur pour compacter les lignes */
@@ -409,7 +384,7 @@ font-weight: bold;
 .draggable-container {
   display: flex;
   align-items: center;
-  margin-bottom: 0.1em;
+  margin-bottom: 2px;
 }
 
 #valider-button,
@@ -422,7 +397,7 @@ font-weight: bold;
   border: 2px solid white;
   border-radius: 5px;
   padding: 5px 10px;
-  font-size: 18px;
+  font-size: 35px;
   cursor: pointer;
   transition: background-color 0.3s, color 0.3s;
   display: inline-block; /* Ajuster la largeur automatiquement */

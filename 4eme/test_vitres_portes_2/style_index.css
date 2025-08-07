@@ -1,0 +1,131 @@
+/* ---------- Styles globaux ---------- */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: black;
+    font-family: "Segoe UI", sans-serif;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+#cadre-fixe {
+  width: 1920px;
+  height: 1080px;
+  position: absolute;
+    top: 0;
+  left: 0;
+  transform-origin: top left;
+  display: flex;
+
+}
+
+#portrait-warning {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  color: white;
+  font-size: 4vh;
+  text-align: center;
+  padding-top: 40vh;
+}
+
+.total-container {
+  width: 1820px;
+  height: 1000px;
+    margin: auto;                /* ✅ centre automatiquement dans cadre-fixe */
+  border: 22px solid #0f1bc4;
+  border-radius: 19px;
+  background-color: #ffffff;
+
+display: flex;
+  flex-direction: column;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+ 
+  height: 90%;
+}
+
+.titre-principal {
+  font-size: 45px;
+  text-align: center;
+  margin: 20px auto 40px auto;
+  padding: 10px 40px;
+  background-color: #0f1bc4;
+  color: white;
+  border-radius: 20px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  width: fit-content;
+  max-width: 80%;
+}
+
+.ligne_images {
+  display: flex;
+  flex-direction: row;
+
+  height: 400px;
+  justify-content: space-between;
+ margin-bottom: 25px;
+
+
+}
+
+.image_gauche {
+  display: flex;
+  flex-direction: column;
+    width: 50%;
+  height: 100%;
+   margin-right: 80px;
+margin-left: 150px; 
+
+}
+.image_droite {
+  display: flex;
+  flex-direction: column;
+    width: 50%;
+  height: 100%;
+  margin-right: 150px;
+margin-left: 80px;  
+
+}
+.image_gauche img {
+    cursor: pointer;
+
+  height: 350px;
+}
+
+.image_droite img {
+    cursor: pointer;
+
+  height: 350px;
+}
+
+.sous_titre {
+  margin-top: 0px;
+  text-align: center;
+  font-size: 35px;
+  font-family: 'Segoe UI Semibold', sans-serif;
+  color: #0f1bc4;
+  text-shadow: 1px 1px 1px rgba(15, 27, 196, 0.3);
+}
+
+
+@media screen and (orientation: portrait) {
+  #cadre-fixe {
+    display: none;
+  }
+
+  #portrait-warning {
+    display: block;
+  }
+}

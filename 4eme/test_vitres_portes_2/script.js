@@ -143,148 +143,129 @@ function lancerSimulation() {
   const materiau = materiauSelect.value;
   const nbImpacts = impactToggle.checked ? 3 : 1;
 
-const startTop = hauteurVersTopPourcent(hauteurMetres);
-const endTop = 80;
+  const startTop = hauteurVersTopPourcent(hauteurMetres);
+  const endTop = 80;
+  const duration = 1000 * (hauteurMetres / 2.5);
 
-const duration = 1000 * (hauteurMetres / 2.5);
-
-
+  // Seuils et beta par matériau
   let seuilFissure = 0, seuilCassure = 0, seuilSensibilite = 0;
+  let coeffs = [1]; // par défaut pour 1 impact
 
-switch (materiau) {
-  case "vitre_simple_vitrage":
-    seuilFissure = 30; seuilCassure = 80; seuilSensibilite = 15; break;
-  case "vitre_verre_feuillete":
-    seuilFissure = 100; seuilCassure = 220; seuilSensibilite = 50; break;
-  case "vitre_verre_trempe":
-    seuilFissure = 180; seuilCassure = 360; seuilSensibilite = 90; break;
-  case "vitre_double_vitrage":
-    seuilFissure = 150; seuilCassure = 300; seuilSensibilite = 75; break;
-  case "vitre_polycarbonate":
-    seuilFissure = 300; seuilCassure = 600; seuilSensibilite = 120; break;
+  switch (materiau) {
+    case "vitre_simple_vitrage":
+      seuilFissure = 30; seuilCassure = 80; seuilSensibilite = 15;
+      coeffs = [1, 1.2, 1.4]; break;
 
-  case "porte_PVC":
-    seuilFissure = 80; seuilCassure = 160; seuilSensibilite = 40; break;
-  case "porte_bois":
-    seuilFissure = 180; seuilCassure = 350; seuilSensibilite = 90; break;
-  case "porte_bois_renforce":
-    seuilFissure = 350; seuilCassure = 700; seuilSensibilite = 150; break;
-  case "porte_acier":
-    seuilFissure = 500; seuilCassure = 1000; seuilSensibilite = 200; break;
-  case "porte_haute_performance":
-    seuilFissure = 450; seuilCassure = 900; seuilSensibilite = 180; break;
-}
+    case "vitre_verre_feuillete":
+      seuilFissure = 130; seuilCassure = 300; seuilSensibilite = 50;
+      coeffs = [1, 1.15, 1.3]; break;
 
+    case "vitre_verre_trempe":
+      seuilFissure = 180; seuilCassure = 400; seuilSensibilite = 90;
+      coeffs = [1, 1.1, 1.25]; break;
 
-const seuilFissureOrigine = seuilFissure;
-const seuilCassureOrigine = seuilCassure;
+    case "vitre_double_vitrage":
+      seuilFissure = 150; seuilCassure = 270; seuilSensibilite = 75;
+      coeffs = [1, 1.1, 1.25]; break;
 
-const seuilCassureInitial = seuilCassure;
-const seuilFissureInitial = seuilFissure;
+    case "vitre_polycarbonate":
+      seuilFissure = 300; seuilCassure = 600; seuilSensibilite = 120;
+      coeffs = [1, 1.05, 1.1]; break;
 
+    case "porte_PVC":
+      seuilFissure = 80; seuilCassure = 180; seuilSensibilite = 40;
+      coeffs = [1, 1.3, 1.6]; break;
 
-let fragFactor = 1.0;
+    case "porte_bois":
+      seuilFissure = 180; seuilCassure = 400; seuilSensibilite = 90;
+      coeffs = [1, 1.2, 1.4]; break;
 
-// Matériaux organiques (bois, PVC) : sensibles à l’usure
-if (materiau.includes("PVC") || materiau.includes("bois")) {
-  fragFactor = 0.93;
-}
+    case "porte_bois_renforce":
+      seuilFissure = 350; seuilCassure = 700; seuilSensibilite = 150;
+      coeffs = [1, 1.1, 1.25]; break;
 
-// Métaux (acier, haute performance) : très résistants à la fatigue
-else if (materiau.includes("acier") || materiau.includes("haute_performance")) {
-  fragFactor = 0.98;
-}
+    case "porte_acier":
+      seuilFissure = 500; seuilCassure = 950; seuilSensibilite = 200;
+      coeffs = [1, 1.05, 1.15]; break;
 
-// Vitres classiques (verre simple, double)
-else if (materiau.includes("simple_vitrage") || materiau.includes("double_vitrage")) {
-  fragFactor = 0.90;
-}
-
-// Verre feuilleté ou trempé : meilleure tenue
-else if (materiau.includes("feuillete") || materiau.includes("trempe")) {
-  fragFactor = 0.95;
-}
-
-// Polycarbonate : très résistant, peu de fatigue
-else if (materiau.includes("polycarbonate")) {
-  fragFactor = 0.99;
-}
-
-
+    case "porte_haute_performance":
+      seuilFissure = 450; seuilCassure = 900; seuilSensibilite = 180;
+      coeffs = [1, 1.05, 1.1]; break;
+  }
 
   toggleControls(false);
   degradation = 0;
-  let fatigue = 0;
-
-
-
-
   afficherEtat(materiau, degradation);
 
-function jouerImpact(impactIndex, energie) {
+function calculerEnergieEquivalente(energie, seuilSensibilite, seuilCassure, nbImpacts) {
+  if (energie < seuilSensibilite) return 0;
+
+  let total = energie;
+
+  const delta = seuilCassure - seuilSensibilite;
+  const facteur = (energie - seuilSensibilite) / delta;
+
+  if (nbImpacts >= 2) {
+    const k2 = Math.min(0.4, Math.max(0, 0.4 * facteur));
+    total += k2 * energie;
+  }
+
+  if (nbImpacts >= 3) {
+    const k3 = Math.min(0.6, Math.max(0, 0.6 * facteur));
+    total += k3 * energie;
+  }
+
+  return total;
+}
+
+
+
+  function jouerImpact(impactIndex, energieParImpact) {
+    if (impactIndex === 0) degradation = 0;
+
     if (impactIndex >= nbImpacts) {
+      const impacts = Array(nbImpacts).fill(energieParImpact);
+const energieEquivalente = calculerEnergieEquivalente(energieParImpact, seuilSensibilite, seuilCassure, nbImpacts);
+      if (energieEquivalente >= seuilCassure) degradation = 2;
+      else if (energieEquivalente >= seuilFissure && degradation < 1) degradation = 1;
+
+      afficherEtat(materiau, degradation);
+      console.log("Énergie équivalente :", energieEquivalente.toFixed(1), "J");
       toggleControls(true);
       return;
     }
 
-if (energie >= seuilSensibilite) {
-  if (materiau.includes("verre")) fatigue += energie * 1.0;
-  else if (materiau.includes("bois")) fatigue += energie * 0.5;
-  else fatigue += energie * 0.3;
-}
-
-
-    const seuilFissureActuel = seuilFissure * Math.pow(fragFactor, impactIndex);
-    const seuilCassureActuel = seuilCassure * Math.pow(fragFactor, impactIndex);
-
+    // Animation de chute
     let startTime = null;
-
     function animation(timestamp) {
       if (!startTime) startTime = timestamp;
       const elapsed = timestamp - startTime;
       const progress = Math.min(elapsed / duration, 1);
-const y = startTop + (endTop - startTop) * progress;
-projectile.style.top = `${y}%`;
-hauteurMetres = topPourcentVersHauteur(y);
-updateProjectilePosition();
-
+      const y = startTop + (endTop - startTop) * progress;
+      projectile.style.top = `${y}%`;
+      hauteurMetres = topPourcentVersHauteur(y);
+      updateProjectilePosition();
 
       if (progress < 1) {
         animationFrame = requestAnimationFrame(animation);
       } else {
-       if (impactIndex === nbImpacts - 1) {
-  if (fatigue >= seuilCassureInitial) {
-    degradation = 2;
-  } else if (fatigue >= seuilFissureInitial && degradation < 1) {
-    degradation = 1;
-  }
-
-  console.log("→ Évaluation finale après tous les impacts :");
-  console.log("Fatigue cumulée :", fatigue.toFixed(2));
-  console.log("Seuil fissure :", seuilFissureInitial);
-  console.log("Seuil cassure :", seuilCassureInitial);
-  console.log("État final :", degradation === 2 ? "cassé/fracturé" : degradation === 1 ? "fissuré/déformé" : "intact");
-}
-
-
-
-
-
         afficherEtat(materiau, degradation);
-
         setTimeout(() => {
-  jouerImpact(impactIndex + 1, energie);
+          jouerImpact(impactIndex + 1, energieParImpact);
         }, 500);
       }
     }
 
     requestAnimationFrame(animation);
   }
-const energieInitiale = 9.81 * masse * hauteurMetres;
-energieCalc.textContent = `${energieInitiale.toFixed(1)} J`;
 
-jouerImpact(0, energieInitiale);
+  const energieInitiale = g * masse * hauteurMetres;
+  energieCalc.textContent = `${energieInitiale.toFixed(1)} J`;
+  jouerImpact(0, energieInitiale);
 }
+
+
+
 
 function afficherEtat(materiau, niveau) {
   let isVitre = materiau.startsWith("vitre");

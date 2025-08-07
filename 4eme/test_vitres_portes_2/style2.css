@@ -102,6 +102,8 @@ display: flex;
   border-radius: 12px;
   border: 20px solid #0f1bc4;
   transition: background-color 0.3s ease;
+    cursor: pointer;
+
 }
 
 .thumbnail:hover {
@@ -120,6 +122,15 @@ display: flex;
   font-size: 30px;
   color: #0f1bc4;
   text-align: center;
+}
+
+.thumbnail.active {
+  background-color: #0f1bc4;
+  border: 20px solid #ffffff;
+}
+
+.thumbnail.active p {
+  color: #ffffff;
 }
 
 .right-column {
