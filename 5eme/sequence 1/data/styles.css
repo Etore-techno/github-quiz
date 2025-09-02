@@ -6,7 +6,7 @@
 
 .haut-container {
   width: 100%;
-  height:50px;
+  height:60px;
   display: flex;
   justify-content: space-between;
   background-color: var(--main-color);
@@ -66,19 +66,37 @@ font-size: 30px;
   
 }
 
+.zone-question {
+  align-items: stretch;     /* évite l’écrasement vertical */
+  
+  overflow: visible;
+    height: auto;             /* S'adapte au texte */
+
+}
+
 .question-container {
+    display: block;           /* pas de flex pour éviter les surprises */
   font-size: 42px;
   line-height: 1.2;
   text-align: left;
   color: black;
   font-weight: bold;
-  height: 280px;
-  overflow: hidden;
-  display: flex;            /* Utilisation de Flexbox */
-  flex-direction: column;   /* Alignement vertical */
-  margin: 0px 30px;
-  vertical-align: middle;
-justify-content: center;
+  min-height: 100px;        /* Hauteur minimale */
+  overflow: visible;        /* Pas de scroll */
+
+  margin: 0 30px;
+  padding: 10px 0;          /* Espace haut/bas pour éviter que le texte touche les bords */
+  box-sizing: border-box;   /* Inclut le padding dans la hauteur */
+    height: auto;             /* S'adapte au texte */
+}
+
+hr{
+  width: 70%;
+  height: 5px; 
+  background-color: #1B76AD; 
+    margin: 20px auto;          /* Espace haut/bas pour éviter que le texte touche les bords */
+
+  border: none; 
 }
 
 
@@ -105,8 +123,7 @@ justify-content: center;
   flex-grow: 2;
   flex-shrink: 0;
   flex-basis: 60%;
-  padding: 16px;
-  padding-bottom: 0px;
+  padding: 0px 16px;
   box-sizing: border-box;
   text-align: center;
   display: flex;
@@ -179,7 +196,7 @@ justify-content: center;
 .checkbox-option {
   background-color: white;
   color: black;
-  font-size: 42px;
+  font-size: 40px;
   line-height: 1.15;
   display: flex;
   align-items: center;
@@ -215,8 +232,8 @@ justify-content: center;
   background-color: white;
   border: 6px solid var(--main-color);
   padding: 10px;
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 10px; /* Pour arrondir les coins, 50% pour un cercle */
   margin-right: 10px;
   cursor: pointer;
@@ -394,10 +411,10 @@ font-weight: bold;
   background-color: white;
   color: var(--main-color);
   font-weight: bold;
-  border: 2px solid white;
-  border-radius: 5px;
-  padding: 5px 10px;
-  font-size: 35px;
+  border: 5px solid white;
+  border-radius: 10px;
+  padding: 3px 10px;
+  font-size: 33px;
   cursor: pointer;
   transition: background-color 0.3s, color 0.3s;
   display: inline-block; /* Ajuster la largeur automatiquement */

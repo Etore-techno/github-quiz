@@ -1,12 +1,30 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+
     <title>Activité 4 - Transmission et transformation de mouvements</title>
     <link rel="stylesheet" href="data/styles_activite_4.css">
+        <link rel="stylesheet" href="data/style_ecran.css">
+
+  <script>
+    // Add an event listener for the 'beforeunload' event
+    window.addEventListener('beforeunload', function (event) {
+        // Set a message for the warning (some browsers ignore this and use a default message)
+        event.preventDefault(); // Necessary for some browsers
+        event.returnValue = 'Attention, vous allez fermer cette page !'; // Chrome requires returnValue to be set
+    });
+</script>
+
 </head>
-<body>
+<body>        
+  <div id="portrait-warning">Veuillez tourner votre appareil en mode paysage.</div>
+
+  <div id="cadre-fixe">
+    <!-- ici tu gardes tout ton contenu inchangé (total-container, etc.) -->
+
+
     <div class="total-container" id="totalContainer">
         <div class="haut-container" id="hautContainer">
             <div class="titre" id="titre">Activité 4 - Transmission et transformation de mouvements</div>
@@ -16,13 +34,13 @@
             <div class="colonne-techno" id="colonneTechno">
                 <div class="sous-titre">Activité<br>Techno-Flash :</div>
                 <a href="https://techno-flash.com/animations/transmission_transformation_mouvement/transmission_transformation_mouvement.html" target="_blank" class="clickable-link">
-                    <img src="data/images/techno flash.jpg" alt="Lien externe" class="image-cliquable">
+                    <img src="data/images/techno flash.jpg" alt="Lien externe" class="image2-cliquable">
                 </a>
             </div>
 
             <!-- Colonne 2 : Titre Animations et images cliquables -->
             <div class="colonne-animations">
-                <div class="sous-titre">Animations</div>
+                <div class="sous-titre">Animations :</div>
                 <div class="images-animations">
                     <div class="animation">
                         <p>système par piston,<br>bielle et manivelle :</p>
@@ -45,13 +63,13 @@
                 </div>
                 <div class="images-animations">
                     <div class="animation">
-                        <p>système par engrenages<br>animation 1 :</p>
+                        <p>engrenages<br>animation 1 :</p>
                         <a href="data/animations/Systeme train d engrenages.html" target="_blank" class="clickable-link">
                             <img src="data/images/engrenages 1.jpg" alt="Animation 4" class="image-cliquable">
                         </a>
                     </div>
                     <div class="animation">
-                        <p>système par engrenages<br>animation 2 :</p>
+                        <p>engrenages<br>animation 2 :</p>
                         <a href="data/animations/Systeme engrenages.html" target="_blank" class="clickable-link">
                             <img src="data/images/engrenages 2.jpg" alt="Animation 5" class="image-cliquable">
                         </a>
@@ -64,7 +82,7 @@
             <div class="colonne-fonction">
                 <div class="sous-titre">Fonction propulser<br>du vélo :</div>
                 <a href="data/animations/Systeme de transmission - velo.html" target="_blank" class="clickable-link">
-                    <img src="data/images/propulsion velo.jpg" alt="Fonction propulser du vélo" class="image-cliquable">
+                    <img src="data/images/propulsion velo.jpg" alt="Fonction propulser du vélo" class="image2-cliquable">
                 </a>
             </div>
         </div>
@@ -72,7 +90,9 @@
         <div class="score-container" id="scoreContainer">
         </div>
     </div>
+    </div>
 
+<script src="data/script/script_ecran.js"></script>
 
     <script>
         // Object to store open tabs
