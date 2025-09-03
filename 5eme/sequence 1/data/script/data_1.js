@@ -3,9 +3,9 @@ var imagefond = 'data/images/Sans titre 2.jpeg'
 var couleur = '#0f1bc4'
 
 var questions = [ 
-
+  /*
     {
-      question: "Qui suis-je ?<br/> Un enseignant allemand m'a fabriqué entièrement en bois.",
+      question: "Qui suis-je ?<br/> Un baron allemand m'a fabriqué entièrement en bois.",
       answers: ["1", "3", "4", "5", "12", "16", "20", "22", "23", "27", "30", "31", "32", "33", "34", "35", "38", "39", "40", "44", "45"],
       correctAnswers: ["5"],
       type: "multiple",
@@ -93,7 +93,7 @@ var questions = [
       photo2: "carte45.jpg"
     },
     {
-      question: "Qui suis-je ?<br/> Je dépasse 1220 km/h.",
+      question: "Qui suis-je ?<br/> Je suis le premier à dépasser 1200 km/h.",
       answers: ["1", "3", "4", "5", "12", "16", "20", "22", "23", "27", "30", "31", "32", "33", "34", "35", "38", "39", "40", "44", "45"],
       correctAnswers: ["34"],
       type: "multiple",
@@ -108,6 +108,8 @@ var questions = [
       photo1: "carteX.jpg",
       photo2: "carte12.jpg"
     },
+
+      */
     {
       question: "Le rôle d'un objet technique se nomme sa fonction d'usage.<br/>Quelle est la fonction d'usage principale du moyen de transport de la carte 20 ?",
       answers: ["chauffer un plat", "protéger les pieds", "se déplacer sur la route", "contenir une boisson", "laisser une trace", "produire de la musique", "se déplacer sur des rails"],
