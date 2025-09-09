@@ -4,17 +4,6 @@ var couleur = '#0f1bc4'
 
 var questions = [ 
     {
-      question: "Une source d'énergie non renouvelable est une énergie qui disparaîtra un jour. L'Homme utilise les stocks de la Terre plus rapidement qu'elle ne les renouvelle.<br/> Parmi les sources d'énergie suivantes, quelles sont les sources d'énergies non renouvelables ?",
-      answers: ["l'Homme et les animaux", "la biomasse (bois)", "le gaz", "le pétrole", "les mouvements de l'eau", "le vent", "le soleil", "le charbon"],
-      correctAnswers: ["le gaz", "le pétrole", "le charbon"],
-      type: "cocher",
-      vertical: "oui",
-      photo1: "carteX.jpg",
-      photo2: "Nonrenouvelables.jpg"
-    },
-
-
-    {
       question: "Qui suis-je ?<br/> Je suis un transport ferroviaire me déplaçant grâce à l'énergie musculaire.",
       answers: ["1", "2", "3", "4", "5", "12", "16", "20", "22", "23", "24", "27", "30", "31", "32", "33", "34", "35", "36", "38", "39", "40", "44", "45"],
       correctAnswers: ["2"],

@@ -196,7 +196,7 @@ hr{
 .checkbox-option {
   background-color: white;
   color: black;
-  font-size: 45px;
+  font-size: 42px;
   line-height: 1.2;
   display: flex;
   align-items: left;
@@ -232,8 +232,8 @@ hr{
   background-color: white;
   border: 6px solid var(--main-color);
   padding: 10px;
-  width: 45px;
-  height: 45px;
+  width: 42px;
+  height: 42px;
   border-radius: 10px; /* Pour arrondir les coins, 50% pour un cercle */
   margin-right: 10px;
   cursor: pointer;
@@ -267,7 +267,7 @@ hr{
 /* Style pour le texte à côté de la case */
 .checkbox-option label {
   margin-left: 5px;
-  font-size: 45px;
+  font-size: 42px;
 }
 
 .photobloc {
