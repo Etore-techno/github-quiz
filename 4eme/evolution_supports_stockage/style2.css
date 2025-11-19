@@ -1,0 +1,454 @@
+/* ---------- Styles globaux ---------- */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: black;
+    font-family: "Segoe UI", sans-serif;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+#cadre-fixe {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-origin: center center; /* au lieu de top left */
+  transform: translate(-50%, -50%) scale(var(--scale));
+}
+
+
+#portrait-warning {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  color: white;
+  font-size: 4vh;
+  text-align: center;
+  padding-top: 40vh;
+}
+
+.total-container {
+  width: 1820px;
+  height: 1000px;
+    margin: auto;                /* ✅ centre automatiquement dans cadre-fixe */
+  border: 22px solid #0f1bc4;
+  border-radius: 19px;
+  background-color: #ffffff;
+
+display: flex;
+  flex-direction: column;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  flex: 1;
+  height: 90%;
+}
+
+:root { --scale: 1; } /* valeur par défaut pour le scale CSS */
+
+
+.left-column {
+  flex: 0 0 12%;
+  background-color: #0f1bc4;
+  height: 100%;
+    overflow-y: hidden; /* on empêche les micro-scrolls dus au zoom */
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  padding-right: 20px;
+
+}
+
+.home-icon {
+  flex: 0 0 110px; /* garantit une hauteur fixe même si zoom */
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  overflow: hidden;
+}
+
+.home-icon img {
+  width: 80%;
+  height: auto;
+  height: 110px;
+  object-fit: contain;
+  cursor: pointer;
+  filter: brightness(1.2);
+}
+
+.thumbnail {
+  height: 110px;
+  min-height: 110px;
+  max-height: 110px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  border: 20px solid #0f1bc4;
+  transition: background-color 0.3s ease;
+    cursor: pointer;
+
+}
+
+.thumbnail:hover {
+  background-color: #0f1bc4;
+  border: 20px solid #ffffff;
+
+
+}
+.thumbnail:hover p {
+
+    color: #ffffff;
+}
+
+.thumbnail p {
+  font-weight: bold;
+  font-size: 30px;
+  color: #0f1bc4;
+  text-align: center;
+}
+
+.thumbnail.active {
+  background-color: #0f1bc4;
+  border: 20px solid #ffffff;
+}
+
+.thumbnail.active p {
+  color: #ffffff;
+}
+
+.right-column {
+  width: 85%;
+  height: 100%;
+  padding: 10px 20px;
+  box-sizing: border-box;
+
+  /* NEW: make the panel take fixed available height */
+  display: flex;
+  flex-direction: column;
+}
+
+
+.titre-principal {
+  font-size: 45px;
+  text-align: center;
+  margin: 20px auto 40px auto;
+  padding: 10px 40px;
+  background-color: #0f1bc4;
+  color: white;
+  border-radius: 20px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  width: fit-content;
+  max-width: 80%;
+}
+
+/* Zone centrale : texte + image + flèches */
+.info-panel {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 10px;
+
+  position: relative;
+  min-height: 1000px;
+  box-sizing: border-box;
+
+  /* NEW: keep a fixed height inside the column */
+  flex: 1;
+
+  /* NEW: gutters so arrows don’t overlap text/image */
+  padding-left: 4.8rem;
+  padding-right: 4.8rem;
+}
+
+
+
+.texte-colonne {
+  width: 60%;
+    height: 800px;
+
+}
+
+.texte-colonne p {
+  font-size: 30px;
+  line-height: 1.4;
+  color: #222;
+  margin-bottom: 20px;
+  font-family: "Segoe UI", sans-serif;
+  text-align: justify;
+}
+
+.texte-colonne p strong {
+  color: #0f1bc4;
+  font-weight: bold;
+  font-size: 33px;
+}
+
+.image-colonne {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+    width: 39%;
+  height: 800px;
+}
+
+.image-colonne img {
+  width: 100%;
+
+  max-height: 800px;
+  object-fit: contain;
+    justify-content: center;   /* ou flex-start si tu veux collée en haut */
+}
+colonne img:last-child {
+  align-self: flex-end;
+    margin-right: 0;
+    margin-top: 0px;
+}
+.image-colonne img:first-child {
+  align-self: flex-start;
+      margin-top: 0px;
+
+    margin-left: 0;
+}
+
+.image-
+
+h2 {
+  margin-top: 0px;
+  margin-bottom: 10px;
+  text-align: center;
+  font-size: 45px;
+  font-family: 'Segoe UI Semibold', sans-serif;
+  color: #0f1bc4;
+  text-shadow: 1px 1px 1px rgba(15, 27, 196, 0.3);
+}
+
+h3 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 35px;
+  font-family: 'Segoe UI Semibold', sans-serif;
+  color: #0f1bc4;
+  border-left: 6px solid #0f1bc4;
+  padding-left: 10px;
+}
+
+.texte-epaisseur {
+  margin-bottom: 15px;
+  text-align: left; /* aligne le paragraphe à gauche */
+}
+
+.texte-epaisseur p {
+  font-size: 28px;
+  color: #222;
+  font-family: "Georgia", serif;
+  text-align: left; /* force l’alignement à gauche */
+  line-height: 1.5;
+  margin: 8px 0;
+}
+
+#epaisseur {
+  font-family: "Lato", "Arial", sans-serif;
+    font-size: 28px;
+  text-align: left;
+margin: 40px 0;
+  line-height: 1.5;
+}
+
+#epaisseur strong {
+  font-weight: bold;
+    font-style: italic;
+
+  font-size: inherit; /* même taille que le reste */
+}
+
+#epaisseur span {
+  font-style: italic;
+  font-weight: normal;
+  font-size: inherit;
+}
+
+/* --- Mode DIAPO : une seule section visible à la fois --- */
+#bloc-contenu .bloc-section { display: none; }
+#bloc-contenu .bloc-section.active { display: block; }
+
+/* --- Boutons flèches (avec images) --- */
+.nav-arrow {
+  position: absolute;             /* was: fixed */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 5rem;
+  height: 5rem;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  z-index: 10;                    /* 10 is enough since it's inside the panel */
+  user-select: none;
+  transition: transform 0.15s ease;
+}
+
+.nav-arrow img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 0.4rem rgba(0,0,0,0.5));
+  transition: transform 0.15s ease;
+}
+
+.nav-arrow:hover img {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 0.6rem rgba(255,255,255,0.6));
+}
+
+/* Position horizontale : proche du bord interne du cadre */
+.nav-left  { left: -0.5rem; }    /* feel free to tweak 0.3rem .. 0.8rem */
+.nav-right { right: -0.5rem; }
+
+
+
+/* --- Pastilles d’étapes --- */
+.nav-dots {
+  position: absolute;
+  bottom: 0.6rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.45rem;
+  z-index: 6;
+}
+.nav-dots .dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.35);
+  transition: background 120ms ease, transform 120ms ease;
+}
+.nav-dots .dot.active {
+  background: #fff;
+  transform: scale(1.08);
+}
+
+
+/* --- Petit fondu pour texte/images --- */
+.fade-enter { opacity: 0; }
+.fade-enter-active { opacity: 1; transition: opacity 160ms ease; }
+
+/* --- Icônes autour du titre --- */
+.titre-icone-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin: 20px auto 40px auto;
+}
+
+.titre-icon {
+  height: 65px;           /* hauteur comparable au texte */
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.2));
+}
+
+.titre-principal {
+  font-size: 45px;
+  text-align: center;
+  background-color: #0f1bc4;
+  color: white;
+  border-radius: 20px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  padding: 10px 40px;
+  margin: 0;
+  width: fit-content;
+}
+
+
+/* --- MODE ACCUEIL : image plein cadre, centrée, sans déformation --- */
+
+/* --- MODE ACCUEIL : image centrée, sans déformation, marges blanches obligatoires --- */
+
+body.home-accueil .info-panel {
+  padding-left: 20px;   /* marge gauche */
+  padding-right: 20px;  /* marge droite */
+  justify-content: center;
+  align-items: center;
+}
+
+body.home-accueil #accueil-visuel {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* L’image prend le maximum possible sans jamais déborder ni se déformer */
+body.home-accueil #accueil-visuel img {
+  max-width: calc(100% - 40px);   /* 20px + 20px */
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+/* --- Image liée à la partie courante : 2 images l'une sous l'autre --- */
+#bloc-image-diapo {
+  margin-top: 0.8rem;
+  display: none;           /* caché par défaut, JS mettra 'flex' */
+  flex-direction: column;
+  gap: 20px;
+}
+
+#bloc-image-diapo img.diapo-img {
+  width: 100%;
+  max-height: 48%;
+  object-fit: contain;
+  cursor: zoom-in;           /* 🔍 loupe sur les images des pages explicatives */
+}
+
+/* --- Overlay de zoom plein écran --- */
+#zoom-overlay {
+  position: fixed;
+  inset: 0;                            /* top/right/bottom/left: 0 */
+  background: rgba(0, 0, 0, 0.85);
+  display: none;                       /* caché par défaut */
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+}
+
+#zoom-overlay img {
+  max-width: 95vw;
+  max-height: 95vh;
+  object-fit: contain;                 /* ne déforme pas l'image */
+  cursor: zoom-out;                    /* 🔍- (zoom -) quand on survole l'image zoomée */
+}
+
+
+
+@media screen and (orientation: portrait) {
+  #cadre-fixe {
+    display: none;
+  }
+
+  #portrait-warning {
+    display: block;
+  }
+}
