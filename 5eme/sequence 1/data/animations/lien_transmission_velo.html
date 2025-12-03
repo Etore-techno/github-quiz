@@ -30,6 +30,20 @@
         <link rel="stylesheet" type="text/css" href="GeoGebra/css/general.ltr.css?v=1723428494" />
                 <link rel="stylesheet" type="text/css" href="GeoGebra/css/worksheet/ws.view.ltr.css?v=1723428494" />
 
+    <style>
+    
+
+      /* On cache les infos, boutons, footer, etc. */
+      .wsf-info-wrapper,
+      .jWS-footer,
+      .save-wrapper {
+        display: none !important;
+      }
+
+    </style>
+
+
+
         <link href="GeoGebra/css/wysibb/default/wbbtheme.css" media="screen" rel="stylesheet" type="text/css" />
 <link href="GeoGebra/css/wysibb/wysibb.css" media="screen" rel="stylesheet" type="text/css" />
 <link href="GeoGebra/css/group/groups.ltr.css?v=1723428494" media="screen" rel="stylesheet" type="text/css" />
@@ -126,6 +140,17 @@
             var age_label = "Age:";
             //]]>
         </script>
+
+
+  <script>
+    // Add an event listener for the 'beforeunload' event
+    window.addEventListener('beforeunload', function (event) {
+        // Set a message for the warning (some browsers ignore this and use a default message)
+        event.preventDefault(); // Necessary for some browsers
+        event.returnValue = 'Attention, vous allez fermer cette page !'; // Chrome requires returnValue to be set
+    });
+</script>
+
 
     </head>
 

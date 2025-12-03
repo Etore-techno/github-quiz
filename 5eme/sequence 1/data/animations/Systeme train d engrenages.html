@@ -1,42 +1,53 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+
     <title>Système train d'engrenages</title>
 
-    
+  <!-- On réutilise ton système plein écran -->
+  <link rel="stylesheet" href="../style_ecran.css">
+  <style>
+    /* Le contenu à l'intérieur du cadre bleu */
+    #contenu-geogebra {
+      margin: auto;
+      width: 1820px;
+      height: 1000px;
+      border-width: 10px 22px;
+      border-style: solid;
+      border-color: #0f1bc4;
+      border-radius: 22px;
+      background-color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-sizing: border-box;
+    }
 
+    #geogebra-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
 
-    <style>
-        /* Make the iframe take up the full screen */
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            overflow: hidden; /* Prevent scrolling on the main page */
-        }
-
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none; /* Remove iframe border */
-        }
-    </style>
-
-<script>
-    // Add an event listener for the 'beforeunload' event
-    window.addEventListener('beforeunload', function (event) {
-        // Set a message for the warning (some browsers ignore this and use a default message)
-        event.preventDefault(); // Necessary for some browsers
-        event.returnValue = 'Attention, vous allez fermer cette page !'; // Chrome requires returnValue to be set
-    });
-</script>
+  </style>
 </head>
 <body>
-    <!-- Embed the local page using an iframe -->
-    <iframe src="lien_train_d_engrenages.html"></iframe>
-    <!-- Replace 'embedded-page.html' with the relative path of your page -->
+  <div id="portrait-warning">Veuillez tourner votre appareil en mode paysage.</div>
+
+  <div id="cadre-fixe">
+    <div id="contenu-geogebra">
+      <!-- On charge ici la page GeoGebra d'origine -->
+      <iframe
+        id="geogebra-frame"
+        src="lien_train_d_engrenages.html"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+
+  <script src="../script/script_ecran.js"></script>
 </body>
 </html>
