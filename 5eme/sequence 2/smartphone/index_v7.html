@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Smartphone — Enquête numérique (2 profils)</title>
+  <link rel="stylesheet" href="style_v7.css" />
+</head>
+<body>
+
+  <main class="page">
+    <section class="phone" aria-label="Simulation smartphone">
+      <div class="phone-frame">
+
+        <!-- Status bar -->
+        <header class="statusbar" aria-label="Barre de statut">
+          <div class="status-left">
+            <span id="sb-time">12:34</span>
+            <span id="sb-profile" class="sb-profile"></span>
+          </div>
+          <div class="status-right">
+            <img class="sb-ico" src="images/general/icons/status_signal.png" alt="Réseau">
+            <img class="sb-ico" src="images/general/icons/status_wifi.png" alt="Wi-Fi">
+            <img class="sb-ico" src="images/general/icons/status_battery.png" alt="Batterie">
+          </div>
+        </header>
+
+        <!-- ÉCRAN : Choix -->
+        <section id="screen-select" class="screen screen--active" aria-label="Choix du smartphone">
+          <div class="top">
+            <h1 class="title">Simulation Smartphone</h1>
+            <p class="subtitle">Choisis un smartphone à analyser. (Tout est simulé.)</p>
+          </div>
+
+          <div class="panel">
+            <button class="choice" data-profile="A" type="button">
+              <div class="choice-title">Téléphone A</div>
+              <div class="choice-sub">Garçon — 3e</div>
+            </button>
+
+            <button class="choice" data-profile="B" type="button">
+              <div class="choice-title">Téléphone B</div>
+              <div class="choice-sub">Fille — 6e</div>
+            </button>
+
+            <div class="note">
+              <b>Consigne</b> : PIN → mode invité (apps limitées). Trouve le mot de passe puis déverrouille le mode complet.
+            </div>
+          </div>
+        </section>
+
+        <!-- ÉCRAN : PIN -->
+        <section id="screen-lock" class="screen" aria-label="Écran verrouillé">
+          <div class="lock-wallpaper" id="lock-wallpaper">
+            <div class="lock-top">
+              <div class="lock-clock" id="lock-clock">12:34</div>
+              <div class="lock-date" id="lock-date">Mer. 1 janv.</div>
+            </div>
+
+            <div class="lock-pin-area" aria-label="Zone de saisie PIN">
+              <div class="pin-display" aria-label="Code saisi">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+              </div>
+
+              <p id="lock-msg" class="hint hint--center" aria-live="polite"></p>
+
+              <div class="keypad keypad--oneui" aria-label="Clavier numérique">
+                <button class="key key--round" data-key="1"><span class="k-num">1</span></button>
+                <button class="key key--round" data-key="2"><span class="k-num">2</span><span class="k-letters">ABC</span></button>
+                <button class="key key--round" data-key="3"><span class="k-num">3</span><span class="k-letters">DEF</span></button>
+
+                <button class="key key--round" data-key="4"><span class="k-num">4</span><span class="k-letters">GHI</span></button>
+                <button class="key key--round" data-key="5"><span class="k-num">5</span><span class="k-letters">JKL</span></button>
+                <button class="key key--round" data-key="6"><span class="k-num">6</span><span class="k-letters">MNO</span></button>
+
+                <button class="key key--round" data-key="7"><span class="k-num">7</span><span class="k-letters">PQRS</span></button>
+                <button class="key key--round" data-key="8"><span class="k-num">8</span><span class="k-letters">TUV</span></button>
+                <button class="key key--round" data-key="9"><span class="k-num">9</span><span class="k-letters">WXYZ</span></button>
+
+                <button class="key key--round key--ghost" data-action="clear" title="Effacer">⌫</button>
+                <button class="key key--round" data-key="0"><span class="k-num">0</span><span class="k-letters">+</span></button>
+                <button class="key key--round key--ok" data-action="ok" title="Valider">OK</button>
+              </div>
+
+              <div class="lock-footer">
+                <button id="btn-back-select" class="linklike" type="button">Changer de téléphone</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ÉCRAN : Home -->
+        <section id="screen-home" class="screen" aria-label="Écran d'accueil">
+          <div class="home-wallpaper" id="home-wallpaper">
+            <div class="home-topspace">
+              <div class="home-datetime" id="home-datetime">
+                <div class="home-time" id="home-time">--:--</div>
+                <div class="home-date" id="home-date">--</div>
+              </div>
+              <div class="home-sub" id="home-sub">Compte verrouillé (mode invité)</div>
+            </div>
+
+            <div id="guest-unlock-card" class="unlock-card" role="region" aria-label="Déverrouillage du compte">
+              <div class="unlock-row">
+                <div class="unlock-icon">🔒</div>
+                <div>
+                  <div class="unlock-title">Compte verrouillé</div>
+                  <div class="unlock-sub">Saisis le mot de passe pour accéder à toutes les applications.</div>
+                </div>
+              </div>
+
+              <label class="field">
+                <span>Mot de passe</span>
+                <input id="pwd-input" type="password" autocomplete="off" placeholder="Mot de passe" />
+              </label>
+
+              <p id="pwd-msg" class="hint"></p>
+
+              <div class="unlock-actions">
+                <button id="pwd-clear" class="btn btn--ghost" type="button">Effacer</button>
+                <button id="pwd-ok" class="btn btn--ok" type="button">Valider</button>
+              </div>
+            </div>
+
+            <div id="app-grid" class="app-grid" aria-label="Applications"></div>
+            <nav id="dock" class="dock" aria-label="Dock"></nav>
+
+            <nav class="sysnav" aria-label="Navigation Android">
+              <button class="sysbtn" data-sys="back" title="Retour">
+                <img class="nav-ico" src="images/general/icons/nav_back.png" alt="Retour">
+              </button>
+              <button class="sysbtn" data-sys="home" title="Accueil">
+                <img class="nav-ico" src="images/general/icons/nav_home.png" alt="Accueil">
+              </button>
+              <button class="sysbtn" data-sys="recents" title="Récents">
+                <img class="nav-ico" src="images/general/icons/nav_recents.png" alt="Récents">
+              </button>
+            </nav>
+          </div>
+        </section>
+
+        <!-- ÉCRAN : App -->
+        <section id="screen-app" class="screen" aria-label="Application">
+          <header class="appbar">
+            <button class="nav-btn" id="btn-back" type="button" aria-label="Retour">
+              <img class="nav-ico" src="images/general/icons/nav_back.png" alt="Retour">
+            </button>
+            <div class="appbar-title" id="app-title">App</div>
+            <div class="appbar-spacer"></div>
+          </header>
+
+          <div class="app-content" id="app-content" tabindex="0"></div>
+
+          <nav class="sysnav" aria-label="Navigation Android">
+            <button class="sysbtn" data-sys="back" title="Retour">
+              <img class="nav-ico" src="images/general/icons/nav_back.png" alt="Retour">
+            </button>
+            <button class="sysbtn" data-sys="home" title="Accueil">
+              <img class="nav-ico" src="images/general/icons/nav_home.png" alt="Accueil">
+            </button>
+            <button class="sysbtn" data-sys="recents" title="Récents">
+              <img class="nav-ico" src="images/general/icons/nav_recents.png" alt="Récents">
+            </button>
+          </nav>
+        </section>
+
+        <!-- Overlay “Récents” -->
+        <div id="recents" class="recents" hidden aria-hidden="true">
+          <div class="recents-sheet" role="dialog" aria-label="Apps récentes">
+            <div class="recents-title">Apps récentes</div>
+            <div id="recents-list" class="recents-list"></div>
+            <button id="recents-close" class="btn" type="button">Fermer</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ordre important -->
+  <script src="phone_A_data_v7.js"></script>
+  <script src="phone_B_data_v7.js"></script>
+  <script src="core_v7.js"></script>
+</body>
+</html>

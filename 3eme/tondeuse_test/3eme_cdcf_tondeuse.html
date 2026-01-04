@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
+        <title>3ème - CdCF - Enceinte</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- ✅ Zone identité (reste visible) -->
+    <div id="identity-container" class="identity-container">
+        <div class="identity-title">Identité</div>
+
+        <div class="identity-grid">
+            <div class="identity-field">
+                <label for="classe">Classe</label>
+                <input id="classe" type="text" placeholder="Ex : 3e2" autocomplete="off">
+            </div>
+
+            <div class="identity-field">
+                <label for="nom1">Nom 1</label>
+                <input id="nom1" type="text" placeholder="Nom / Prénom" autocomplete="off">
+            </div>
+
+            <div class="identity-field">
+                <label for="nom2">Nom 2</label>
+                <input id="nom2" type="text" placeholder="Nom / Prénom" autocomplete="off">
+            </div>
+
+            <div class="identity-row">
+                <input id="solo" type="checkbox">
+                <label for="solo">Travail seul(e)</label>
+            </div>
+        </div>
+
+        <div class="identity-actions">
+            <button id="start-activity-button" class="bouton-valider" type="button" disabled>Je confirme et je commence</button>
+        </div>
+
+        <div id="identity-message" class="identity-message">
+            Renseignez la classe + Nom 1, puis soit Nom 2, soit cochez « Travail seul(e) ». Vérifiez avant de commencer.
+        </div>
+    </div>
+    
+
+<div id="header-container" class="header">
+        <div class="space-top"></div> <!-- 🔥 Espace au-dessus du titre -->
+        <div id="titre-1" class="titre">1. Diagramme des interactions :</div>
+        <div class="space-between"></div> <!-- 🔥 Espace entre le titre et le bouton -->
+        <div id="validate-controls-1" class="zone-validate">
+            <button id="validate-1-button" class="bouton-valider">Valider</button>
+            <p id="diagramme-message" class="message">Compléter le diagramme !</p>
+                </div> 
+                <div class="space-bottom"></div> <!-- 🔥 Espace sous le bouton -->
+    </div>
+
+    <div class="main-container">
+        <div id="diagramme-container">
+            <img src="images/diagramme.jpg" alt="Diagramme">
+        </div>
+    </div>
+    
+    <hr class="ligne-noire">
+
+
+    <div id="header-container2" class="header">
+        <div class="space-top"></div> <!-- 🔥 Espace au-dessus du titre -->
+        <div id="titre-2" class="titre">2. Tableau de caractérisation :</div>
+        <div class="space-between"></div> <!-- 🔥 Espace entre le titre et le bouton -->
+        <div id="validate-controls-2" class="zone-validate" style="display: none;">
+            <button id="validate-2-button" class="bouton-valider">Valider</button>
+            <p id="tableau-message" class="message">Compléter les fonctions du tableau !</p>
+                </div> 
+        <div class="space-bottom"></div> <!-- 🔥 Espace sous le bouton -->
+    </div>
+   
+    <div class="main-container2">
+        <div id="tableau-container">
+            <img src="images/tableau.jpg" alt="Tableau">
+        </div>
+    </div>
+
+<!-- Scripts -->
+<script>
+    window.app = window.app || {};
+</script>
+
+<script src="data.js" defer></script>
+<script src="zonesElements.js" defer></script>
+<script src="selectionMenu2.js" defer></script>
+<script src="zonesElements2.js" defer></script>
+<script src="selectionMenu.js" defer></script>
+<script src="main.js" defer></script>
+<script src="fixertaille.js" defer></script>
+
+</body>
+</html>
