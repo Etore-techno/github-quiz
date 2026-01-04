@@ -89,16 +89,16 @@ window.tableauElements = [
     { id: "element-c9", nom: "Présence d’animation ou transition", colonne: 2  },
 
     { id: "element-l1", nom: "titre, noms, prénoms, classe et 1 image", colonne: 3  },
-    { id: "element-l2", nom: "titres, mots-clés, images avec légendes", colonne: 3  },
-    { id: "element-l3", nom: "5 minutes", colonne: 3  },
-    { id: "element-l4", nom: "8 maximum", colonne: 3  },
+    { id: "element-l2", nom: "titre et images", colonne: 3  },
+    { id: "element-l3", nom: "entre 5 et 7 minutes", colonne: 3  },
+    { id: "element-l4", nom: "6 maximum", colonne: 3  },
     { id: "element-l5", nom: "16:9", colonne: 3  },
-    { id: "element-l6", nom: "Clé USB ou réseau du collège", colonne: 3  },
-    { id: "element-l7", nom: "Fond sobre, texte contrasté, couleurs adaptées", colonne: 3  },
+    { id: "element-l6", nom: "réseau du collège", colonne: 3  },
+    { id: "element-l7", nom: "fond sobre, texte contrasté, couleurs adaptées", colonne: 3  },
     { id: "element-l8", nom: "24 pts minimum", colonne: 3  },
     { id: "element-l9", nom: "4 maximum", colonne: 3  },
-    { id: "element-l10", nom: "Mots-clés et images", colonne: 3  },
-    { id: "element-l11", nom: "Non autorisée", colonne: 3  }
+    { id: "element-l10", nom: "support visuel des explications", colonne: 3  },
+    { id: "element-l11", nom: "non autorisée", colonne: 3  }
 ];
 
 
