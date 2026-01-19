@@ -122,9 +122,6 @@
   }
 
   // ---------- DOM ----------
-  // Élément racine du téléphone (sert notamment à piloter des variables CSS)
-  const phone = document.querySelector(".phone");
-
   const screens = {
     select: document.getElementById("screen-select"),
     lock:   document.getElementById("screen-lock"),
@@ -180,20 +177,22 @@
     browser: { tab: "home" },
     downloads: { selected: null },
     mail: { authed: false },
-      messages: { thread: null },
     messages: { thread: null },
+    maps: { selected: null },
   };
 
-  function resetUiState(){
+  function resetUiState() {
     UI = {
       browser: { tab: "home" },
       downloads: { selected: null },
       mail: { authed: false },
       messages: { thread: null },
+      maps: { selected: null },
     };
   }
 
   const GRID_APPS = [
+    { id: "phone",     name: "Téléphone" },
     { id: "social",    name: "Réseau social" },
     { id: "messages",  name: "Messages" },
     { id: "photos",    name: "Galerie" },
@@ -393,12 +392,29 @@
   }
 
   function renderDock() {
+    if (!dock) return;
     const apps = getDockApps();
+
+    if (!apps.length) {
+      dock.innerHTML = "";
+      dock.style.display = "none";
+      return;
+    }
+
     dock.innerHTML = apps.map(a => {
       const icon = iconSvg(a.id, "dock-ico", a.title);
-      return `<button class="dock-btn" type="button" data-open="${escapeHtml(a.id)}" title="${escapeHtml(a.title)}"><div class="dock-badge badge-${escapeHtml(a.id)}" ${badgeStyle(a.id)}>${icon}</div></button>`;
+      // Badge colored by app color, icon stays white via CSS
+      const style = badgeStyle(a.id);
+      return `
+        <button class="dock-btn" type="button" data-open="${escapeHtml(a.id)}" aria-label="${escapeHtml(a.title)}">
+          <div class="dock-badge badge-${escapeHtml(a.id)}" ${style}>${icon}</div>
+        </button>
+      `.trim();
     }).join("");
+
+    dock.style.display = "flex";
   }
+
 
   // ---------- Home ----------
   function renderHome() {
@@ -407,7 +423,7 @@
     const guest = unlockLevel === 1;
 
     // Espace réservé au dock : présent uniquement en mode invité
-    phone.style.setProperty("--dock-h", guest ? "74px" : "0px");
+    document.documentElement.style.setProperty("--dock-h", guest ? "74px" : "0px");
     homeSub.textContent = guest ? "Compte verrouillé (mode invité)" : "";
 
     homeSub.style.display = guest ? "inline-block" : "none";
@@ -441,12 +457,21 @@
   function goHome() {
     navStack = [];
     UI.messages.thread = null;
+    destroyMapsLeaflet();
     setActiveScreen("home");
     renderHome();
   }
 
   function goBack() {
     if (!screens.app.classList.contains("screen--active")) return;
+
+    // Cas spécial : dans "Messages", le bouton retour doit revenir à la liste des discussions
+    const current = navStack[navStack.length - 1];
+    if (current === "messages" && UI.messages && UI.messages.thread) {
+      UI.messages.thread = null;
+      renderApp("messages");
+      return;
+    }
 
     navStack.pop();
     const prev = navStack[navStack.length - 1];
@@ -524,7 +549,19 @@
       return;
     }
 
+    // Plans : ouvrir un lieu enregistré
+    const mapPlace = e.target.closest("[data-map-place]");
+    if (mapPlace) {
+      const idx = parseInt(mapPlace.dataset.mapPlace, 10);
+      if (!Number.isFinite(idx)) return;
+      UI.maps.selected = idx;
+      const current = navStack[navStack.length - 1];
+      if (current === "maps") renderApp("maps");
+      return;
+    }
+
     // Mail : connexion
+
     const loginBtn = e.target.closest("[data-mail-login]");
     if (loginBtn) {
       const current = navStack[navStack.length - 1];
@@ -635,7 +672,7 @@
         { from: "Moi",   text: "Oui, j'arrive au collège.", when: "07:33" },
         { from: "Maman", text: "Pense à Nala en rentrant 🐾", when: "07:50" },
         { from: "Moi",   text: "Oui t'inquiète.", when: "07:51" },
-        { from: "Maman", text: "Et n'oublie pas ton devoir de techno.", when: "08:01" },
+        { from: "Maman", text: "Donne à Nala sa gamelle en rentrant 🐾 (et pense au devoir).", when: "08:02" },
       ],
       "Papa": [
         { from: "Papa", text: "Avant de partir, active l'alarme.", when: "19:35" },
@@ -657,9 +694,8 @@
     },
     B: {
       "Papa": [
-        { from: "Papa", text: "Tu as bien sorti Cookie ce matin ? 🐶", when: "07:58" },
-        { from: "Moi",  text: "Oui, avant de partir 🙂", when: "07:59" },
-        { from: "Papa", text: "Super. Pense au devoir.", when: "08:00" },
+        { from: "Papa", text: "Donne à Cookie sa gamelle en rentrant 🐾 (et pense au devoir).", when: "07:58" },
+        { from: "Moi",  text: "Ok 👍", when: "07:59" },
       ],
       "Maman": [
         { from: "Maman", text: "Je pars tôt demain.", when: "20:02" },
@@ -686,6 +722,80 @@
   }
 
 
+
+  // ----- Plans (Leaflet) -----
+  let mapsLeaflet = null;
+  let mapsMarker = null;
+
+  function destroyMapsLeaflet() {
+    try {
+      if (mapsLeaflet) {
+        mapsLeaflet.remove();
+      }
+    } catch (e) {
+      // ignore
+    }
+    mapsLeaflet = null;
+    mapsMarker = null;
+  }
+
+  function initMapsLeafletView() {
+    // On ne crée la carte que si l'app Plans est active
+    const current = navStack[navStack.length - 1];
+    if (current !== "maps") return;
+
+    const host = document.getElementById("maps-map");
+    if (!host) return;
+
+    destroyMapsLeaflet();
+
+    const idx = Number.isFinite(UI.maps.selected) ? UI.maps.selected : null;
+    if (idx === null) return;
+
+    const m = (activeProfile && activeProfile.full && activeProfile.full.maps) ? activeProfile.full.maps : {};
+    const places = m.recentPlaces || [];
+    const p = places[idx];
+
+    if (!p || typeof p.lat !== "number" || typeof p.lng !== "number") {
+      host.innerHTML = `<div class="map-placeholder">Coordonnées manquantes.</div>`;
+      return;
+    }
+
+    if (typeof window.L === "undefined") {
+      host.innerHTML = `<div class="map-placeholder">Carte indisponible (bibliothèque non chargée).</div>`;
+      return;
+    }
+
+    const zoom = Number.isFinite(p.zoom) ? p.zoom : 16;
+
+    host.innerHTML = "";
+
+    // Carte réelle (CARTO / OpenStreetMap)
+    mapsLeaflet = L.map(host, {
+      zoomControl: true,
+      attributionControl: false,
+      scrollWheelZoom: false,
+      doubleClickZoom: true,
+      boxZoom: false,
+      keyboard: false,
+      tap: true,
+    }).setView([p.lat, p.lng], zoom);
+
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+      subdomains: "abcd",
+      maxZoom: 20,
+      detectRetina: true,
+      crossOrigin: true,
+    }).addTo(mapsLeaflet);
+
+    mapsMarker = L.marker([p.lat, p.lng], { title: p.name || "Lieu" }).addTo(mapsLeaflet);
+
+    // Important quand l'élément vient d'être injecté dans le DOM
+    setTimeout(() => {
+      try { mapsLeaflet && mapsLeaflet.invalidateSize(); } catch (e) {}
+    }, 120);
+  }
+
 // ---------- Apps rendering ----------
   function guardFull() {
     if (unlockLevel < 2) {
@@ -697,7 +807,10 @@
   function renderApp(appId) {
     appContent.scrollTop = 0;
 
-    const titleMap = {      notifications: "Notifications",
+    const titleMap = {
+      phone: "Téléphone",
+      health: "Santé - fiche médicale d'urgence",
+      notifications: "Notifications",
       quicknotes: "Notes rapides",
       about: "À propos",
       social: "Réseau social",
@@ -737,6 +850,12 @@
       : `<div class="card"><div class="big">App inconnue</div></div>`;
 
     appContent.innerHTML = html;
+
+    if (appId === "maps") {
+      setTimeout(initMapsLeafletView, 0);
+    } else {
+      destroyMapsLeaflet();
+    }
   }
 
   // ----- Guest apps -----
@@ -777,7 +896,8 @@
   }
 
   function renderNotifications() {
-    const notifs = (activeProfile.limited.notifications || []).map(n => `
+    const notifsArr = (activeProfile.limited.notifications || []);
+    const notifs = notifsArr.map(n => `
       <div class="item">
         <div class="row">
           <div class="item-title">${escapeHtml(n.app)} — ${escapeHtml(n.title)}</div>
@@ -788,8 +908,11 @@
     `).join("");
 
     return `
-      <div class="card"><div class="big">Notifications</div><div class="muted">Les aperçus peuvent révéler des infos.</div></div>
-      <div class="card"><div class="list">${notifs}</div></div>
+      <div class="card">
+        <div class="list">
+          ${notifs || `<div class="item"><div class="item-sub muted">Aucune notification.</div></div>`}
+        </div>
+      </div>
     `;
   }
 
@@ -813,35 +936,23 @@
     const device = activeProfile.device || {};
     return `
       <div class="card">
-        <div class="big">À propos</div>
-        <div class="muted">Informations sur le propriétaire et l’appareil.</div>
-      </div>
-
-      <div class="card">
-        <div class="item"><div class="item-title">Propriétaire</div><div class="item-sub"><b>${escapeHtml(o.prenom)} ${escapeHtml(o.nom)}</b> — ${escapeHtml(o.classe)}</div></div>
-        <div class="item"><div class="item-title">Établissement</div><div class="item-sub">${escapeHtml(o.college)} — ${escapeHtml(o.villeCollege || o.ville)}</div></div>
-        <div class="item"><div class="item-title">Téléphone</div><div class="item-sub">${escapeHtml(o.telephone || "—")}</div></div>
-        <div class="item"><div class="item-title">Email</div><div class="item-sub">${escapeHtml(o.email)}</div></div>
+        <div class="item"><div class="item-title">Propriétaire</div><div class="item-sub"><b>${escapeHtml(o.prenom)} ${escapeHtml(o.nom)}</b></div></div>
+        <div class="item" style="margin-top:10px"><div class="item-title">Adresse</div><div class="item-sub">${escapeHtml(o.adresse || "—")}</div></div>
+        <div class="item" style="margin-top:10px"><div class="item-title">Téléphone</div><div class="item-sub">${escapeHtml(o.telephone || "—")}</div></div>
+        <div class="item" style="margin-top:10px"><div class="item-title">Email</div><div class="item-sub">${escapeHtml(o.email)}</div></div>
       </div>
 
       <div class="card">
         <div class="item"><div class="item-title">Modèle</div><div class="item-sub">${escapeHtml(device.model || "Smartphone")}</div></div>
-        <div class="item"><div class="item-title">Système</div><div class="item-sub">${escapeHtml(device.os || "OS mobile")}</div></div>
-        <div class="item"><div class="item-title">Stockage</div><div class="item-sub">${escapeHtml(device.storage || "—")}</div></div>
+        <div class="item" style="margin-top:10px"><div class="item-title">Système</div><div class="item-sub">${escapeHtml(device.os || "OS mobile")}</div></div>
+        <div class="item" style="margin-top:10px"><div class="item-title">Stockage</div><div class="item-sub">${escapeHtml(device.storage || "—")}</div></div>
       </div>
     `;
   }
 
-
   // --- Téléphone (mode invité) ---
   function renderPhone() {
-    const h = activeProfile.owner || {};
     return `
-      <div class="card">
-        <div class="big">Téléphone</div>
-        <div class="muted">Mode invité : appeler les numéros d’urgence reste possible.</div>
-      </div>
-
       <div class="card phone-card">
         <div class="phone-display">
           <input id="dial-input" class="dial-input" type="text" inputmode="numeric" placeholder="Composer un numéro" autocomplete="off" />
@@ -886,38 +997,39 @@
     const card = (activeProfile && activeProfile.limited && activeProfile.limited.healthCard) ? activeProfile.limited.healthCard : null;
     if (!card) {
       return `
-        <div class="card"><div class="big">Santé</div><div class="muted">Fiche d’urgence indisponible.</div></div>
+        <div class="card"><div class="item-sub muted">Fiche d’urgence indisponible.</div></div>
       `;
     }
 
     const contacts = (card.iceContacts || []).map(c => `
-      <div class="item"><div class="item-title">${escapeHtml(c.label)}</div><div class="item-sub">${escapeHtml(c.name)} — ${escapeHtml(c.phone)}</div></div>
+      <div class="item">
+        <div class="item-title">${escapeHtml(c.label)}</div>
+        <div class="item-sub">${escapeHtml(c.name)} — ${escapeHtml(c.phone)}</div>
+      </div>
     `).join("");
 
     return `
       <div class="card">
-        <div class="big">Fiche médicale d’urgence</div>
-        <div class="muted">Informations utiles si les secours doivent agir rapidement.</div>
-      </div>
-
-      <div class="card">
-        <div class="item"><div class="item-title">Groupe sanguin</div><div class="item-sub"><b>${escapeHtml(card.bloodType)}</b></div></div>
-        <div class="item"><div class="item-title">Allergies</div><div class="item-sub">${escapeHtml(card.allergies || "Aucune connue")}</div></div>
-        <div class="item"><div class="item-title">Traitement</div><div class="item-sub">${escapeHtml(card.treatment || "—")}</div></div>
-        <div class="item"><div class="item-title">Antécédents</div><div class="item-sub">${escapeHtml(card.conditions || "—")}</div></div>
-      </div>
-
-      <div class="card">
-        <div class="item"><div class="item-title">Infos d’identification (urgence)</div>
-          <div class="item-sub">
-            N° dossier : <b>${escapeHtml(card.patientId)}</b><br>
-            N° assurance (partiel) : <b>${escapeHtml(card.insuranceIdPartial)}</b><br>
-            <span class="muted">Ces numéros peuvent ressembler à des “codes”… mais ils ne servent pas à déverrouiller le téléphone.</span>
-          </div>
+        <div class="item">
+          <div class="item-title">Groupe sanguin</div>
+          <div class="item-sub"><b>${escapeHtml(card.bloodType)}</b></div>
+        </div>
+        <div class="item" style="margin-top:10px">
+          <div class="item-title">Allergies</div>
+          <div class="item-sub">${escapeHtml(card.allergies || "Aucune connue")}</div>
+        </div>
+        <div class="item" style="margin-top:10px">
+          <div class="item-title">Traitement</div>
+          <div class="item-sub">${escapeHtml(card.treatment || "—")}</div>
         </div>
       </div>
 
-      <div class="card"><div class="item-title">Contacts ICE</div><div class="list" style="margin-top:10px">${contacts}</div></div>
+      <div class="card">
+        <div class="item-title">Contacts ICE</div>
+        <div class="list" style="margin-top:10px">
+          ${contacts || `<div class="item"><div class="item-sub muted">—</div></div>`}
+        </div>
+      </div>
     `;
   }
 
@@ -983,14 +1095,6 @@
       }).join("");
 
       return `
-        <div class="card">
-          <div class="chat-top">
-            <button class="chat-back" type="button" data-msg-back="1">← Discussions</button>
-            <div class="big" style="margin:0">${escapeHtml(selected)}</div>
-            <div style="width:1px"></div>
-          </div>
-          <div class="muted">Conversation (exemple). Les messages peuvent contenir des informations sensibles.</div>
-        </div>
         <div class="card"><div class="chat">${bubbles}</div></div>
       `;
     }
@@ -1008,32 +1112,55 @@
 
     return `
       <div class="card">
-        <div class="big">Messages</div>
-        <div class="muted">Clique sur un fil pour ouvrir la discussion.</div>
+        <div class="list">
+          ${threads || `<div class="item"><div class="item-sub muted">Aucune discussion.</div></div>`}
+        </div>
       </div>
-      <div class="card"><div class="list">${threads}</div></div>
     `;
   }
 
   function renderPhotos() {
     const g = guardFull(); if (g) return g;
     const key = activeProfileKey;
-    const items = activeProfile.full.photos.map(p => `
+    const items = (activeProfile.full.photos || []).map(p => `
       <div class="item">
         <div class="item-title">${escapeHtml(p.label)}</div>
         ${p.img ? `<img class="photo-img" src="${assetPhone(key, p.img)}" alt="">` : ""}
         <div class="item-sub">${escapeHtml(p.meta || "")}</div>
       </div>
     `).join("");
-    return `<div class="card"><div class="big">Galerie</div></div><div class="card"><div class="list">${items}</div></div>`;
-  }
 
-  function renderNotes() { const g=guardFull(); if(g) return g;
-    const items = activeProfile.full.notes.map(n => `<div class="item"><div class="item-title">${escapeHtml(n.title)}</div><div class="item-sub pre">${escapeHtml(n.body)}</div></div>`).join("");
-    return `<div class="card"><div class="big">Notes</div></div><div class="card"><div class="list">${items}</div></div>`;
+    return `
+      <div class="card">
+        <div class="list">
+          ${items || `<div class="item"><div class="item-sub muted">Aucune photo.</div></div>`}
+        </div>
+      </div>
+    `;
+  }
+  function renderNotes() {
+    const g = guardFull(); if (g) return g;
+
+    const items = (activeProfile.full.notes || []).map(n => {
+      const body = String(n.body || "").replace(/\n/g, "\n\n");
+      return `
+        <div class="item">
+          <div class="item-title">${escapeHtml(n.title)}</div>
+          <div class="item-sub pre">${escapeHtml(body)}</div>
+        </div>
+      `;
+    }).join("");
+
+    return `
+      <div class="card">
+        <div class="list">
+          ${items || `<div class="item"><div class="item-sub muted">Aucune note.</div></div>`}
+        </div>
+      </div>
+    `;
   }
   function renderMail() { 
-    const g=guardFull(); if(g) return g;
+    const g = guardFull(); if (g) return g;
     const auth = activeProfile.full.mailLogin || {};
     const address = auth.address || activeProfile.owner.email;
     const inbox = auth.inbox || activeProfile.full.mail || [];
@@ -1041,16 +1168,17 @@
     if (!UI.mail.authed) {
       return `
         <div class="card">
-          <div class="big">Mail</div>
-          <div class="muted">Connexion requise.</div>
-        </div>
-        <div class="card">
-          <div class="item"><div class="item-title">Compte</div><div class="item-sub"><b>${escapeHtml(address)}</b></div></div>
           <div class="item">
+            <div class="item-title">Compte</div>
+            <div class="item-sub"><b>${escapeHtml(address)}</b></div>
+          </div>
+
+          <div class="item" style="margin-top:10px">
             <div class="item-title">Mot de passe</div>
             <input id="mail-pass" class="input" type="password" placeholder="Mot de passe" autocomplete="off">
             <div id="mail-msg" class="muted" style="margin-top:8px"></div>
           </div>
+
           <button class="primary" type="button" data-mail-login="1">Se connecter</button>
         </div>
       `;
@@ -1065,12 +1193,16 @@
 
     return `
       <div class="card">
-        <div class="big">Mail</div>
         <div class="muted">Connecté : <b>${escapeHtml(address)}</b></div>
       </div>
-      <div class="card"><div class="list">${items}</div></div>
+      <div class="card">
+        <div class="list">
+          ${items || `<div class="item"><div class="item-sub muted">Boîte de réception vide.</div></div>`}
+        </div>
+      </div>
     `;
   }
+
   function renderBrowser() { 
     const g=guardFull(); if(g) return g;
     const b = activeProfile.full.browser || {};
@@ -1089,13 +1221,11 @@
     `).join("");
 
     const homeHtml = `
-      <div class="browser-home">
+      <div class="browser-home browser-home--center">
         <div class="browser-logo">Recherche</div>
-        <div class="browser-search">
+        <div class="browser-search browser-search--center">
           <input class="browser-input" type="text" placeholder="Rechercher sur le web (simulation)" disabled>
         </div>
-        <div class="muted" style="margin-top:10px">Suggestions récentes :</div>
-        <div class="list" style="margin-top:8px">${suggestions || `<div class="item"><div class="item-sub muted">—</div></div>`}</div>
       </div>
     `;
 
@@ -1117,22 +1247,44 @@
     `;
   }
   function renderMaps() { 
-    const g=guardFull(); if(g) return g;
+    const g = guardFull(); if (g) return g;
+
     const m = activeProfile.full.maps || {};
-    const img = m.mapImage ? `<img class="map-img" src="${assetPhone(m.mapImage)}" alt="Carte">` : `<div class="map-placeholder">Carte enregistrée (image à ajouter)</div>`;
-    const items = (m.recentPlaces || []).map(p => `
-      <div class="item">
-        <div class="row"><div class="item-title">${escapeHtml(p.name)}</div><div class="muted">${escapeHtml(p.when||"")}</div></div>
-        <div class="item-sub">${escapeHtml(p.address || "")}</div>
-      </div>
-    `).join("");
+    const places = m.recentPlaces || [];
+    const sel = Number.isFinite(UI.maps.selected) ? UI.maps.selected : null;
+    const selected = (sel !== null && places[sel]) ? places[sel] : null;
+
+    const mapInner = selected
+      ? `<div class="map-loading">Chargement du plan…</div>`
+      : `<div class="map-placeholder">Sélectionne un lieu ci-dessous</div>`;
+
+    const items = places.map((p, i) => {
+      const active = (sel === i) ? "is-active" : "";
+      return `
+        <div class="item map-place ${active}" data-map-place="${i}" role="button" tabindex="0">
+          <div class="row">
+            <div class="item-title">${escapeHtml(p.name)}</div>
+            <div class="muted">${escapeHtml(p.when || "")}</div>
+          </div>
+          <div class="item-sub">${escapeHtml(p.address || "")}</div>
+        </div>
+      `;
+    }).join("");
 
     return `
-      <div class="card"><div class="big">Plans</div><div class="muted">Lieux enregistrés.</div></div>
-      <div class="card">${img}</div>
-      <div class="card"><div class="list">${items}</div></div>
+      <div class="card">
+        <div id="maps-map" class="maps-map" aria-label="Carte">${mapInner}</div>
+        <div class="maps-attrib muted">Données cartographiques : OpenStreetMap — rendu : CARTO.</div>
+      </div>
+
+      <div class="card">
+        <div class="list">
+          ${items || `<div class="item"><div class="item-sub muted">Aucun lieu enregistré.</div></div>`}
+        </div>
+      </div>
     `;
   }
+
   function renderDownloads() { 
     const g=guardFull(); if(g) return g;
     const files = activeProfile.full.downloads || [];
@@ -1202,13 +1354,39 @@
       </div>
     `;
   }
-  function renderBank() { const g=guardFull(); if(g) return g;
-    const b = activeProfile.full.bank;
-    const ops = b.ops.map(o => `<div class="item"><div class="row"><div class="item-title">${escapeHtml(o.title)}</div><div class="item-title">${escapeHtml(o.amount)}</div></div><div class="item-sub">${escapeHtml(o.date)}</div></div>`).join("");
-    return `<div class="card"><div class="big">Paiements</div><div class="muted">Solde : ${escapeHtml(b.solde)}</div></div><div class="card"><div class="list">${ops}</div></div>`;
+  function renderBank() {
+    const g = guardFull(); if (g) return g;
+    const b = (activeProfile.full && activeProfile.full.bank) ? activeProfile.full.bank : {};
+    const balance = b.balance || "—";
+    const opsArr = Array.isArray(b.ops) ? b.ops : [];
+
+    const ops = opsArr.map(o => {
+      const label = o.label || o.title || "—";
+      const when = o.when || o.date || "";
+      const amount = o.amount || "";
+      return `
+        <div class="item">
+          <div class="row">
+            <div class="item-title">${escapeHtml(label)}</div>
+            <div style="font-weight:900">${escapeHtml(amount)}</div>
+          </div>
+          <div class="item-sub">${escapeHtml(when)}</div>
+        </div>
+      `;
+    }).join("");
+
+    return `
+      <div class="card">
+        <div class="big">Paiements</div>
+        <div class="muted">Solde : <b>${escapeHtml(balance)}</b></div>
+      </div>
+      <div class="card">
+        <div class="list">${ops || `<div class="item"><div class="item-sub muted">—</div></div>`}</div>
+      </div>
+    `;
   }
   function renderSettings() { 
-    const g=guardFull(); if(g) return g;
+    const g = guardFull(); if (g) return g;
     const s = activeProfile.full.settings || {};
     const toggles = (s.toggles || []).map(t => `
       <label class="toggle-row">
@@ -1223,15 +1401,12 @@
 
     return `
       <div class="card">
-        <div class="big">Réglages</div>
-        <div class="muted">Exemples de paramètres (non modifiables dans la simulation).</div>
-      </div>
-      <div class="card">
-        <div class="settings-list">${toggles}</div>
+        <div class="settings-list">
+          ${toggles || `<div class="item"><div class="item-sub muted">Aucun réglage.</div></div>`}
+        </div>
       </div>
     `;
   }
-
 
   // ---------- Init ----------
   function init() {
@@ -1244,6 +1419,7 @@
   }
 
 function updatePhoneScale(){
+  const phone = document.querySelector(".phone");
   if (!phone) return;
 
   const root = getComputedStyle(document.documentElement);

@@ -55,7 +55,7 @@ Ce support de stockage est utilisé pour sauvegarder, copier ou transférer des 
 Elle se présente sous la forme d’un petit boîtier compact contenant une mémoire et un connecteur que l’on branche directement sur un port USB.
 Les premières clés stockaient 32 Mo, tandis que les modèles actuels atteignent en moyenne 128 Go, ce qui permet de stocker un grand nombre de documents, de photos ou de vidéos.
 Compacte, rapide et compatible avec de nombreux appareils, elle est devenue un support incontournable pour les particuliers comme pour les professionnels.`,
-    s2: `LLes données sont stockées à l’intérieur d’une puce de mémoire capable de retenir des charges électriques correspondant aux 0 et 1 du langage binaire.
+    s2: `Les données sont stockées à l’intérieur d’une puce de mémoire capable de retenir des charges électriques correspondant aux 0 et 1 du langage binaire.
 Lors de la lecture, ces charges sont mesurées et transformées en signaux électriques que l’ordinateur peut interpréter.
 Ce principe permet de stocker les données sans alimentation permanente, tout en offrant une vitesse de lecture rapide.
 Elle est réinscriptible, résistante aux chocs, silencieuse et facile à transporter. Cependant, elle reste sensible à la chaleur, à l’humidité ou à une mauvaise manipulation, et peut être perdue facilement à cause de sa petite taille.`,

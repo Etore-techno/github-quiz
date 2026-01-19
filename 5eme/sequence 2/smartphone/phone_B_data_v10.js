@@ -15,7 +15,7 @@ window.PROFILES.B = {
     "ville": "Feucherolles",
     "villeCollege": "Feucherolles",
     "college": "Collège Jean Monnet",
-    "email": "ines.morel@exemple.fr",
+    "email": "ines.morel@monnet78.fr",
     "telephone": "06 51 09 33 04",
     "adresse": "8 allée des Chênes, 78810 Feucherolles"
   },
@@ -78,7 +78,7 @@ window.PROFILES.B = {
         {
           "title": "Papa",
           "when": "Aujourd’hui 07:58",
-          "snippet": "Tu as bien sorti Cookie ce matin ? 🐶"
+          "snippet": "Donne à Cookie sa gamelle en rentrant 🐾 (et pense au devoir)."
         },
         {
           "title": "Maman",
@@ -89,13 +89,7 @@ window.PROFILES.B = {
           "title": "Clara",
           "when": "Hier 18:44",
           "snippet": "On va au parc des sports mercredi ?"
-        },
-        {
-          "title": "Mamie",
-          "when": "Dim 12:03",
-          "snippet": "Je passe dimanche, tu me montreras tes dessins !"
-        }
-      ]
+        }]
     },
     "social": {
       "appName": "Réseau+",
@@ -150,15 +144,16 @@ window.PROFILES.B = {
         "code alarme 7042 notice"
       ],
       "history": [
-        "Mairie de Feucherolles 39 Grande Rue",
-        "Parc des Sports Feucherolles Chemin du Parc des Sports",
-        "Collège Jean Monnet Feucherolles 1 place de l’Europe",
-        "comment mettre compte en privé",
+        "ENT Collège Jean Monnet mot de passe oublié",
+        "dessin kawaii chat facile",
+        "exercices conjugaison 6e",
+        "recette cookies facile",
+        "Parc des Sports Feucherolles horaires",
         "comment supprimer une photo envoyée"
       ]
     },
     "mailLogin": {
-      "address": "ines.morel@exemple.fr",
+      "address": "ines.morel@monnet78.fr",
       "password": "Feuch78*",
       "inbox": [
         {
@@ -179,24 +174,36 @@ window.PROFILES.B = {
       "mapImage": "",
       "recentPlaces": [
         {
-          "name": "Collège Jean Monnet",
-          "when": "Aujourd’hui 07:35",
-          "address": "1 place de l’Europe, 78810 Feucherolles"
-        },
-        {
           "name": "Maison",
           "when": "Aujourd’hui 07:10",
-          "address": "8 allée des Chênes, 78810 Feucherolles"
+          "address": "Emplacement fictif (près du Golf de Feucherolles)",
+          "lat": 48.87374,
+          "lng": 1.98521,
+          "zoom": 16
         },
         {
           "name": "Mairie",
           "when": "Mar 16:20",
-          "address": "39 Grande Rue, 78810 Feucherolles"
+          "address": "39 Grande Rue, 78810 Feucherolles",
+          "lat": 48.8744010925,
+          "lng": 1.97405004501,
+          "zoom": 17
         },
         {
           "name": "Parc des Sports",
           "when": "Mer 15/01 15:55",
-          "address": "Chemin du Parc des Sports, 78810 Feucherolles"
+          "address": "Chemin du Parc des Sports, 78810 Feucherolles",
+          "lat": 48.86878,
+          "lng": 1.97768,
+          "zoom": 17
+        },
+        {
+          "name": "Collège Jean Monnet",
+          "when": "Aujourd’hui 07:35",
+          "address": "1 place de l’Europe, 78810 Feucherolles",
+          "lat": 48.8667158,
+          "lng": 1.9792565,
+          "zoom": 16
         }
       ]
     },
@@ -237,19 +244,19 @@ window.PROFILES.B = {
     "notes": [
       {
         "title": "Wi‑Fi",
-        "body": "• Maison : Livebox-MOREL\\n• Collège : WIFI-College-JeanMonnet\\n• Mairie : WIFI_PUBLIC_FEUCH"
+        "body": "• Maison : Livebox-MOREL\n• Collège : WIFI-College-JeanMonnet\n• Mairie : WIFI_PUBLIC_FEUCH"
       },
       {
         "title": "Vacances",
-        "body": "Vacances de printemps : 11/04/2026 → 26/04/2026\\nOn sera absents (famille)."
+        "body": "Vacances de printemps : 11/04/2026 → 26/04/2026\nOn sera absents (famille)."
       },
       {
         "title": "Alarme maison",
-        "body": "Code : 7042\\nNe pas le partager."
+        "body": "Code : 7042\nNe pas le partager."
       },
       {
         "title": "Mail (ENT)",
-        "body": "Compte : ines.morel@exemple.fr\\nMot de passe : Feuch78*"
+        "body": "Compte : ines.morel@monnet78.fr\nMot de passe : Feuch78*"
       },
       {
         "title": "RDV",
@@ -304,15 +311,5 @@ window.PROFILES.B = {
           "on": false
         }
       ]
-    },
-    "camera": {
-      "lastPhotos": [
-        {
-          "img": "",
-          "label": "IMG_0091",
-          "meta": "Aujourd’hui"
-        }
-      ]
-    }
-  }
+    }}
 };

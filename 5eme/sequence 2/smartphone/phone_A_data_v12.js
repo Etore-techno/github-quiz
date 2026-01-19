@@ -15,7 +15,7 @@ window.PROFILES.A = {
     "ville": "Saint-Nom-la-Bretèche",
     "villeCollege": "Feucherolles",
     "college": "Collège Jean Monnet",
-    "email": "mathis.leroy@exemple.fr",
+    "email": "mathis.leroy@monnet78.fr",
     "telephone": "06 43 82 19 77",
     "adresse": "12 rue de la Fontaine, 78860 Saint-Nom-la-Bretèche"
   },
@@ -79,23 +79,24 @@ window.PROFILES.A = {
         {
           "title": "Maman",
           "when": "Aujourd’hui 08:02",
-          "snippet": "Tu penses à Nala ? Donne-lui à manger en rentrant 🐱"
+          "snippet": "Donne à Nala sa gamelle en rentrant 🐾 (et pense au devoir)."
         },
         {
           "title": "Papa",
-          "when": "Hier 19:41",
-          "snippet": "N’oublie pas d’activer l’alarme (code 3819) quand tu pars."
+          "when": "12/12 19:41",
+          "snippet": "Le code est 3819. Ne le partage pas."
         },
         {
           "title": "Hugo",
           "when": "Hier 21:10",
-          "snippet": "On se retrouve au skatepark samedi ?"
+          "snippet": "14h, comme d'hab ?"
         },
         {
           "title": "Coach (Basket)",
           "when": "Lun 16:12",
-          "snippet": "Entraînement mercredi 16h30 au pôle sportif."
-        }]
+          "snippet": "Pense à prendre ta gourde."
+        }
+      ]
     },
     "social": {
       "appName": "Réseau+",
@@ -164,15 +165,16 @@ window.PROFILES.A = {
         "3819 alarme maison (modèle)"
       ],
       "history": [
-        "Collège Jean Monnet Feucherolles 1 place de l’Europe",
-        "Skatepark Saint‑Nom‑la‑Bretèche",
-        "Pôle sportif Teddy Riner Saint‑Nom‑la‑Bretèche",
-        "comment désactiver aperçu des notifications",
-        "meilleures applis montage photo"
+        "ENT Collège Jean Monnet connexion",
+        "Skatepark Saint‑Nom‑la‑Bretèche horaires",
+        "exercices maths 3e fractions",
+        "stage d’observation 3e trouver une entreprise",
+        "comment mettre un compte en privé",
+        "comment désactiver aperçu des notifications"
       ]
     },
     "mailLogin": {
-      "address": "mathis.leroy@exemple.fr",
+      "address": "mathis.leroy@monnet78.fr",
       "password": "Monnet2026!",
       "inbox": [
         {
@@ -199,24 +201,36 @@ window.PROFILES.A = {
       "mapImage": "",
       "recentPlaces": [
         {
-          "name": "Collège Jean Monnet",
-          "when": "Aujourd’hui 07:30",
-          "address": "1 place de l’Europe, 78810 Feucherolles"
-        },
-        {
           "name": "Maison",
           "when": "Aujourd’hui 07:10",
-          "address": "12 rue de la Fontaine, 78860 Saint-Nom-la-Bretèche"
+          "address": "12 rue de la Fontaine, 78860 Saint-Nom-la-Bretèche",
+          "lat": 48.866667,
+          "lng": 2.033333,
+          "zoom": 15
         },
         {
           "name": "Skatepark",
           "when": "Sam 17/01 13:50",
-          "address": "(Saint-Nom-la-Bretèche)"
+          "address": "3 place Henri Hamel, 78860 Saint-Nom-la-Bretèche",
+          "lat": 48.863333,
+          "lng": 2.018096,
+          "zoom": 17
         },
         {
           "name": "Pôle sportif Teddy Riner",
           "when": "Mer 14/01 16:20",
-          "address": "(Saint-Nom-la-Bretèche)"
+          "address": "Saint-Nom-la-Bretèche",
+          "lat": 48.855762,
+          "lng": 2.021391,
+          "zoom": 17
+        },
+        {
+          "name": "Collège Jean Monnet",
+          "when": "Aujourd’hui 07:30",
+          "address": "1 place de l’Europe, 78810 Feucherolles",
+          "lat": 48.8667158,
+          "lng": 1.9792565,
+          "zoom": 16
         }
       ]
     },
@@ -257,23 +271,23 @@ window.PROFILES.A = {
     "notes": [
       {
         "title": "Wi‑Fi",
-        "body": "• Maison : Livebox-LEROY\\n• Collège : WIFI-College-JeanMonnet\\n• Chez Hugo : SNLB_Fibre_5G"
+        "body": "• Maison : Livebox-LEROY\n• Collège : WIFI-College-JeanMonnet\n• Chez Hugo : SNLB_Fibre_5G"
       },
       {
         "title": "Vacances",
-        "body": "Départ vacances d’hiver : 15/02/2026\\nRetour : 22/02/2026\\n→ Valises vendredi 13/02 au soir."
+        "body": "Départ vacances d’hiver : 15/02/2026\nRetour : 22/02/2026\n→ Valises vendredi 13/02 au soir."
       },
       {
         "title": "Alarme maison",
-        "body": "Code : 3819\\nActiver en partant / désactiver en rentrant."
+        "body": "Code : 3819\nActiver en partant / désactiver en rentrant."
       },
       {
         "title": "Mail (ENT)",
-        "body": "Compte : mathis.leroy@exemple.fr\\nMot de passe : Monnet2026!"
+        "body": "Compte : mathis.leroy@monnet78.fr\nMot de passe : Monnet2026!"
       },
       {
         "title": "RDV",
-        "body": "Mer 14/01 — 16h30 : entraînement (pôle sportif)\\nSam 17/01 — 14h : skatepark"
+        "body": "Mer 14/01 — 16h30 : entraînement (pôle sportif)\nSam 17/01 — 14h : skatepark"
       }
     ],
     "bank": {

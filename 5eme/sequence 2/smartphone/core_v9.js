@@ -391,14 +391,29 @@
   }
 
   function renderDock() {
+    if (!dock) return;
     const apps = getDockApps();
+
+    if (!apps.length) {
+      dock.innerHTML = "";
+      dock.style.display = "none";
+      return;
+    }
+
     dock.innerHTML = apps.map(a => {
       const icon = iconSvg(a.id, "dock-ico", a.title);
-      return `<button class="dock-btn" type="button" data-open="${escapeHtml(a.id)}" title="${escapeHtml(a.title)}"><div class="dock-badge badge-${escapeHtml(a.id)}" ${badgeStyle(a.id)}>${icon}</div></button>`;
+      // Badge colored by app color, icon stays white via CSS
+      const style = badgeStyle(a.id);
+      return `
+        <button class="dock-btn" type="button" data-open="${escapeHtml(a.id)}" aria-label="${escapeHtml(a.title)}">
+          <div class="dock-badge badge-${escapeHtml(a.id)}" ${style}>${icon}</div>
+        </button>
+      `.trim();
     }).join("");
-    // Cache complètement le dock en mode complet (et évite d'afficher le cadre vide)
-    dock.style.display = apps.length ? "flex" : "none";
+
+    dock.style.display = "flex";
   }
+
 
   // ---------- Home ----------
   function renderHome() {
@@ -407,7 +422,7 @@
     const guest = unlockLevel === 1;
 
     // Espace réservé au dock : présent uniquement en mode invité
-    phone.style.setProperty("--dock-h", guest ? "74px" : "0px");
+    document.documentElement.style.setProperty("--dock-h", guest ? "74px" : "0px");
     homeSub.textContent = guest ? "Compte verrouillé (mode invité)" : "";
 
     homeSub.style.display = guest ? "inline-block" : "none";
@@ -704,7 +719,10 @@
   function renderApp(appId) {
     appContent.scrollTop = 0;
 
-    const titleMap = {      notifications: "Notifications",
+    const titleMap = {
+      phone: "Téléphone",
+      health: "Santé - fiche médicale d'urgence",
+      notifications: "Notifications",
       quicknotes: "Notes rapides",
       about: "À propos",
       social: "Réseau social",
@@ -784,7 +802,8 @@
   }
 
   function renderNotifications() {
-    const notifs = (activeProfile.limited.notifications || []).map(n => `
+    const notifsArr = (activeProfile.limited.notifications || []);
+    const notifs = notifsArr.map(n => `
       <div class="item">
         <div class="row">
           <div class="item-title">${escapeHtml(n.app)} — ${escapeHtml(n.title)}</div>
@@ -795,8 +814,11 @@
     `).join("");
 
     return `
-      <div class="card"><div class="big">Notifications</div><div class="muted">Les aperçus peuvent révéler des infos.</div></div>
-      <div class="card"><div class="list">${notifs}</div></div>
+      <div class="card">
+        <div class="list">
+          ${notifs || `<div class="item"><div class="item-sub muted">Aucune notification.</div></div>`}
+        </div>
+      </div>
     `;
   }
 
@@ -820,35 +842,23 @@
     const device = activeProfile.device || {};
     return `
       <div class="card">
-        <div class="big">À propos</div>
-        <div class="muted">Informations sur le propriétaire et l’appareil.</div>
-      </div>
-
-      <div class="card">
         <div class="item"><div class="item-title">Propriétaire</div><div class="item-sub"><b>${escapeHtml(o.prenom)} ${escapeHtml(o.nom)}</b></div></div>
-        <div class="item"><div class="item-title">Adresse</div><div class="item-sub">${escapeHtml(o.adresse || "—")}</div></div>
-        <div class="item"><div class="item-title">Téléphone</div><div class="item-sub">${escapeHtml(o.telephone || "—")}</div></div>
-        <div class="item"><div class="item-title">Email</div><div class="item-sub">${escapeHtml(o.email)}</div></div>
+        <div class="item" style="margin-top:10px"><div class="item-title">Adresse</div><div class="item-sub">${escapeHtml(o.adresse || "—")}</div></div>
+        <div class="item" style="margin-top:10px"><div class="item-title">Téléphone</div><div class="item-sub">${escapeHtml(o.telephone || "—")}</div></div>
+        <div class="item" style="margin-top:10px"><div class="item-title">Email</div><div class="item-sub">${escapeHtml(o.email)}</div></div>
       </div>
 
       <div class="card">
         <div class="item"><div class="item-title">Modèle</div><div class="item-sub">${escapeHtml(device.model || "Smartphone")}</div></div>
-        <div class="item"><div class="item-title">Système</div><div class="item-sub">${escapeHtml(device.os || "OS mobile")}</div></div>
-        <div class="item"><div class="item-title">Stockage</div><div class="item-sub">${escapeHtml(device.storage || "—")}</div></div>
+        <div class="item" style="margin-top:10px"><div class="item-title">Système</div><div class="item-sub">${escapeHtml(device.os || "OS mobile")}</div></div>
+        <div class="item" style="margin-top:10px"><div class="item-title">Stockage</div><div class="item-sub">${escapeHtml(device.storage || "—")}</div></div>
       </div>
     `;
   }
 
-
   // --- Téléphone (mode invité) ---
   function renderPhone() {
-    const h = activeProfile.owner || {};
     return `
-      <div class="card">
-        <div class="big">Téléphone</div>
-        <div class="muted">Mode invité : appeler les numéros d’urgence reste possible.</div>
-      </div>
-
       <div class="card phone-card">
         <div class="phone-display">
           <input id="dial-input" class="dial-input" type="text" inputmode="numeric" placeholder="Composer un numéro" autocomplete="off" />
@@ -893,38 +903,39 @@
     const card = (activeProfile && activeProfile.limited && activeProfile.limited.healthCard) ? activeProfile.limited.healthCard : null;
     if (!card) {
       return `
-        <div class="card"><div class="big">Santé</div><div class="muted">Fiche d’urgence indisponible.</div></div>
+        <div class="card"><div class="item-sub muted">Fiche d’urgence indisponible.</div></div>
       `;
     }
 
     const contacts = (card.iceContacts || []).map(c => `
-      <div class="item"><div class="item-title">${escapeHtml(c.label)}</div><div class="item-sub">${escapeHtml(c.name)} — ${escapeHtml(c.phone)}</div></div>
+      <div class="item">
+        <div class="item-title">${escapeHtml(c.label)}</div>
+        <div class="item-sub">${escapeHtml(c.name)} — ${escapeHtml(c.phone)}</div>
+      </div>
     `).join("");
 
     return `
       <div class="card">
-        <div class="big">Fiche médicale d’urgence</div>
-        <div class="muted">Informations utiles si les secours doivent agir rapidement.</div>
-      </div>
-
-      <div class="card">
-        <div class="item"><div class="item-title">Groupe sanguin</div><div class="item-sub"><b>${escapeHtml(card.bloodType)}</b></div></div>
-        <div class="item"><div class="item-title">Allergies</div><div class="item-sub">${escapeHtml(card.allergies || "Aucune connue")}</div></div>
-        <div class="item"><div class="item-title">Traitement</div><div class="item-sub">${escapeHtml(card.treatment || "—")}</div></div>
-        <div class="item"><div class="item-title">Antécédents</div><div class="item-sub">${escapeHtml(card.conditions || "—")}</div></div>
-      </div>
-
-      <div class="card">
-        <div class="item"><div class="item-title">Infos d’identification (urgence)</div>
-          <div class="item-sub">
-            N° dossier : <b>${escapeHtml(card.patientId)}</b><br>
-            N° assurance (partiel) : <b>${escapeHtml(card.insuranceIdPartial)}</b><br>
-            <span class="muted">Ces numéros peuvent ressembler à des “codes”… mais ils ne servent pas à déverrouiller le téléphone.</span>
-          </div>
+        <div class="item">
+          <div class="item-title">Groupe sanguin</div>
+          <div class="item-sub"><b>${escapeHtml(card.bloodType)}</b></div>
+        </div>
+        <div class="item" style="margin-top:10px">
+          <div class="item-title">Allergies</div>
+          <div class="item-sub">${escapeHtml(card.allergies || "Aucune connue")}</div>
+        </div>
+        <div class="item" style="margin-top:10px">
+          <div class="item-title">Traitement</div>
+          <div class="item-sub">${escapeHtml(card.treatment || "—")}</div>
         </div>
       </div>
 
-      <div class="card"><div class="item-title">Contacts ICE</div><div class="list" style="margin-top:10px">${contacts}</div></div>
+      <div class="card">
+        <div class="item-title">Contacts ICE</div>
+        <div class="list" style="margin-top:10px">
+          ${contacts || `<div class="item"><div class="item-sub muted">—</div></div>`}
+        </div>
+      </div>
     `;
   }
 
@@ -990,14 +1001,6 @@
       }).join("");
 
       return `
-        <div class="card">
-          <div class="chat-top">
-            <button class="chat-back" type="button" data-msg-back="1">← Discussions</button>
-            <div class="big" style="margin:0">${escapeHtml(selected)}</div>
-            <div style="width:1px"></div>
-          </div>
-          <div class="muted">Conversation (exemple). Les messages peuvent contenir des informations sensibles.</div>
-        </div>
         <div class="card"><div class="chat">${bubbles}</div></div>
       `;
     }
@@ -1015,32 +1018,55 @@
 
     return `
       <div class="card">
-        <div class="big">Messages</div>
-        <div class="muted">Clique sur un fil pour ouvrir la discussion.</div>
+        <div class="list">
+          ${threads || `<div class="item"><div class="item-sub muted">Aucune discussion.</div></div>`}
+        </div>
       </div>
-      <div class="card"><div class="list">${threads}</div></div>
     `;
   }
 
   function renderPhotos() {
     const g = guardFull(); if (g) return g;
     const key = activeProfileKey;
-    const items = activeProfile.full.photos.map(p => `
+    const items = (activeProfile.full.photos || []).map(p => `
       <div class="item">
         <div class="item-title">${escapeHtml(p.label)}</div>
         ${p.img ? `<img class="photo-img" src="${assetPhone(key, p.img)}" alt="">` : ""}
         <div class="item-sub">${escapeHtml(p.meta || "")}</div>
       </div>
     `).join("");
-    return `<div class="card"><div class="big">Galerie</div></div><div class="card"><div class="list">${items}</div></div>`;
-  }
 
-  function renderNotes() { const g=guardFull(); if(g) return g;
-    const items = activeProfile.full.notes.map(n => `<div class="item"><div class="item-title">${escapeHtml(n.title)}</div><div class="item-sub pre">${escapeHtml(n.body)}</div></div>`).join("");
-    return `<div class="card"><div class="big">Notes</div></div><div class="card"><div class="list">${items}</div></div>`;
+    return `
+      <div class="card">
+        <div class="list">
+          ${items || `<div class="item"><div class="item-sub muted">Aucune photo.</div></div>`}
+        </div>
+      </div>
+    `;
+  }
+  function renderNotes() {
+    const g = guardFull(); if (g) return g;
+
+    const items = (activeProfile.full.notes || []).map(n => {
+      const body = String(n.body || "").replace(/\n/g, "\n\n");
+      return `
+        <div class="item">
+          <div class="item-title">${escapeHtml(n.title)}</div>
+          <div class="item-sub pre">${escapeHtml(body)}</div>
+        </div>
+      `;
+    }).join("");
+
+    return `
+      <div class="card">
+        <div class="list">
+          ${items || `<div class="item"><div class="item-sub muted">Aucune note.</div></div>`}
+        </div>
+      </div>
+    `;
   }
   function renderMail() { 
-    const g=guardFull(); if(g) return g;
+    const g = guardFull(); if (g) return g;
     const auth = activeProfile.full.mailLogin || {};
     const address = auth.address || activeProfile.owner.email;
     const inbox = auth.inbox || activeProfile.full.mail || [];
@@ -1048,16 +1074,17 @@
     if (!UI.mail.authed) {
       return `
         <div class="card">
-          <div class="big">Mail</div>
-          <div class="muted">Connexion requise.</div>
-        </div>
-        <div class="card">
-          <div class="item"><div class="item-title">Compte</div><div class="item-sub"><b>${escapeHtml(address)}</b></div></div>
           <div class="item">
+            <div class="item-title">Compte</div>
+            <div class="item-sub"><b>${escapeHtml(address)}</b></div>
+          </div>
+
+          <div class="item" style="margin-top:10px">
             <div class="item-title">Mot de passe</div>
             <input id="mail-pass" class="input" type="password" placeholder="Mot de passe" autocomplete="off">
             <div id="mail-msg" class="muted" style="margin-top:8px"></div>
           </div>
+
           <button class="primary" type="button" data-mail-login="1">Se connecter</button>
         </div>
       `;
@@ -1072,12 +1099,16 @@
 
     return `
       <div class="card">
-        <div class="big">Mail</div>
         <div class="muted">Connecté : <b>${escapeHtml(address)}</b></div>
       </div>
-      <div class="card"><div class="list">${items}</div></div>
+      <div class="card">
+        <div class="list">
+          ${items || `<div class="item"><div class="item-sub muted">Boîte de réception vide.</div></div>`}
+        </div>
+      </div>
     `;
   }
+
   function renderBrowser() { 
     const g=guardFull(); if(g) return g;
     const b = activeProfile.full.browser || {};
@@ -1122,9 +1153,12 @@
     `;
   }
   function renderMaps() { 
-    const g=guardFull(); if(g) return g;
+    const g = guardFull(); if (g) return g;
     const m = activeProfile.full.maps || {};
-    const img = m.mapImage ? `<img class="map-img" src="${assetPhone(m.mapImage)}" alt="Carte">` : `<div class="map-placeholder">Carte enregistrée (image à ajouter)</div>`;
+    const img = m.mapImage
+      ? `<img class="map-img" src="${assetPhone(m.mapImage)}" alt="Carte">`
+      : `<div class="map-placeholder">Carte enregistrée (image à ajouter)</div>`;
+
     const items = (m.recentPlaces || []).map(p => `
       <div class="item">
         <div class="row"><div class="item-title">${escapeHtml(p.name)}</div><div class="muted">${escapeHtml(p.when||"")}</div></div>
@@ -1133,11 +1167,15 @@
     `).join("");
 
     return `
-      <div class="card"><div class="big">Plans</div><div class="muted">Lieux enregistrés.</div></div>
       <div class="card">${img}</div>
-      <div class="card"><div class="list">${items}</div></div>
+      <div class="card">
+        <div class="list">
+          ${items || `<div class="item"><div class="item-sub muted">Aucun lieu enregistré.</div></div>`}
+        </div>
+      </div>
     `;
   }
+
   function renderDownloads() { 
     const g=guardFull(); if(g) return g;
     const files = activeProfile.full.downloads || [];
@@ -1239,7 +1277,7 @@
     `;
   }
   function renderSettings() { 
-    const g=guardFull(); if(g) return g;
+    const g = guardFull(); if (g) return g;
     const s = activeProfile.full.settings || {};
     const toggles = (s.toggles || []).map(t => `
       <label class="toggle-row">
@@ -1254,15 +1292,12 @@
 
     return `
       <div class="card">
-        <div class="big">Réglages</div>
-        <div class="muted">Exemples de paramètres (non modifiables dans la simulation).</div>
-      </div>
-      <div class="card">
-        <div class="settings-list">${toggles}</div>
+        <div class="settings-list">
+          ${toggles || `<div class="item"><div class="item-sub muted">Aucun réglage.</div></div>`}
+        </div>
       </div>
     `;
   }
-
 
   // ---------- Init ----------
   function init() {

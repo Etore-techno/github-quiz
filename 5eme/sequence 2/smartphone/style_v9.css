@@ -392,6 +392,54 @@ flex: 0 0 auto; /* empêche le flex de “rétrécir” le téléphone */
 }
 .linklike:active{ transform: scale(.99); }
 
+
+/* ===========================
+   Messages (chat) UI
+   =========================== */
+.chat{
+  display:flex;
+  flex-direction:column;
+  gap: 10px;
+}
+.bubble{
+  max-width: 84%;
+  padding: 10px 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.08);
+  box-shadow: 0 10px 22px rgba(0,0,0,.20);
+}
+.bubble.me{
+  align-self:flex-end;
+  background: rgba(70,130,255,.22);
+  border-color: rgba(70,130,255,.24);
+}
+.bubble.them{
+  align-self:flex-start;
+}
+.bubble-meta{
+  margin-top: 6px;
+  font-size: 11px;
+  color: rgba(255,255,255,.55);
+}
+.chat-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 10px;
+}
+.chat-back{
+  all: unset;
+  cursor:pointer;
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+  font-weight: 800;
+  font-size: 12.5px;
+}
+.chat-back:active{ transform: scale(.99); }
+
 /* ===========================
    Screen: Home
    =========================== */
@@ -406,6 +454,7 @@ flex: 0 0 auto; /* empêche le flex de “rétrécir” le téléphone */
   right: 0;
   padding: 0 18px;
   z-index:2;
+  text-align:center;
 }
 
 .home-datetime{
@@ -415,6 +464,7 @@ flex: 0 0 auto; /* empêche le flex de “rétrécir” le téléphone */
   margin-bottom: 10px;
   color: rgba(255,255,255,.92);
   text-shadow: 0 2px 10px rgba(0,0,0,.6);
+  align-items:center;
 }
 .home-time{
   font-size: 40px;
@@ -445,7 +495,8 @@ flex: 0 0 auto; /* empêche le flex de “rétrécir” le téléphone */
   position:absolute;
   left: 14px;
   right: 14px;
-  top: 110px;
+  top: 50%;
+  transform: translateY(-50%);
   z-index:2;
   padding: 14px;
   border-radius: 22px;
@@ -722,6 +773,12 @@ flex: 0 0 auto; /* empêche le flex de “rétrécir” le téléphone */
 .appbar-title{
   font-weight: 900;
   letter-spacing:.2px;
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .appbar-spacer{ flex:1; }
 
@@ -764,6 +821,9 @@ flex: 0 0 auto; /* empêche le flex de “rétrécir” le téléphone */
   background: rgba(0,0,0,.22);
   border: 1px solid rgba(255,255,255,.10);
 }
+
+.msg-thread{ cursor:pointer; }
+.msg-thread:active{ transform: scale(.995); }
 .item-title{
   font-weight: 900;
   font-size: 13px;
@@ -969,6 +1029,8 @@ flex: 0 0 auto; /* empêche le flex de “rétrécir” le téléphone */
   color: var(--text);
 }
 .browser-home{ text-align:center; }
+.browser-home--center{ display:flex; flex-direction:column; align-items:center; justify-content:center; min-height: 55vh; }
+.browser-search--center{ width: min(340px, 92%); margin-left:auto; margin-right:auto; }
 .browser-logo{
   font-size: 22px;
   font-weight: 900;
@@ -1117,16 +1179,79 @@ flex: 0 0 auto; /* empêche le flex de “rétrécir” le téléphone */
 }
 
 /* ---------- Maps ---------- */
+.maps-map{
+  width:100%;
+  height: 260px;
+  border-radius: 18px;
+  overflow:hidden;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(0,0,0,.22);
+  position: relative;
+}
+
 .map-placeholder{
   width:100%;
-  height: 180px;
-  border-radius: 18px;
-  border: 1px dashed rgba(255,255,255,.20);
-  background: rgba(255,255,255,.05);
+  height:100%;
   display:flex;
   align-items:center;
   justify-content:center;
   color: var(--muted);
   font-weight: 800;
 }
-.map-img{ width:100%; border-radius: 18px; display:block; }
+
+.map-loading{
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color: rgba(255,255,255,.72);
+  font-weight: 800;
+}
+
+.maps-attrib{
+  margin-top: 8px;
+  font-size: 11.5px;
+  line-height: 1.2;
+}
+
+/* Liste des lieux cliquable */
+.map-place{ cursor:pointer; }
+.map-place:active{ transform: scale(.995); }
+.map-place.is-active{
+  border-color: rgba(48,209,88,.55);
+  box-shadow: 0 0 0 2px rgba(48,209,88,.20) inset;
+}
+
+/* Leaflet — mini-tuning pour écran téléphone */
+.maps-map .leaflet-control-zoom{
+  box-shadow: none;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 14px;
+  overflow:hidden;
+}
+.maps-map .leaflet-control-zoom a{
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+}
+.maps-map .leaflet-bar a{
+  background: rgba(0,0,0,.35);
+  color: rgba(255,255,255,.92);
+  border-bottom: 1px solid rgba(255,255,255,.10);
+}
+.maps-map .leaflet-bar a:hover{ background: rgba(0,0,0,.42); }
+
+/* Ajustements : appli Téléphone → touches plus petites */
+.phone-keypad{ gap: 8px; }
+.phone-keypad .key{
+  min-height: 48px;
+  padding: 10px 8px;
+  border-radius: 16px;
+}
+.phone-keypad .key-big{ font-size: 18px; }
+.phone-keypad .key-sub{ font-size: 9px; margin-top: 3px; }
+
+.phone-actions{ gap: 8px; margin-top: 10px; }
+.phone-actions .key-back,
+.phone-actions .key-clear{ min-height: 44px; }

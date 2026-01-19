@@ -495,7 +495,8 @@ flex: 0 0 auto; /* empêche le flex de “rétrécir” le téléphone */
   position:absolute;
   left: 14px;
   right: 14px;
-  top: 110px;
+  top: 50%;
+  transform: translateY(-50%);
   z-index:2;
   padding: 14px;
   border-radius: 22px;
@@ -772,6 +773,12 @@ flex: 0 0 auto; /* empêche le flex de “rétrécir” le téléphone */
 .appbar-title{
   font-weight: 900;
   letter-spacing:.2px;
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .appbar-spacer{ flex:1; }
 
@@ -1022,6 +1029,8 @@ flex: 0 0 auto; /* empêche le flex de “rétrécir” le téléphone */
   color: var(--text);
 }
 .browser-home{ text-align:center; }
+.browser-home--center{ display:flex; flex-direction:column; align-items:center; justify-content:center; min-height: 55vh; }
+.browser-search--center{ width: min(340px, 92%); margin-left:auto; margin-right:auto; }
 .browser-logo{
   font-size: 22px;
   font-weight: 900;
@@ -1183,3 +1192,16 @@ flex: 0 0 auto; /* empêche le flex de “rétrécir” le téléphone */
   font-weight: 800;
 }
 .map-img{ width:100%; border-radius: 18px; display:block; }
+/* Ajustements : appli Téléphone → touches plus petites */
+.phone-keypad{ gap: 8px; }
+.phone-keypad .key{
+  min-height: 48px;
+  padding: 10px 8px;
+  border-radius: 16px;
+}
+.phone-keypad .key-big{ font-size: 18px; }
+.phone-keypad .key-sub{ font-size: 9px; margin-top: 3px; }
+
+.phone-actions{ gap: 8px; margin-top: 10px; }
+.phone-actions .key-back,
+.phone-actions .key-clear{ min-height: 44px; }

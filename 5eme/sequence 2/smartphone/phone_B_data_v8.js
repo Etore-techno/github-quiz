@@ -15,7 +15,7 @@ window.PROFILES.B = {
     "ville": "Feucherolles",
     "villeCollege": "Feucherolles",
     "college": "Collège Jean Monnet",
-    "email": "ines.morel@exemple.fr",
+    "email": "ines.morel@monnet78.fr",
     "telephone": "06 51 09 33 04",
     "adresse": "8 allée des Chênes, 78810 Feucherolles"
   },
@@ -78,7 +78,7 @@ window.PROFILES.B = {
         {
           "title": "Papa",
           "when": "Aujourd’hui 07:58",
-          "snippet": "Tu as bien sorti Cookie ce matin ? 🐶"
+          "snippet": "Donne à Cookie sa gamelle en rentrant 🐾 (et pense au devoir)."
         },
         {
           "title": "Maman",
@@ -144,15 +144,16 @@ window.PROFILES.B = {
         "code alarme 7042 notice"
       ],
       "history": [
-        "Mairie de Feucherolles 39 Grande Rue",
-        "Parc des Sports Feucherolles Chemin du Parc des Sports",
-        "Collège Jean Monnet Feucherolles 1 place de l’Europe",
-        "comment mettre compte en privé",
+        "ENT Collège Jean Monnet mot de passe oublié",
+        "dessin kawaii chat facile",
+        "exercices conjugaison 6e",
+        "recette cookies facile",
+        "Parc des Sports Feucherolles horaires",
         "comment supprimer une photo envoyée"
       ]
     },
     "mailLogin": {
-      "address": "ines.morel@exemple.fr",
+      "address": "ines.morel@monnet78.fr",
       "password": "Feuch78*",
       "inbox": [
         {
@@ -173,11 +174,6 @@ window.PROFILES.B = {
       "mapImage": "",
       "recentPlaces": [
         {
-          "name": "Collège Jean Monnet",
-          "when": "Aujourd’hui 07:35",
-          "address": "1 place de l’Europe, 78810 Feucherolles"
-        },
-        {
           "name": "Maison",
           "when": "Aujourd’hui 07:10",
           "address": "8 allée des Chênes, 78810 Feucherolles"
@@ -191,6 +187,11 @@ window.PROFILES.B = {
           "name": "Parc des Sports",
           "when": "Mer 15/01 15:55",
           "address": "Chemin du Parc des Sports, 78810 Feucherolles"
+        },
+        {
+          "name": "Collège Jean Monnet",
+          "when": "Aujourd’hui 07:35",
+          "address": "1 place de l’Europe, 78810 Feucherolles"
         }
       ]
     },
@@ -243,7 +244,7 @@ window.PROFILES.B = {
       },
       {
         "title": "Mail (ENT)",
-        "body": "Compte : ines.morel@exemple.fr\\nMot de passe : Feuch78*"
+        "body": "Compte : ines.morel@monnet78.fr\\nMot de passe : Feuch78*"
       },
       {
         "title": "RDV",

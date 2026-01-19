@@ -8,14 +8,14 @@ window.PROFILES.A = {
   "accountPassword": "Nala",
   "owner": {
     "prenom": "Mathis",
-    "nom": "Garnier",
+    "nom": "Leroy",
     "pin": "2010",
     "accountPassword": "Nala",
     "classe": "3e2",
     "ville": "Saint-Nom-la-Bretèche",
     "villeCollege": "Feucherolles",
     "college": "Collège Jean Monnet",
-    "email": "mathis.garnier@exemple.fr",
+    "email": "mathis.leroy@monnet78.fr",
     "telephone": "06 43 82 19 77",
     "adresse": "12 rue de la Fontaine, 78860 Saint-Nom-la-Bretèche"
   },
@@ -56,12 +56,12 @@ window.PROFILES.A = {
       "iceContacts": [
         {
           "label": "ICE 1",
-          "name": "Maman (S. Garnier)",
+          "name": "Maman (S. Leroy)",
           "phone": "06 12 34 56 78"
         },
         {
           "label": "ICE 2",
-          "name": "Papa (T. Garnier)",
+          "name": "Papa (T. Leroy)",
           "phone": "06 98 76 54 32"
         }
       ]
@@ -79,7 +79,7 @@ window.PROFILES.A = {
         {
           "title": "Maman",
           "when": "Aujourd’hui 08:02",
-          "snippet": "Tu penses à Nala ? Donne-lui à manger en rentrant 🐱"
+          "snippet": "Donne à Nala sa gamelle en rentrant 🐾 (et pense au devoir)."
         },
         {
           "title": "Papa",
@@ -95,13 +95,7 @@ window.PROFILES.A = {
           "title": "Coach (Basket)",
           "when": "Lun 16:12",
           "snippet": "Entraînement mercredi 16h30 au pôle sportif."
-        },
-        {
-          "title": "Mamie",
-          "when": "Dim 18:05",
-          "snippet": "Bisous ! Pense à prendre une écharpe demain."
-        }
-      ]
+        }]
     },
     "social": {
       "appName": "Réseau+",
@@ -170,15 +164,16 @@ window.PROFILES.A = {
         "3819 alarme maison (modèle)"
       ],
       "history": [
-        "Collège Jean Monnet Feucherolles 1 place de l’Europe",
-        "Skatepark Saint‑Nom‑la‑Bretèche",
-        "Pôle sportif Teddy Riner Saint‑Nom‑la‑Bretèche",
-        "comment désactiver aperçu des notifications",
-        "meilleures applis montage photo"
+        "ENT Collège Jean Monnet connexion",
+        "Skatepark Saint‑Nom‑la‑Bretèche horaires",
+        "exercices maths 3e fractions",
+        "stage d’observation 3e trouver une entreprise",
+        "comment mettre un compte en privé",
+        "comment désactiver aperçu des notifications"
       ]
     },
     "mailLogin": {
-      "address": "mathis.garnier@exemple.fr",
+      "address": "mathis.leroy@monnet78.fr",
       "password": "Monnet2026!",
       "inbox": [
         {
@@ -205,24 +200,36 @@ window.PROFILES.A = {
       "mapImage": "",
       "recentPlaces": [
         {
-          "name": "Collège Jean Monnet",
-          "when": "Aujourd’hui 07:30",
-          "address": "1 place de l’Europe, 78810 Feucherolles"
-        },
-        {
           "name": "Maison",
           "when": "Aujourd’hui 07:10",
-          "address": "12 rue de la Fontaine, 78860 Saint-Nom-la-Bretèche"
+          "address": "12 rue de la Fontaine, 78860 Saint-Nom-la-Bretèche",
+          "lat": 48.866667,
+          "lng": 2.033333,
+          "zoom": 15
         },
         {
           "name": "Skatepark",
           "when": "Sam 17/01 13:50",
-          "address": "(Saint-Nom-la-Bretèche)"
+          "address": "3 place Henri Hamel, 78860 Saint-Nom-la-Bretèche",
+          "lat": 48.863333,
+          "lng": 2.018096,
+          "zoom": 17
         },
         {
           "name": "Pôle sportif Teddy Riner",
           "when": "Mer 14/01 16:20",
-          "address": "(Saint-Nom-la-Bretèche)"
+          "address": "Saint-Nom-la-Bretèche",
+          "lat": 48.855762,
+          "lng": 2.021391,
+          "zoom": 17
+        },
+        {
+          "name": "Collège Jean Monnet",
+          "when": "Aujourd’hui 07:30",
+          "address": "1 place de l’Europe, 78810 Feucherolles",
+          "lat": 48.8667158,
+          "lng": 1.9792565,
+          "zoom": 16
         }
       ]
     },
@@ -263,23 +270,23 @@ window.PROFILES.A = {
     "notes": [
       {
         "title": "Wi‑Fi",
-        "body": "• Maison : Livebox-GARNIER\\n• Collège : WIFI-College-JeanMonnet\\n• Chez Hugo : SNLB_Fibre_5G"
+        "body": "• Maison : Livebox-LEROY\n• Collège : WIFI-College-JeanMonnet\n• Chez Hugo : SNLB_Fibre_5G"
       },
       {
         "title": "Vacances",
-        "body": "Départ vacances d’hiver : 15/02/2026\\nRetour : 22/02/2026\\n→ Valises vendredi 13/02 au soir."
+        "body": "Départ vacances d’hiver : 15/02/2026\nRetour : 22/02/2026\n→ Valises vendredi 13/02 au soir."
       },
       {
         "title": "Alarme maison",
-        "body": "Code : 3819\\nActiver en partant / désactiver en rentrant."
+        "body": "Code : 3819\nActiver en partant / désactiver en rentrant."
       },
       {
         "title": "Mail (ENT)",
-        "body": "Compte : mathis.garnier@exemple.fr\\nMot de passe : Monnet2026!"
+        "body": "Compte : mathis.leroy@monnet78.fr\nMot de passe : Monnet2026!"
       },
       {
         "title": "RDV",
-        "body": "Mer 14/01 — 16h30 : entraînement (pôle sportif)\\nSam 17/01 — 14h : skatepark"
+        "body": "Mer 14/01 — 16h30 : entraînement (pôle sportif)\nSam 17/01 — 14h : skatepark"
       }
     ],
     "bank": {
@@ -335,15 +342,5 @@ window.PROFILES.A = {
           "on": false
         }
       ]
-    },
-    "camera": {
-      "lastPhotos": [
-        {
-          "img": "",
-          "label": "IMG_2041",
-          "meta": "Aujourd’hui"
-        }
-      ]
-    }
-  }
+    }}
 };
