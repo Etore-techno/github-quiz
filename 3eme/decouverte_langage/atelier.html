@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Découverte : HTML • CSS • Python</title>
+  <link rel="stylesheet" href="atelier.css" />
+
+  <!-- Brython -->
+  <script src="https://cdn.jsdelivr.net/npm/brython@3.12.2/brython.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/brython@3.12.2/brython_stdlib.js"></script>
+</head>
+
+<body onload="brython({cache:'none'})">
+  <header class="topbar">
+    <h1>Découverte : HTML • CSS • Python</h1>
+    <!-- ✅ pastilles étapes en haut à droite -->
+    <div class="stepHeader" id="stepHeader"></div>
+  </header>
+
+  <div class="grid">
+    <!-- GAUCHE -->
+    <section class="panel left">
+      <div class="task" id="zoneConsigne"></div>
+
+      <div class="tabs">
+        <button class="tab active" data-tab="html">HTML</button>
+        <button class="tab" data-tab="css">CSS</button>
+        <button class="tab" data-tab="py">Python</button>
+      </div>
+
+      <div class="editors">
+        <div class="editor active" id="ed-html">
+          <textarea id="codeHtml" spellcheck="false"></textarea>
+        </div>
+        <div class="editor" id="ed-css">
+          <textarea id="codeCss" spellcheck="false"></textarea>
+        </div>
+        <div class="editor" id="ed-py">
+          <textarea id="codePy" spellcheck="false"></textarea>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="btnAppliquer">Appliquer</button>
+        <button id="btnReinit" class="secondary">Réinitialiser</button>
+        <button id="btnSuivant" class="secondary" disabled>Suivant</button>
+      </div>
+
+      <div class="status" id="zoneStatut"></div>
+    </section>
+
+    <!-- DROITE -->
+    <section class="panel right">
+      <div class="cadreApercu">
+        <div class="titreApercu">Mini-jeu</div>
+        <style id="styleEleve"></style>
+        <div id="apercu" class="apercu"></div>
+        <script id="pythonEleve" type="text/python"></script>
+      </div>
+    </section>
+  </div>
+
+  <script src="atelier.js"></script>
+</body>
+</html>
