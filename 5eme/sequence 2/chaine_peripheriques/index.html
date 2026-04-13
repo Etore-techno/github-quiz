@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Circulation de l’information – Exercices (5e)</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="viewport">
+    <div id="stage">
+      <header class="top">
+        <h1>Circulation de l’information</h1>
+      </header>
+
+      <main class="page">
+        <section class="card exercise">
+          <div class="statementRow">
+            <div class="statement" id="statement">Énoncé…</div>
+
+            <div class="rightPills">
+              <div class="pill" id="exPos">Question 1/1</div>
+              <div class="pill pillScore">Note :&nbsp;<b id="score">0</b>/20</div>
+            </div>
+          </div>
+
+          <div class="miniBar">
+            <div class="miniInfo">Essai n°<b id="attempt">1</b></div>
+
+            <div class="feedbackInline" aria-live="polite">
+              <div class="fb-text" id="fbText">Place le bon nombre d’éléments dans chaque zone, puis vérifie.</div>
+            </div>
+
+            <button id="btnMain" class="btn btn-primary">Vérifier</button>
+          </div>
+        </section>
+
+        <section class="work">
+          <aside class="card bank">
+            <h2>Éléments disponibles :</h2>
+            <div class="bank-grid" id="bank"></div>
+            <div class="small" id="bankInfo"></div>
+          </aside>
+
+          <section class="chain">
+            <div class="zonesWrap">
+              <div class="zone z-acq" data-zone="acquerir">
+                <div class="zoneHead">
+                  <div class="zone-title">Acquérir</div>
+                  <div class="zoneMeta">
+                    <div class="zone-sub">reçoit ou capte des informations</div>
+                    <div class="need"><span id="need-acq">0/0</span></div>
+                  </div>
+                </div>
+                <div class="drop" id="zone-acquerir"></div>
+              </div>
+
+              <div class="arrowCol" aria-hidden="true">
+                <div class="arrowBig">➜</div>
+              </div>
+
+              <div class="zone z-trt" data-zone="traiter">
+                <div class="zoneHead">
+                  <div class="zone-title">Traiter</div>
+                  <div class="zoneMeta">
+                    <div class="zone-sub">analyse les informations puis décide</div>
+                    <div class="need"><span id="need-trt">0/0</span></div>
+                  </div>
+                </div>
+                <div class="drop" id="zone-traiter"></div>
+              </div>
+
+              <div class="arrowCol" aria-hidden="true">
+                <div class="arrowBig">➜</div>
+              </div>
+
+              <div class="zone z-com" data-zone="communiquer">
+                <div class="zoneHead">
+                  <div class="zone-title">Communiquer / Agir</div>
+                  <div class="zoneMeta">
+                    <div class="zone-sub">restitue, informe ou réalise l’action</div>
+                    <div class="need"><span id="need-com">0/0</span></div>
+                  </div>
+                </div>
+                <div class="drop" id="zone-communiquer"></div>
+              </div>
+            </div>
+          </section>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const BASE_W = 1920;
+      const BASE_H = 1080;
+      const stage = document.getElementById("stage");
+
+      function applyScale() {
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+
+        const scale = Math.min(vw / BASE_W, vh / BASE_H);
+        const x = Math.round((vw - BASE_W * scale) / 2);
+        const y = Math.round((vh - BASE_H * scale) / 2);
+
+        stage.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+      }
+
+      window.addEventListener("resize", applyScale, { passive: true });
+
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener("resize", applyScale, { passive: true });
+        window.visualViewport.addEventListener("scroll", applyScale, { passive: true });
+      }
+
+      let lastDPR = window.devicePixelRatio || 1;
+      setInterval(() => {
+        const dpr = window.devicePixelRatio || 1;
+        if (dpr !== lastDPR) {
+          lastDPR = dpr;
+          applyScale();
+        }
+      }, 500);
+
+      applyScale();
+    })();
+  </script>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
