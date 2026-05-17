@@ -1,0 +1,1088 @@
+const BASE_WIDTH = 1920;
+const BASE_HEIGHT = 1080;
+const DIAGRAM_WIDTH = 1892;
+const DIAGRAM_HEIGHT = 543;
+
+const ENERGY_OPTIONS = [
+  "Énergie électrique",
+  "Énergie éolienne",
+  "Énergie mécanique",
+  "Énergie solaire",
+  "Énergie thermique"
+];
+
+const MAX_ERRORS_BEFORE_REVEAL = 3;
+
+// À compléter après avoir déployé le Google Apps Script fourni dans le fichier Code.gs.
+// Exemple : const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycb.../exec";
+const GOOGLE_SCRIPT_URL = "";
+const LOCAL_STORAGE_PREFIX = "chaines_information_energie_progression_";
+const SAVE_DELAY = 450;
+
+const exercises = [
+  {
+    title: "Système d’orientation de panneau solaire",
+    images: [{ src: "assets/panneau_solaire.png", alt: "Schéma d’un panneau solaire orientable" }],
+    text: [
+      "Ce système permet d’orienter un panneau solaire en fonction de la position du soleil.",
+      "Le système est constitué d’une carte électronique permettant de donner les ordres à un distributeur qui envoie l’énergie nécessaire à deux moteurs électriques.",
+      "Un capteur de lumière mesure l’intensité lumineuse afin d’obtenir la position du soleil.",
+      "Grâce à deux réducteurs, le panneau peut bouger en rotation autour d’un axe vertical et d’un axe horizontal.",
+      "L’énergie nécessaire au fonctionnement du système se situe dans des batteries."
+    ],
+    componentOptions: [
+      "Capteur de lumière",
+      "Carte électronique",
+      "Batteries",
+      "Distributeur",
+      "Moteurs électriques",
+      "Réducteurs"
+    ],
+    layout: {
+      labels: [
+        { text: "Intensité\nlumineuse", x: 25, y: 120, w: 190, h: 65, className: "fixed-label" },
+        { text: "ordres", x: 690, y: 250, w: 120, h: 32 },
+        { text: "Énergie\nélectrique", x: 35, y: 356, w: 180, h: 68, className: "fixed-label" },
+        { text: "Mouvement\ndu panneau\nsolaire", x: 1590, y: 338, w: 230, h: 88, className: "fixed-label" }
+      ],
+      blocks: [
+        { id: "p_info_acquerir", title: "Acquérir", correct: "Capteur de lumière", type: "component", kind: "info", x: 305, y: 94, w: 230, h: 115 },
+        { id: "p_info_traiter", title: "Traiter", correct: "Carte électronique", type: "component", kind: "info", x: 635, y: 94, w: 230, h: 115 },
+        { title: "Communiquer", value: "Fils\nélectriques", kind: "info", x: 965, y: 94, w: 230, h: 115 },
+        { id: "p_en_alimenter", title: "Alimenter", correct: "Batteries", type: "component", kind: "energy", x: 290, y: 335, w: 210, h: 110 },
+        { id: "p_en_distribuer", title: "Distribuer", correct: "Distributeur", type: "component", kind: "energy", x: 610, y: 335, w: 210, h: 110 },
+        { id: "p_en_convertir", title: "Convertir", correct: "Moteurs électriques", type: "component", kind: "energy", x: 930, y: 335, w: 210, h: 110 },
+        { id: "p_en_transmettre", title: "Transmettre", correct: "Réducteurs", type: "component", kind: "energy", x: 1250, y: 335, w: 230, h: 110 }
+      ],
+      energies: [
+        { id: "p_forme_2", correct: "Énergie électrique", x: 445, y: 455, w: 220, h: 64 },
+        { id: "p_forme_3", correct: "Énergie électrique", x: 765, y: 455, w: 220, h: 64 },
+        { id: "p_forme_4", correct: "Énergie mécanique", x: 1085, y: 455, w: 220, h: 64 },
+        { id: "p_forme_5", correct: "Énergie mécanique", x: 1425, y: 455, w: 220, h: 64 }
+      ],
+      arrows: [
+        [215, 152, 305, 152, "info"], [535, 152, 635, 152, "info"], [865, 152, 965, 152, "info"],
+        [1195, 152, 1290, 152, "info", false], [1290, 152, 1290, 290, "info", false], [1290, 290, 715, 290, "info", false], [715, 290, 715, 335, "info"],
+        [180, 390, 290, 390, "energy"], [500, 390, 610, 390, "energy"], [820, 390, 930, 390, "energy"], [1140, 390, 1250, 390, "energy"], [1480, 390, 1590, 390, "energy"],
+[555, 455, 555, 390, "guide", false, true], [875, 455, 875, 390, "guide", false, true], [1195, 455, 1195, 390, "guide", false, true], [1535, 455, 1535, 390, "guide", false, true]
+      ]
+    }
+  },
+  {
+    title: "Éolienne",
+    images: [{ src: "assets/eolienne.png", alt: "Schéma des composants d’une éolienne" }],
+    text: [
+      "Une éolienne permet de créer de l’énergie électrique grâce au vent.",
+      "Dès 15 km/h de vent, l’hélice, appelée aussi rotor, se met en rotation : les pales tournent et entraînent un axe.",
+      "Grâce à l’énergie mécanique fournie par la rotation de l’axe, l’alternateur produit un courant électrique.",
+      "Un transformateur transmet ce courant électrique produit dans les lignes du réseau électrique.",
+      "L’anémomètre, qui capte la vitesse du vent, informe en permanence un calculateur.",
+      "Lorsque l’anémomètre capte une vitesse du vent supérieure à 90 km/h, le calculateur, via des fils électriques, transmet un ordre à l’axe pour qu’il cesse de tourner et que l’éolienne se mette en sécurité.",
+      "Le calculateur informe également un centre de contrôle que l’éolienne est à l’arrêt grâce à une antenne 4G."
+    ],
+    componentOptions: [
+      "Anémomètre",
+      "Calculateur",
+      "Antenne 4G",
+      "Fils électriques",
+      "Rotor",
+      "Axe",
+      "Alternateur",
+      "Transformateur"
+    ],
+    layout: {
+      labels: [
+        { text: "Vitesse du\nvent", x: 25, y: 120, w: 170, h: 65, className: "fixed-label" },
+        { text: "Informations\npour le centre\nde contrôle", x: 1315, y: 36, w: 230, h: 88, className: "fixed-label" },
+        { text: "ordres", x: 690, y: 250, w: 120, h: 32 },
+        { text: "Vent", x: 35, y: 356, w: 145, h: 60, className: "fixed-label" },
+        { text: "Réseau\nélectrique", x: 1590, y: 346, w: 200, h: 75, className: "fixed-label" }
+      ],
+      blocks: [
+        { id: "e_info_acquerir", title: "Acquérir", correct: "Anémomètre", type: "component", kind: "info", x: 305, y: 94, w: 220, h: 116 },
+        { id: "e_info_traiter", title: "Traiter", correct: "Calculateur", type: "component", kind: "info", x: 635, y: 94, w: 230, h: 115 },
+        { id: "e_info_communiquer_centre", title: "Communiquer", correct: "Antenne 4G", type: "component", kind: "info", x: 965, y: 22, w: 240, h: 116 },
+        { id: "e_info_communiquer_ordres", title: "Communiquer", correct: "Fils électriques", type: "component", kind: "info", x: 965, y: 164, w: 240, h: 108 },
+        { id: "e_en_alimenter", title: "Alimenter", correct: "Rotor", type: "component", kind: "energy", x: 290, y: 335, w: 210, h: 110 },
+        { id: "e_en_distribuer", title: "Distribuer", correct: "Axe", type: "component", kind: "energy", x: 610, y: 335, w: 210, h: 110 },
+        { id: "e_en_convertir", title: "Convertir", correct: "Alternateur", type: "component", kind: "energy", x: 930, y: 335, w: 210, h: 110 },
+        { id: "e_en_transmettre", title: "Transmettre", correct: "Transformateur", type: "component", kind: "energy", x: 1250, y: 335, w: 230, h: 110 }
+      ],
+      energies: [
+        { id: "e_forme_1", correct: "Énergie éolienne", x: 125, y: 455, w: 220, h: 64 },
+        { id: "e_forme_2", correct: "Énergie mécanique", x: 445, y: 455, w: 220, h: 64 },
+        { id: "e_forme_3", correct: "Énergie mécanique", x: 765, y: 455, w: 220, h: 64 },
+        { id: "e_forme_4", correct: "Énergie électrique", x: 1085, y: 455, w: 220, h: 64 },
+        { id: "e_forme_5", correct: "Énergie électrique", x: 1425, y: 455, w: 220, h: 64 }
+      ],
+      arrows: [
+        [195, 152, 305, 152, "info"], [525, 152, 635, 152, "info"],
+        [865, 132, 965, 80, "info"], [865, 166, 965, 218, "info"],
+        [1205, 80, 1315, 80, "info"],
+        [1205, 218, 1290, 218, "info", false], [1290, 218, 1290, 290, "info", false], [1290, 290, 715, 290, "info", false], [715, 290, 715, 335, "info"],
+        [180, 390, 290, 390, "energy"], [500, 390, 610, 390, "energy"], [820, 390, 930, 390, "energy"], [1140, 390, 1250, 390, "energy"], [1480, 390, 1590, 390, "energy"],
+        [235, 455, 235, 390, "guide", false, true], [555, 455, 555, 390, "guide", false, true], [875, 455, 875, 390, "guide", false, true], [1195, 455, 1195, 390, "guide", false, true], [1535, 455, 1535, 390, "guide", false, true]
+      ]
+    }
+  },
+  {
+    title: "Système de chauffage électrique",
+    images: [{ src: "assets/radiateur.png", alt: "Radiateur électrique avec thermostat" }],
+    text: [
+      "Ce système de chauffage permet d’obtenir une température voulue dans une pièce.",
+      "Le système se raccorde au réseau électrique par l’intermédiaire d’une prise électrique.",
+      "L’utilisateur indique la température qu’il désire en manipulant un clavier numérique et un écran lui fournit différentes informations : la température dans la pièce, les réglages effectués, l’heure, etc.",
+      "Une sonde de température recueille en continu la température de la pièce et envoie cette information à un microcontrôleur.",
+      "Ce dernier compare la température voulue à la température de la pièce et ordonne à un relais, via des fils électriques, de distribuer ou non l’énergie.",
+      "Une fois alimentée, une résistance chauffante crée de la chaleur qui sera diffusée dans la direction voulue par le radiateur."
+    ],
+    componentOptions: [
+      "Clavier numérique",
+      "Sonde de température",
+      "Microcontrôleur",
+      "Écran",
+      "Fils électriques",
+      "Prise électrique",
+      "Relais",
+      "Résistance chauffante",
+      "Radiateur"
+    ],
+    layout: {
+      labels: [
+        { text: "Température\nvoulue par\nl’utilisateur", x: 25, y: 48, w: 195, h: 78, className: "fixed-label" },
+        { text: "Température\nde la pièce", x: 25, y: 190, w: 195, h: 66, className: "fixed-label" },
+        { text: "Informations\npour\nl’utilisateur", x: 1315, y: 36, w: 230, h: 88, className: "fixed-label" },
+        { text: "ordres", x: 690, y: 250, w: 120, h: 32 },
+        { text: "Réseau\nélectrique", x: 35, y: 356, w: 175, h: 68, className: "fixed-label" },
+        { text: "Température\nvoulue dans\nla pièce", x: 1590, y: 338, w: 230, h: 88, className: "fixed-label" }
+      ],
+      blocks: [
+        { id: "c_info_acq_voulue", title: "Acquérir", correct: "Clavier numérique", type: "component", kind: "info", x: 305, y: 22, w: 230, h: 108 },
+        { id: "c_info_acq_piece", title: "Acquérir", correct: "Sonde de température", type: "component", kind: "info", x: 305, y: 164, w: 230, h: 108 },
+        { id: "c_info_traiter", title: "Traiter", correct: "Microcontrôleur", type: "component", kind: "info", x: 635, y: 94, w: 230, h: 115 },
+        { id: "c_info_communiquer_ecran", title: "Communiquer", correct: "Écran", type: "component", kind: "info", x: 965, y: 22, w: 240, h: 116 },
+        { id: "c_info_communiquer_ordres", title: "Communiquer", correct: "Fils électriques", type: "component", kind: "info", x: 965, y: 164, w: 240, h: 108 },
+        { id: "c_en_alimenter", title: "Alimenter", correct: "Prise électrique", type: "component", kind: "energy", x: 290, y: 335, w: 210, h: 110 },
+        { id: "c_en_distribuer", title: "Distribuer", correct: "Relais", type: "component", kind: "energy", x: 610, y: 335, w: 210, h: 110 },
+        { id: "c_en_convertir", title: "Convertir", correct: "Résistance chauffante", type: "component", kind: "energy", x: 930, y: 335, w: 210, h: 110 },
+        { id: "c_en_transmettre", title: "Transmettre", correct: "Radiateur", type: "component", kind: "energy", x: 1250, y: 335, w: 230, h: 110 }
+      ],
+      energies: [
+        { id: "c_forme_1", correct: "Énergie électrique", x: 125, y: 455, w: 220, h: 64 },
+        { id: "c_forme_2", correct: "Énergie électrique", x: 445, y: 455, w: 220, h: 64 },
+        { id: "c_forme_3", correct: "Énergie électrique", x: 765, y: 455, w: 220, h: 64 },
+        { id: "c_forme_4", correct: "Énergie thermique", x: 1085, y: 455, w: 220, h: 64 },
+        { id: "c_forme_5", correct: "Énergie thermique", x: 1425, y: 455, w: 220, h: 64 }
+      ],
+      arrows: [
+        [220, 76, 305, 76, "info"], [220, 218, 305, 218, "info"],
+        [535, 76, 635, 132, "info"], [535, 218, 635, 166, "info"],
+        [865, 132, 965, 80, "info"], [865, 166, 965, 218, "info"],
+        [1205, 80, 1315, 80, "info"],
+        [1205, 218, 1290, 218, "info", false], [1290, 218, 1290, 290, "info", false], [1290, 290, 715, 290, "info", false], [715, 290, 715, 335, "info"],
+        [180, 390, 290, 390, "energy"], [500, 390, 610, 390, "energy"], [820, 390, 930, 390, "energy"], [1140, 390, 1250, 390, "energy"], [1480, 390, 1590, 390, "energy"],
+        [235, 455, 235, 390, "guide", false, true], [555, 455, 555, 390, "guide", false, true], [875, 455, 875, 390, "guide", false, true], [1195, 455, 1195, 390, "guide", false, true], [1535, 455, 1535, 390, "guide", false, true]
+      ]
+    }
+  }
+];
+
+const state = {
+  currentExercise: 0,
+  zones: {},
+  exerciseCompleted: false,
+  exerciseScores: exercises.map(() => 0),
+  exerciseStates: exercises.map(exercise => makeZoneState(exercise)),
+  exerciseCompletedFlags: exercises.map(() => false),
+  student: null,
+  resumeCode: "",
+  saveTimer: null
+};
+
+const viewport = document.getElementById("viewport");
+const mainTitle = document.getElementById("mainTitle");
+const exerciseTitle = document.getElementById("exerciseTitle");
+const scoreBox = document.getElementById("scoreBox");
+const systemText = document.getElementById("systemText");
+const textCard = document.querySelector(".text-card");
+const textZoomButton = document.getElementById("textZoomButton");
+const textZoomLayer = document.getElementById("textZoomLayer");
+const systemImages = document.getElementById("systemImages");
+const informationPanel = document.getElementById("informationPanel");
+const checkButton = document.getElementById("checkButton");
+const diagram = document.getElementById("diagram");
+const choiceMenu = document.getElementById("choiceMenu");
+const imageZoomLayer = document.getElementById("imageZoomLayer");
+const identityOverlay = document.getElementById("identityOverlay");
+const identityForm = document.getElementById("identityForm");
+const studentIdentity = document.getElementById("studentIdentity");
+const newSessionTab = document.getElementById("newSessionTab");
+const resumeSessionTab = document.getElementById("resumeSessionTab");
+const newSessionPanel = document.getElementById("newSessionPanel");
+const resumeSessionPanel = document.getElementById("resumeSessionPanel");
+const classNumberInput = document.getElementById("classNumber");
+const student1LastNameInput = document.getElementById("student1LastName");
+const student1FirstNameInput = document.getElementById("student1FirstName");
+const student2LastNameInput = document.getElementById("student2LastName");
+const student2FirstNameInput = document.getElementById("student2FirstName");
+const student2Fieldset = document.getElementById("student2Fieldset");
+const soloStudentCheckbox = document.getElementById("soloStudent");
+const createCodeButton = document.getElementById("createCodeButton");
+const resumeCodeInput = document.getElementById("resumeCodeInput");
+const resumeButton = document.getElementById("resumeButton");
+const generatedCodePanel = document.getElementById("generatedCodePanel");
+const generatedCode = document.getElementById("generatedCode");
+const startActivityButton = document.getElementById("startActivityButton");
+const identityError = document.getElementById("identityError");
+
+function updateScale() {
+  const scale = Math.min(window.innerWidth / BASE_WIDTH, window.innerHeight / BASE_HEIGHT);
+  const scaledWidth = BASE_WIDTH * scale;
+  const scaledHeight = BASE_HEIGHT * scale;
+  viewport.style.transform = `scale(${scale})`;
+  viewport.style.left = `${Math.max(0, (window.innerWidth - scaledWidth) / 2)}px`;
+  viewport.style.top = `${Math.max(0, (window.innerHeight - scaledHeight) / 2)}px`;
+}
+
+function countInteractiveZones(exercise) {
+  return exercise.layout.blocks.filter(block => block.id).length + exercise.layout.energies.length;
+}
+
+function makeZoneState(exercise) {
+  const zoneState = {};
+  exercise.layout.blocks.forEach(block => {
+    if (!block.id) return;
+    zoneState[block.id] = {
+      selected: "",
+      correct: block.correct,
+      type: block.type,
+      errors: 0,
+      locked: false,
+      revealed: false
+    };
+  });
+  exercise.layout.energies.forEach(energy => {
+    zoneState[energy.id] = {
+      selected: "",
+      correct: energy.correct,
+      type: "energy",
+      errors: 0,
+      locked: false,
+      revealed: false
+    };
+  });
+  return zoneState;
+}
+
+function renderExercise() {
+  const exercise = exercises[state.currentExercise];
+  if (!state.exerciseStates[state.currentExercise]) {
+    state.exerciseStates[state.currentExercise] = makeZoneState(exercise);
+  }
+  state.zones = state.exerciseStates[state.currentExercise];
+  state.exerciseCompleted = !!state.exerciseCompletedFlags[state.currentExercise];
+
+  mainTitle.textContent = "Chaînes d’information et d’énergie";
+  exerciseTitle.textContent = `Exercice ${state.currentExercise + 1}/${exercises.length} : ${exercise.title}`;
+  checkButton.textContent = state.exerciseCompleted
+    ? (state.currentExercise < exercises.length - 1 ? "Suivant" : "Terminé")
+    : "Vérifier";
+
+  if (!state.exerciseCompleted) {
+    setInformation("Clique sur une zone vide du schéma, puis choisis une réponse dans la liste proposée.", "");
+  } else if (hasRevealedAnswers(state.currentExercise)) {
+    if (state.currentExercise < exercises.length - 1) {
+      setInformation("Tu as utilisé tous tes essais. Les bonnes réponses sont affichées en violet. Tu peux passer à l’exercice suivant.", "warning");
+    } else {
+      setInformation(`Tu as utilisé tous tes essais. Les bonnes réponses sont affichées en violet. ${getFinalNotesMessage()}`, "warning");
+    }
+  } else if (state.currentExercise < exercises.length - 1) {
+    setInformation("Bravo, tout est correct ! Tu peux passer à l’exercice suivant.", "success");
+  } else {
+    setInformation(getFinalNotesMessage(), "success");
+  }
+
+  closeChoiceMenu();
+  closeTextZoom();
+  closeImageZoom();
+
+  systemText.innerHTML = exercise.text.map(paragraph => `<p>${paragraph}</p>`).join("");
+  const image = exercise.images[0];
+  systemImages.innerHTML = `<img src="${image.src}" alt="${image.alt}">`;
+  systemImages.onclick = () => openImageZoom(image);
+
+  renderDiagram(exercise);
+  refreshSlotsFromState();
+  updateScore();
+  updateStudentIdentity();
+}
+
+function renderDiagram(exercise) {
+  const svg = buildSvg(exercise.layout.arrows);
+  diagram.innerHTML = svg;
+
+  exercise.layout.labels.forEach(label => {
+    const element = document.createElement("div");
+    element.className = `diagram-label ${label.className || ""}`;
+    element.style.left = `${label.x}px`;
+    element.style.top = `${label.y}px`;
+    element.style.width = `${label.w}px`;
+    element.style.height = `${label.h}px`;
+    element.innerHTML = label.text.replaceAll("\n", "<br>");
+    diagram.appendChild(element);
+  });
+
+  exercise.layout.blocks.forEach(block => {
+    const element = document.createElement("div");
+    element.className = `function-block ${block.kind}`;
+    element.style.left = `${block.x}px`;
+    element.style.top = `${block.y}px`;
+    element.style.width = `${block.w}px`;
+    element.style.height = `${block.h}px`;
+
+    const title = document.createElement("div");
+    title.className = "function-title";
+    title.textContent = block.title;
+    element.appendChild(title);
+
+    const slot = document.createElement("div");
+    if (block.id) {
+      slot.className = "answer-slot empty";
+      slot.dataset.zoneId = block.id;
+      slot.addEventListener("click", event => openChoiceMenu(event.currentTarget));
+    } else {
+      slot.className = "given-slot";
+      slot.innerHTML = block.value.replaceAll("\n", "<br>");
+    }
+    element.appendChild(slot);
+    diagram.appendChild(element);
+  });
+
+  exercise.layout.energies.forEach(energy => {
+    const element = document.createElement("div");
+    element.className = "energy-slot empty";
+    element.style.left = `${energy.x}px`;
+    element.style.top = `${energy.y}px`;
+    element.style.width = `${energy.w}px`;
+    element.style.height = `${energy.h}px`;
+    element.dataset.zoneId = energy.id;
+    element.addEventListener("click", event => openChoiceMenu(event.currentTarget));
+    diagram.appendChild(element);
+  });
+}
+
+
+function refreshSlotsFromState() {
+  Object.entries(state.zones).forEach(([zoneId, zone]) => {
+    const slot = document.querySelector(`[data-zone-id="${zoneId}"]`);
+    if (!slot) return;
+
+    slot.classList.remove("empty", "selected", "wrong", "correct", "revealed");
+    slot.textContent = zone.selected || "";
+
+    if (zone.locked) {
+      if (zone.revealed) {
+        slot.classList.add("revealed");
+        slot.title = `Correction affichée : ${zone.correct}`;
+      } else {
+        slot.classList.add("correct");
+        slot.title = `Réponse validée : ${zone.correct}`;
+      }
+      return;
+    }
+
+    if (zone.selected) {
+      slot.classList.add("selected");
+      slot.title = "Réponse sélectionnée : clique sur Vérifier.";
+    } else if (zone.errors > 0) {
+      slot.classList.add("wrong", "empty");
+      slot.title = getRetryTitle(zone.errors);
+    } else {
+      slot.classList.add("empty");
+      slot.title = "";
+    }
+  });
+}
+
+function hasRevealedAnswers(exerciseIndex) {
+  const exerciseState = state.exerciseStates[exerciseIndex] || {};
+  return Object.values(exerciseState).some(zone => zone.revealed);
+}
+
+function buildSvg(arrows) {
+  const lines = arrows.map(arrow => {
+    const [x1, y1, x2, y2, type, head = true, dashed = false] = arrow;
+    const color = type === "energy" ? "#c43131" : type === "guide" ? "#2f9d44" : "#2a67b1";
+    const width = type === "guide" ? 4 : 5;
+    const marker = head && type !== "guide" ? ` marker-end="url(#arrow-${type})"` : "";
+    const dash = dashed || type === "guide" ? ' stroke-dasharray="10 8"' : "";
+    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="${width}" stroke-linecap="round"${marker}${dash} />`;
+  }).join("");
+
+  return `
+    <svg class="diagram-svg" viewBox="0 0 ${DIAGRAM_WIDTH} ${DIAGRAM_HEIGHT}" aria-hidden="true">
+      <defs>
+        <marker id="arrow-info" markerWidth="7" markerHeight="7" refX="6.5" refY="3.5" orient="auto" markerUnits="strokeWidth">
+          <path d="M 0 0 L 7 3.5 L 0 7 z" fill="#2a67b1"></path>
+        </marker>
+        <marker id="arrow-energy" markerWidth="7" markerHeight="7" refX="6.5" refY="3.5" orient="auto" markerUnits="strokeWidth">
+          <path d="M 0 0 L 7 3.5 L 0 7 z" fill="#c43131"></path>
+        </marker>
+      </defs>
+      ${lines}
+    </svg>`;
+}
+
+function openChoiceMenu(slot) {
+  const zoneId = slot.dataset.zoneId;
+  const zone = state.zones[zoneId];
+  if (!zone || zone.locked || state.exerciseCompleted) return;
+
+  closeImageZoom();
+
+  const exercise = exercises[state.currentExercise];
+  const options = zone.type === "energy" ? ENERGY_OPTIONS : exercise.componentOptions;
+  const title = zone.type === "energy" ? "Choisir une forme d’énergie" : "Choisir une réponse";
+
+  choiceMenu.innerHTML = `<div class="choice-menu-title">${title}</div>`;
+  options.forEach(option => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = option;
+    button.addEventListener("click", () => selectAnswer(zoneId, option));
+    choiceMenu.appendChild(button);
+  });
+
+  const slotRect = slot.getBoundingClientRect();
+  const appRect = document.getElementById("app").getBoundingClientRect();
+  const scale = slotRect.width / slot.offsetWidth;
+  let left = (slotRect.left - appRect.left) / scale;
+  let top = (slotRect.bottom - appRect.top) / scale + 8;
+
+  if (left + 430 > BASE_WIDTH) left = BASE_WIDTH - 450;
+  if (top + options.length * 50 + 60 > BASE_HEIGHT) {
+    top = (slotRect.top - appRect.top) / scale - (options.length * 50 + 70);
+  }
+  if (top < 10) top = 10;
+
+  choiceMenu.style.left = `${left}px`;
+  choiceMenu.style.top = `${top}px`;
+  choiceMenu.hidden = false;
+}
+
+function selectAnswer(zoneId, answer) {
+  const zone = state.zones[zoneId];
+  if (!zone || zone.locked) return;
+  zone.selected = answer;
+  const slot = document.querySelector(`[data-zone-id="${zoneId}"]`);
+  slot.textContent = answer;
+  slot.classList.remove("empty", "wrong", "correct");
+  slot.classList.add("selected");
+  closeChoiceMenu();
+  scheduleSaveProgress();
+}
+
+function closeChoiceMenu() {
+  choiceMenu.hidden = true;
+  choiceMenu.innerHTML = "";
+}
+
+function checkAnswers() {
+  if (state.exerciseCompleted) {
+    goToNextExercise();
+    return;
+  }
+
+  closeChoiceMenu();
+  closeImageZoom();
+
+  const zones = Object.entries(state.zones);
+  const unanswered = zones.filter(([, zone]) => !zone.locked && !zone.selected).length;
+  if (unanswered > 0) {
+    setInformation(`Il reste ${unanswered} zone${unanswered > 1 ? "s" : ""} à compléter avant de vérifier.`, "warning");
+    return;
+  }
+
+  let newlyCorrect = 0;
+  let stillWrong = 0;
+  let exhaustedAttempts = false;
+  const pointsPerZone = 20 / countInteractiveZones(exercises[state.currentExercise]);
+
+  zones.forEach(([zoneId, zone]) => {
+    if (zone.locked) return;
+    const slot = document.querySelector(`[data-zone-id="${zoneId}"]`);
+    const isCorrect = normalizeAnswer(zone.selected) === normalizeAnswer(zone.correct);
+
+    if (isCorrect) {
+      zone.locked = true;
+      zone.revealed = false;
+      newlyCorrect += 1;
+      const multiplier = getMultiplier(zone.errors);
+      state.exerciseScores[state.currentExercise] += pointsPerZone * multiplier;
+      slot.classList.remove("selected", "wrong", "empty", "revealed");
+      slot.classList.add("correct");
+      slot.title = `Réponse validée : ${zone.correct}`;
+    } else if (zone.errors >= MAX_ERRORS_BEFORE_REVEAL) {
+      exhaustedAttempts = true;
+      stillWrong += 1;
+    } else {
+      stillWrong += 1;
+      zone.errors += 1;
+      zone.selected = "";
+      slot.textContent = "";
+      slot.classList.remove("selected", "correct", "revealed");
+      slot.classList.add("wrong", "empty");
+      slot.title = getRetryTitle(zone.errors);
+    }
+  });
+
+  updateScore();
+
+  if (exhaustedAttempts) {
+    revealRemainingAnswersAndEnd();
+    return;
+  }
+
+  scheduleSaveProgress();
+
+  const allCorrect = zones.every(([, zone]) => zone.locked);
+  if (allCorrect) {
+    completeExercise();
+    return;
+  }
+
+  if (newlyCorrect > 0 && stillWrong > 0) {
+    setInformation(`${newlyCorrect} nouvelle${newlyCorrect > 1 ? "s" : ""} réponse${newlyCorrect > 1 ? "s" : ""} correcte${newlyCorrect > 1 ? "s" : ""}. ${stillWrong} zone${stillWrong > 1 ? "s" : ""} à réessayer.`, "error");
+  } else {
+    const hasLastTryZones = zones.some(([, zone]) => !zone.locked && zone.errors >= MAX_ERRORS_BEFORE_REVEAL);
+    const lastTryText = hasLastTryZones ? " Attention : c’est le dernier essai possible pour les zones rouges." : "";
+    setInformation(`${stillWrong} réponse${stillWrong > 1 ? "s" : ""} incorrecte${stillWrong > 1 ? "s" : ""}. Réessaie les zones rouges.${lastTryText}`, "error");
+  }
+}
+
+function getRetryTitle(errors) {
+  if (errors >= MAX_ERRORS_BEFORE_REVEAL) {
+    return "Réponse incorrecte : dernier essai possible pour cette zone.";
+  }
+  return "Réponse incorrecte : choisis une autre réponse.";
+}
+
+function revealRemainingAnswersAndEnd() {
+  Object.entries(state.zones).forEach(([zoneId, zone]) => {
+    if (zone.locked) return;
+    const slot = document.querySelector(`[data-zone-id="${zoneId}"]`);
+    zone.locked = true;
+    zone.revealed = true;
+    zone.selected = zone.correct;
+    slot.textContent = zone.correct;
+    slot.classList.remove("empty", "selected", "wrong", "correct");
+    slot.classList.add("revealed");
+    slot.title = `Correction affichée : ${zone.correct}`;
+  });
+
+  state.exerciseCompleted = true;
+  state.exerciseCompletedFlags[state.currentExercise] = true;
+  updateScore();
+  saveProgressNow();
+
+  if (state.currentExercise < exercises.length - 1) {
+    checkButton.textContent = "Suivant";
+    setInformation("Tu as utilisé tous tes essais. Les bonnes réponses sont affichées en violet. Tu peux passer à l’exercice suivant.", "warning");
+  } else {
+    checkButton.textContent = "Terminé";
+    setInformation(`Tu as utilisé tous tes essais. Les bonnes réponses sont affichées en violet. ${getFinalNotesMessage()}`, "warning");
+  }
+}
+
+function completeExercise() {
+  state.exerciseCompleted = true;
+  state.exerciseCompletedFlags[state.currentExercise] = true;
+  updateScore();
+  saveProgressNow();
+
+  if (state.currentExercise < exercises.length - 1) {
+    checkButton.textContent = "Suivant";
+    setInformation("Bravo, tout est correct ! Tu peux passer à l’exercice suivant.", "success");
+  } else {
+    checkButton.textContent = "Terminé";
+    setInformation(getFinalNotesMessage(), "success");
+  }
+}
+
+function goToNextExercise() {
+  if (state.currentExercise < exercises.length - 1) {
+    state.currentExercise += 1;
+    renderExercise();
+    saveProgressNow();
+  } else {
+    setInformation(getFinalNotesMessage(), "success");
+  }
+}
+
+function getFinalNotesMessage() {
+  const notes = state.exerciseScores
+    .map((score, index) => `Exercice ${index + 1} : ${formatScore(Math.min(score, 20))} / 20`)
+    .join(" ; ");
+  return `Tous les exercices sont terminés. Notes obtenues : ${notes}.`;
+}
+
+function getMultiplier(errors) {
+  if (errors <= 0) return 1;
+  if (errors === 1) return 0.4;
+  if (errors === 2) return 0.2;
+  return 0.05;
+}
+
+function normalizeAnswer(value) {
+  return value
+    .toString()
+    .trim()
+    .toLocaleLowerCase("fr-FR")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, " ");
+}
+
+function updateScore() {
+  const currentScore = Math.min(state.exerciseScores[state.currentExercise], 20);
+  scoreBox.textContent = `Note : ${formatScore(currentScore)} / 20`;
+}
+
+function formatScore(value) {
+  return (Math.round(value * 10) / 10).toLocaleString("fr-FR", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 1
+  });
+}
+
+function setInformation(message, type) {
+  informationPanel.textContent = message;
+  informationPanel.className = "information-panel";
+  if (type) informationPanel.classList.add(type);
+}
+
+function openTextZoom() {
+  closeChoiceMenu();
+  closeImageZoom();
+
+  const exercise = exercises[state.currentExercise];
+  const cardRect = textCard.getBoundingClientRect();
+  const appRect = document.getElementById("app").getBoundingClientRect();
+  const scale = cardRect.width / textCard.offsetWidth;
+  const cardLeft = (cardRect.left - appRect.left) / scale;
+  const cardTop = (cardRect.top - appRect.top) / scale;
+  const rightMargin = 20;
+  const zoomWidth = BASE_WIDTH - cardLeft - rightMargin;
+  const zoomHeight = Math.round(textCard.offsetHeight * (zoomWidth / textCard.offsetWidth));
+
+  textZoomLayer.style.left = `${cardLeft}px`;
+  textZoomLayer.style.top = `${cardTop}px`;
+  textZoomLayer.style.width = `${zoomWidth}px`;
+  textZoomLayer.style.height = `${zoomHeight}px`;
+  textZoomLayer.innerHTML = `
+    <button type="button" class="text-zoom-close" aria-label="Fermer le texte agrandi">×</button>
+    <div class="text-zoom-content">${exercise.text.map(paragraph => `<p>${paragraph}</p>`).join("")}</div>
+  `;
+  textZoomLayer.hidden = false;
+
+  const content = textZoomLayer.querySelector(".text-zoom-content");
+  fitZoomText(content);
+
+  textZoomLayer.querySelector(".text-zoom-close").addEventListener("click", event => {
+    event.stopPropagation();
+    closeTextZoom();
+  });
+}
+
+function fitZoomText(content) {
+  let size = 30;
+  const minSize = 22;
+  content.style.fontSize = `${size}px`;
+
+  while ((content.scrollHeight > content.clientHeight || content.scrollWidth > content.clientWidth) && size > minSize) {
+    size -= 1;
+    content.style.fontSize = `${size}px`;
+  }
+}
+
+function closeTextZoom() {
+  textZoomLayer.hidden = true;
+  textZoomLayer.innerHTML = "";
+}
+
+function openImageZoom(image) {
+  closeChoiceMenu();
+  closeTextZoom();
+
+  const card = systemImages;
+  const zoomWidth = card.offsetWidth * 2;
+  const zoomHeight = card.offsetHeight * 2;
+  const cardRect = card.getBoundingClientRect();
+  const appRect = document.getElementById("app").getBoundingClientRect();
+  const scale = cardRect.width / card.offsetWidth;
+  const cardLeft = (cardRect.left - appRect.left) / scale;
+  const cardTop = (cardRect.top - appRect.top) / scale;
+  const left = cardLeft + card.offsetWidth - zoomWidth;
+  const top = cardTop;
+
+  imageZoomLayer.style.left = `${left}px`;
+  imageZoomLayer.style.top = `${top}px`;
+  imageZoomLayer.style.width = `${zoomWidth}px`;
+  imageZoomLayer.style.height = `${zoomHeight}px`;
+  imageZoomLayer.innerHTML = `
+    <button type="button" class="image-zoom-close" aria-label="Fermer l’image agrandie">×</button>
+    <img src="${image.src}" alt="${image.alt}">
+  `;
+  imageZoomLayer.hidden = false;
+  imageZoomLayer.querySelector(".image-zoom-close").addEventListener("click", event => {
+    event.stopPropagation();
+    closeImageZoom();
+  });
+}
+
+function closeImageZoom() {
+  imageZoomLayer.hidden = true;
+  imageZoomLayer.innerHTML = "";
+}
+
+
+function resetProgressForNewSession() {
+  state.currentExercise = 0;
+  state.exerciseCompleted = false;
+  state.exerciseScores = exercises.map(() => 0);
+  state.exerciseStates = exercises.map(exercise => makeZoneState(exercise));
+  state.exerciseCompletedFlags = exercises.map(() => false);
+  state.zones = state.exerciseStates[0];
+}
+
+function updateStudentIdentity() {
+  if (!studentIdentity) return;
+  if (!state.student || !state.resumeCode) {
+    studentIdentity.textContent = "Identification en attente";
+    return;
+  }
+  const student = state.student;
+  const names = student.isSolo
+    ? `${student.student1.firstName} ${student.student1.lastName}`
+    : `${student.student1.firstName} ${student.student1.lastName} / ${student.student2.firstName} ${student.student2.lastName}`;
+  studentIdentity.innerHTML = `
+    <div class="student-line-main">Classe ${student.classLabel} — ${escapeHtml(names)}</div>
+    <div class="student-line-code">Code : ${escapeHtml(state.resumeCode)}</div>
+  `;
+}
+
+function showIdentityPanel(mode) {
+  const isResume = mode === "resume";
+  newSessionTab.classList.toggle("active", !isResume);
+  resumeSessionTab.classList.toggle("active", isResume);
+  newSessionPanel.classList.toggle("active", !isResume);
+  resumeSessionPanel.classList.toggle("active", isResume);
+  generatedCodePanel.hidden = true;
+  identityError.textContent = "";
+}
+
+function setIdentityError(message) {
+  identityError.textContent = message || "";
+}
+
+function normalizeName(value) {
+  return value.trim().replace(/\s+/g, " ");
+}
+
+function generateResumeCode(classNumber) {
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let suffix = "";
+  const cryptoSource = window.crypto || window.msCrypto;
+  if (cryptoSource && cryptoSource.getRandomValues) {
+    const values = new Uint32Array(6);
+    cryptoSource.getRandomValues(values);
+    suffix = Array.from(values, value => alphabet[value % alphabet.length]).join("");
+  } else {
+    for (let i = 0; i < 6; i += 1) {
+      suffix += alphabet[Math.floor(Math.random() * alphabet.length)];
+    }
+  }
+  return `3E${classNumber}${suffix}`;
+}
+
+function readNewStudentForm() {
+  const classNumber = classNumberInput.value.trim();
+  const lastName1 = normalizeName(student1LastNameInput.value);
+  const firstName1 = normalizeName(student1FirstNameInput.value);
+  const isSolo = soloStudentCheckbox.checked;
+  const lastName2 = normalizeName(student2LastNameInput.value);
+  const firstName2 = normalizeName(student2FirstNameInput.value);
+
+  if (!/^[1-5]$/.test(classNumber)) {
+    throw new Error("La classe doit être 3e1, 3e2, 3e3, 3e4 ou 3e5. Il faut indiquer uniquement le numéro 1, 2, 3, 4 ou 5.");
+  }
+  if (!lastName1 || !firstName1) {
+    throw new Error("Indique le nom et le prénom de l’élève 1.");
+  }
+  if (!isSolo && (!lastName2 || !firstName2)) {
+    throw new Error("Indique le nom et le prénom de l’élève 2, ou coche la case si tu travailles seul(e).");
+  }
+
+  return {
+    classNumber,
+    classLabel: `3e${classNumber}`,
+    isSolo,
+    student1: { lastName: lastName1, firstName: firstName1 },
+    student2: isSolo ? { lastName: "", firstName: "" } : { lastName: lastName2, firstName: firstName2 }
+  };
+}
+
+function createNewSession(event) {
+  event.preventDefault();
+  if (resumeSessionPanel.classList.contains("active")) {
+    resumeActivity();
+    return;
+  }
+  try {
+    const student = readNewStudentForm();
+    resetProgressForNewSession();
+    state.student = student;
+    state.resumeCode = generateResumeCode(student.classNumber);
+    generatedCode.textContent = state.resumeCode;
+    generatedCodePanel.hidden = false;
+    newSessionPanel.classList.remove("active");
+    resumeSessionPanel.classList.remove("active");
+    setIdentityError("");
+    updateStudentIdentity();
+    saveProgressNow();
+  } catch (error) {
+    setIdentityError(error.message);
+  }
+}
+
+function startActivity() {
+  if (!state.student || !state.resumeCode) return;
+  identityOverlay.classList.add("hidden");
+  renderExercise();
+  saveProgressNow();
+}
+
+function updateSoloMode() {
+  const disabled = soloStudentCheckbox.checked;
+  student2Fieldset.classList.toggle("disabled", disabled);
+  student2LastNameInput.disabled = disabled;
+  student2FirstNameInput.disabled = disabled;
+  if (disabled) {
+    student2LastNameInput.value = "";
+    student2FirstNameInput.value = "";
+  }
+}
+
+function getProgressPayload() {
+  return {
+    version: 1,
+    updatedAt: new Date().toISOString(),
+    code: state.resumeCode,
+    student: state.student,
+    currentExercise: state.currentExercise,
+    exerciseScores: state.exerciseScores,
+    exerciseCompletedFlags: state.exerciseCompletedFlags,
+    exerciseStates: state.exerciseStates
+  };
+}
+
+function scheduleSaveProgress() {
+  if (!state.student || !state.resumeCode) return;
+  clearTimeout(state.saveTimer);
+  state.saveTimer = setTimeout(saveProgressNow, SAVE_DELAY);
+}
+
+function saveProgressNow() {
+  if (!state.student || !state.resumeCode) return;
+  clearTimeout(state.saveTimer);
+  const payload = getProgressPayload();
+  try {
+    localStorage.setItem(`${LOCAL_STORAGE_PREFIX}${state.resumeCode}`, JSON.stringify(payload));
+  } catch (error) {
+    console.warn("Sauvegarde locale impossible", error);
+  }
+  sendProgressToGoogleSheets(payload);
+}
+
+function sendProgressToGoogleSheets(payload) {
+  if (!GOOGLE_SCRIPT_URL) return;
+  const body = new URLSearchParams({ payload: JSON.stringify(payload) }).toString();
+  try {
+    if (navigator.sendBeacon) {
+      const blob = new Blob([body], { type: "application/x-www-form-urlencoded;charset=UTF-8" });
+      navigator.sendBeacon(GOOGLE_SCRIPT_URL, blob);
+      return;
+    }
+    fetch(GOOGLE_SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+      body
+    }).catch(error => console.warn("Sauvegarde Google Sheets impossible", error));
+  } catch (error) {
+    console.warn("Sauvegarde Google Sheets impossible", error);
+  }
+}
+
+function restoreProgress(payload) {
+  if (!payload || !payload.student || !payload.code) {
+    throw new Error("Code introuvable ou progression illisible.");
+  }
+  state.student = payload.student;
+  state.resumeCode = payload.code;
+  state.currentExercise = Math.min(Math.max(Number(payload.currentExercise) || 0, 0), exercises.length - 1);
+  state.exerciseScores = exercises.map((_, index) => Number(payload.exerciseScores?.[index]) || 0);
+  state.exerciseCompletedFlags = exercises.map((_, index) => Boolean(payload.exerciseCompletedFlags?.[index]));
+  state.exerciseStates = exercises.map((exercise, index) => {
+    const base = makeZoneState(exercise);
+    const saved = payload.exerciseStates?.[index] || {};
+    Object.keys(base).forEach(zoneId => {
+      if (saved[zoneId]) {
+        base[zoneId] = {
+          ...base[zoneId],
+          selected: saved[zoneId].selected || "",
+          errors: Number(saved[zoneId].errors) || 0,
+          locked: Boolean(saved[zoneId].locked),
+          revealed: Boolean(saved[zoneId].revealed)
+        };
+      }
+    });
+    return base;
+  });
+  state.zones = state.exerciseStates[state.currentExercise];
+  renderExercise();
+  updateStudentIdentity();
+}
+
+async function resumeActivity() {
+  const code = resumeCodeInput.value.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
+  if (!code) {
+    setIdentityError("Indique le code de reprise.");
+    return;
+  }
+
+  setIdentityError("Recherche de la progression...");
+  try {
+    const localPayload = loadLocalProgress(code);
+    if (localPayload) {
+      restoreProgress(localPayload);
+      identityOverlay.classList.add("hidden");
+      setIdentityError("");
+      return;
+    }
+
+    if (!GOOGLE_SCRIPT_URL) {
+      throw new Error("Aucune progression locale trouvée. Pour reprendre depuis un autre ordinateur, il faut d’abord configurer l’adresse du Google Apps Script dans script.js.");
+    }
+
+    const result = await loadProgressFromGoogleSheets(code);
+    if (!result || !result.ok || !result.payload) {
+      throw new Error("Aucune progression trouvée avec ce code.");
+    }
+    restoreProgress(result.payload);
+    try {
+      localStorage.setItem(`${LOCAL_STORAGE_PREFIX}${state.resumeCode}`, JSON.stringify(result.payload));
+    } catch (error) {
+      console.warn("Sauvegarde locale impossible", error);
+    }
+    identityOverlay.classList.add("hidden");
+    setIdentityError("");
+  } catch (error) {
+    setIdentityError(error.message);
+  }
+}
+
+function loadLocalProgress(code) {
+  try {
+    const raw = localStorage.getItem(`${LOCAL_STORAGE_PREFIX}${code}`);
+    return raw ? JSON.parse(raw) : null;
+  } catch (error) {
+    console.warn("Lecture locale impossible", error);
+    return null;
+  }
+}
+
+function loadProgressFromGoogleSheets(code) {
+  return new Promise((resolve, reject) => {
+    const callbackName = `loadProgress_${Date.now()}_${Math.floor(Math.random() * 100000)}`;
+    const script = document.createElement("script");
+    const params = new URLSearchParams({ action: "load", code, callback: callbackName });
+    const timeout = setTimeout(() => {
+      cleanup();
+      reject(new Error("Le tableur ne répond pas. Vérifie la connexion ou l’adresse du script Google."));
+    }, 9000);
+
+    function cleanup() {
+      clearTimeout(timeout);
+      delete window[callbackName];
+      script.remove();
+    }
+
+    window[callbackName] = data => {
+      cleanup();
+      resolve(data);
+    };
+    script.onerror = () => {
+      cleanup();
+      reject(new Error("Impossible de contacter le Google Apps Script."));
+    };
+    script.src = `${GOOGLE_SCRIPT_URL}?${params.toString()}`;
+    document.body.appendChild(script);
+  });
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function initIdentityEvents() {
+  newSessionTab.addEventListener("click", () => showIdentityPanel("new"));
+  resumeSessionTab.addEventListener("click", () => showIdentityPanel("resume"));
+  identityForm.addEventListener("submit", createNewSession);
+  startActivityButton.addEventListener("click", startActivity);
+  soloStudentCheckbox.addEventListener("change", updateSoloMode);
+  resumeButton.addEventListener("click", resumeActivity);
+  classNumberInput.addEventListener("input", () => {
+    classNumberInput.value = classNumberInput.value.replace(/[^1-5]/g, "").slice(0, 1);
+  });
+  resumeCodeInput.addEventListener("input", () => {
+    resumeCodeInput.value = resumeCodeInput.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+  });
+  resumeCodeInput.addEventListener("keydown", event => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      resumeActivity();
+    }
+  });
+}
+
+function initApp() {
+  updateScale();
+  initIdentityEvents();
+  updateSoloMode();
+  renderExercise();
+  updateStudentIdentity();
+}
+
+window.addEventListener("resize", updateScale);
+window.addEventListener("orientationchange", updateScale);
+document.addEventListener("click", event => {
+  if (!choiceMenu.hidden && !choiceMenu.contains(event.target) && !event.target.dataset.zoneId) {
+    closeChoiceMenu();
+  }
+  if (!imageZoomLayer.hidden && !imageZoomLayer.contains(event.target) && !systemImages.contains(event.target)) {
+    closeImageZoom();
+  }
+});
+textZoomButton.addEventListener("click", event => {
+  event.stopPropagation();
+  openTextZoom();
+});
+checkButton.addEventListener("click", checkAnswers);
+
+initApp();

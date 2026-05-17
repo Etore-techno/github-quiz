@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Activité 3 - Maquette et tableur</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="loginOverlay" class="overlay">
+    <div class="login-card">
+      <h1>Activité 3 - Tableur interactif</h1>
+      <p>Entre tes informations pour ouvrir ou reprendre ton travail.</p>
+      <form id="loginForm" class="login-form">
+        <label>Prénom<input type="text" id="prenom" required /></label>
+        <label>Nom<input type="text" id="nom" required /></label>
+        <label>Classe<input type="text" id="classe" placeholder="ex. 5E" /></label>
+        <label>Binôme / groupe<input type="text" id="groupe" placeholder="facultatif" /></label>
+        <button type="submit">Commencer</button>
+      </form>
+      <p class="muted">Les réponses sont enregistrées localement dans ce navigateur.</p>
+    </div>
+  </div>
+
+  <div id="fixedBarHost" class="fixed-bar-host hidden-until-login">
+    <div id="fixedBar" class="fixed-bar">
+      <div class="page-shell fixed-bar-inner">
+        <div class="identity-box">
+          <div class="identity-title">Activité 3 - Vérifier la maquette avec un tableur</div>
+          <div id="studentLine" class="student-line"></div>
+        </div>
+        <div class="entry-box">
+          <div class="selected-box">
+            <span>Cellule</span>
+            <strong id="selectedCellRef">Aucune</strong>
+          </div>
+          <div class="input-box">
+            <label for="formulaInput">Saisie</label>
+            <input id="formulaInput" type="text" autocomplete="off" placeholder="Clique sur une cellule modifiable" />
+          </div>
+          <div id="infoBox" class="info-box">Clique sur une cellule pour commencer.</div>
+        </div>
+        <div class="score-box">
+          <span>Note</span>
+          <strong id="scoreDisplay">0,00 / 20</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="appViewport" class="app-viewport hidden-until-login">
+    <div id="appCanvas" class="app-canvas">
+      <main id="pageShell" class="page-shell main-content">
+        <div id="cardsContainer" class="cards-container"></div>
+      </main>
+    </div>
+  </div>
+
+  <script src="assets/config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

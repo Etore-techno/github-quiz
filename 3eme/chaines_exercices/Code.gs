@@ -1,0 +1,231 @@
+/**
+ * Google Apps Script à coller dans le tableur Google Sheets.
+ * Il crée 5 feuilles : 3e1, 3e2, 3e3, 3e4, 3e5.
+ * Il enregistre une ligne par code de reprise et met à jour cette ligne à chaque sauvegarde.
+ */
+
+const SPREADSHEET_ID = ""; // Laisser vide si le script est ouvert depuis Extensions > Apps Script dans le tableur.
+const SHEET_NAMES = ["3e1", "3e2", "3e3", "3e4", "3e5"];
+const HEADERS = [
+  "Nom 1",
+  "Prénom 1",
+  "Nom 2",
+  "Prénom 2",
+  "Note 1",
+  "Note 2",
+  "Note 3",
+  "Classe",
+  "Code de reprise",
+  "Élève seul",
+  "Exercice en cours",
+  "État exercice 1",
+  "État exercice 2",
+  "État exercice 3",
+  "Dernière mise à jour",
+  "Progression JSON"
+];
+
+function getWorkbook_() {
+  return SPREADSHEET_ID
+    ? SpreadsheetApp.openById(SPREADSHEET_ID)
+    : SpreadsheetApp.getActiveSpreadsheet();
+}
+
+function setupSheets() {
+  const ss = getWorkbook_();
+  SHEET_NAMES.forEach(name => {
+    let sheet = ss.getSheetByName(name);
+    if (!sheet) sheet = ss.insertSheet(name);
+    prepareSheet_(sheet);
+  });
+}
+
+function prepareSheet_(sheet) {
+  const range = sheet.getRange(1, 1, 1, HEADERS.length);
+  range.setValues([HEADERS]);
+  range.setFontWeight("bold");
+  range.setBackground("#d9eaf7");
+  sheet.setFrozenRows(1);
+  sheet.autoResizeColumns(1, HEADERS.length);
+}
+
+function doPost(e) {
+  try {
+    setupSheets();
+    const payload = readPayload_(e);
+    savePayload_(payload);
+    return outputJson_({ ok: true });
+  } catch (error) {
+    return outputJson_({ ok: false, error: String(error && error.message ? error.message : error) });
+  }
+}
+
+function doGet(e) {
+  setupSheets();
+  const params = e && e.parameter ? e.parameter : {};
+  const callback = sanitizeCallback_(params.callback || "callback");
+
+  try {
+    if (params.action === "load") {
+      const code = String(params.code || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+      const payload = findPayloadByCode_(code);
+      return outputJavascript_(callback, { ok: Boolean(payload), payload });
+    }
+    return outputJavascript_(callback, { ok: true, message: "Apps Script prêt." });
+  } catch (error) {
+    return outputJavascript_(callback, { ok: false, error: String(error && error.message ? error.message : error) });
+  }
+}
+
+function readPayload_(e) {
+  if (e && e.parameter && e.parameter.payload) {
+    return JSON.parse(e.parameter.payload);
+  }
+  if (e && e.postData && e.postData.contents) {
+    const raw = e.postData.contents;
+    if (raw.indexOf("payload=") === 0 || raw.indexOf("&payload=") !== -1) {
+      const parts = raw.split("&").reduce((acc, part) => {
+        const eq = part.indexOf("=");
+        const key = eq >= 0 ? part.slice(0, eq) : part;
+        const value = eq >= 0 ? part.slice(eq + 1) : "";
+        acc[decodeURIComponent(key)] = decodeURIComponent(value.replace(/\+/g, " "));
+        return acc;
+      }, {});
+      return JSON.parse(parts.payload);
+    }
+    return JSON.parse(raw);
+  }
+  throw new Error("Aucune donnée reçue.");
+}
+
+function savePayload_(payload) {
+  if (!payload || !payload.code || !payload.student) {
+    throw new Error("Progression incomplète.");
+  }
+
+  const student = payload.student;
+  const classNumber = String(student.classNumber || "").trim();
+  if (!/^[1-5]$/.test(classNumber)) {
+    throw new Error("Classe invalide : " + classNumber);
+  }
+
+  const sheetName = "3e" + classNumber;
+  const ss = getWorkbook_();
+  let sheet = ss.getSheetByName(sheetName);
+  if (!sheet) {
+    sheet = ss.insertSheet(sheetName);
+    prepareSheet_(sheet);
+  }
+
+  const code = String(payload.code).toUpperCase().replace(/[^A-Z0-9]/g, "");
+  const row = findRowByCode_(sheet, code);
+  const values = buildRow_(payload, code);
+
+  if (row) {
+    sheet.getRange(row, 1, 1, values.length).setValues([values]);
+  } else {
+    sheet.appendRow(values);
+  }
+}
+
+function buildRow_(payload, code) {
+  const student = payload.student || {};
+  const scores = payload.exerciseScores || [];
+  const flags = payload.exerciseCompletedFlags || [];
+  const states = payload.exerciseStates || [];
+  return [
+    student.student1 ? student.student1.lastName || "" : "",
+    student.student1 ? student.student1.firstName || "" : "",
+    student.student2 ? student.student2.lastName || "" : "",
+    student.student2 ? student.student2.firstName || "" : "",
+    roundScore_(scores[0]),
+    roundScore_(scores[1]),
+    roundScore_(scores[2]),
+    student.classLabel || ("3e" + student.classNumber),
+    code,
+    student.isSolo ? "oui" : "non",
+    Number(payload.currentExercise || 0) + 1,
+    getExerciseStatus_(flags[0], states[0]),
+    getExerciseStatus_(flags[1], states[1]),
+    getExerciseStatus_(flags[2], states[2]),
+    new Date(),
+    JSON.stringify(payload)
+  ];
+}
+
+function roundScore_(value) {
+  const number = Number(value || 0);
+  return Math.round(Math.min(number, 20) * 10) / 10;
+}
+
+function getExerciseStatus_(finished, exerciseState) {
+  if (finished) {
+    const revealed = exerciseState && Object.keys(exerciseState).some(key => exerciseState[key] && exerciseState[key].revealed);
+    return revealed ? "corrigé automatiquement" : "terminé";
+  }
+  if (!exerciseState) return "non commencé";
+  const zones = Object.keys(exerciseState).map(key => exerciseState[key]);
+  const started = zones.some(zone => zone && (zone.selected || zone.errors > 0 || zone.locked));
+  return started ? "en cours" : "non commencé";
+}
+
+function getHeaderColumn_(sheet, headerName) {
+  const lastColumn = Math.max(sheet.getLastColumn(), HEADERS.length);
+  const headers = sheet.getRange(1, 1, 1, lastColumn).getValues()[0];
+  for (let i = 0; i < headers.length; i += 1) {
+    if (String(headers[i]).trim() === headerName) return i + 1;
+  }
+  return null;
+}
+
+function findRowByCode_(sheet, code) {
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return null;
+
+  const possibleColumns = [getHeaderColumn_(sheet, "Code de reprise"), 2, 9]
+    .filter((value, index, array) => value && array.indexOf(value) === index);
+
+  for (let c = 0; c < possibleColumns.length; c += 1) {
+    const column = possibleColumns[c];
+    const codes = sheet.getRange(2, column, lastRow - 1, 1).getValues();
+    for (let i = 0; i < codes.length; i += 1) {
+      if (String(codes[i][0]).toUpperCase() === code) {
+        return i + 2;
+      }
+    }
+  }
+  return null;
+}
+
+function findPayloadByCode_(code) {
+  if (!code) return null;
+  const ss = getWorkbook_();
+  for (let i = 0; i < SHEET_NAMES.length; i += 1) {
+    const sheet = ss.getSheetByName(SHEET_NAMES[i]);
+    if (!sheet) continue;
+    const row = findRowByCode_(sheet, code);
+    if (!row) continue;
+
+    const jsonColumn = getHeaderColumn_(sheet, "Progression JSON") || 16;
+    const json = sheet.getRange(row, jsonColumn).getValue();
+    return json ? JSON.parse(json) : null;
+  }
+  return null;
+}
+
+function outputJson_(data) {
+  return ContentService
+    .createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function outputJavascript_(callback, data) {
+  return ContentService
+    .createTextOutput(callback + "(" + JSON.stringify(data) + ");")
+    .setMimeType(ContentService.MimeType.JAVASCRIPT);
+}
+
+function sanitizeCallback_(callback) {
+  const safe = String(callback || "callback").replace(/[^A-Za-z0-9_.$]/g, "");
+  return safe || "callback";
+}

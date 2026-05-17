@@ -1,0 +1,2257 @@
+{
+  "columns": [
+    "A",
+    "B",
+    "C",
+    "D"
+  ],
+  "studentHeader": {
+    "B1": "Mesuré (en cm)",
+    "C1": "Réelle (en cm)",
+    "D1": "Réelle (en m)"
+  },
+  "sections": [
+    {
+      "key": "murs",
+      "title": "Épaisseur murs",
+      "image": null,
+      "rows": [
+        {
+          "row": 2,
+          "cells": {
+            "A": {
+              "coord": "A2",
+              "student": "Épaisseur murs",
+              "correct": "Épaisseur murs",
+              "kind": "label",
+              "display": "Épaisseur murs"
+            },
+            "B": {
+              "coord": "B2",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "C": {
+              "coord": "C2",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "D": {
+              "coord": "D2",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 3,
+          "cells": {
+            "A": {
+              "coord": "A3",
+              "student": "intérieur",
+              "correct": "intérieur",
+              "kind": "label",
+              "display": "intérieur"
+            },
+            "B": {
+              "coord": "B3",
+              "student": null,
+              "correct": 0.6,
+              "kind": "input",
+              "display": null
+            },
+            "C": {
+              "coord": "C3",
+              "student": null,
+              "correct": 10.8,
+              "kind": "formula",
+              "display": null,
+              "hint": "À l’échelle réelle, on multiplie la mesure sur la maquette par 18."
+            },
+            "D": {
+              "coord": "D3",
+              "student": null,
+              "correct": 0.108,
+              "kind": "formula",
+              "display": null,
+              "hint": "Pour passer de cm à m, on divise par 100."
+            }
+          }
+        },
+        {
+          "row": 4,
+          "cells": {
+            "A": {
+              "coord": "A4",
+              "student": "extérieur",
+              "correct": "extérieur",
+              "kind": "label",
+              "display": "extérieur"
+            },
+            "B": {
+              "coord": "B4",
+              "student": null,
+              "correct": 1.0,
+              "kind": "input",
+              "display": null
+            },
+            "C": {
+              "coord": "C4",
+              "student": null,
+              "correct": 18.0,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D4",
+              "student": null,
+              "correct": 0.18,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "portes",
+      "title": "Portes",
+      "image": null,
+      "rows": [
+        {
+          "row": 7,
+          "cells": {
+            "A": {
+              "coord": "A7",
+              "student": "Portes",
+              "correct": "Portes",
+              "kind": "label",
+              "display": "Portes"
+            },
+            "B": {
+              "coord": "B7",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "C": {
+              "coord": "C7",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "D": {
+              "coord": "D7",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 8,
+          "cells": {
+            "A": {
+              "coord": "A8",
+              "student": "hauteur",
+              "correct": "hauteur",
+              "kind": "label",
+              "display": "hauteur"
+            },
+            "B": {
+              "coord": "B8",
+              "student": null,
+              "correct": 11.5,
+              "kind": "input",
+              "display": null
+            },
+            "C": {
+              "coord": "C8",
+              "student": null,
+              "correct": 207.0,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D8",
+              "student": null,
+              "correct": 2.07,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 9,
+          "cells": {
+            "A": {
+              "coord": "A9",
+              "student": "largeur",
+              "correct": "largeur",
+              "kind": "label",
+              "display": "largeur"
+            },
+            "B": {
+              "coord": "B9",
+              "student": null,
+              "correct": 6.5,
+              "kind": "input",
+              "display": null
+            },
+            "C": {
+              "coord": "C9",
+              "student": null,
+              "correct": 117.0,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D9",
+              "student": null,
+              "correct": 1.17,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "fenetres",
+      "title": "Fenêtres",
+      "image": null,
+      "rows": [
+        {
+          "row": 12,
+          "cells": {
+            "A": {
+              "coord": "A12",
+              "student": "Fenêtres",
+              "correct": "Fenêtres",
+              "kind": "label",
+              "display": "Fenêtres"
+            },
+            "B": {
+              "coord": "B12",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "C": {
+              "coord": "C12",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "D": {
+              "coord": "D12",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 13,
+          "cells": {
+            "A": {
+              "coord": "A13",
+              "student": "allège",
+              "correct": "allège",
+              "kind": "label",
+              "display": "allège"
+            },
+            "B": {
+              "coord": "B13",
+              "student": null,
+              "correct": 3.0,
+              "kind": "input",
+              "display": null
+            },
+            "C": {
+              "coord": "C13",
+              "student": null,
+              "correct": 54.0,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D13",
+              "student": null,
+              "correct": 0.54,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "salle_eau",
+      "title": "Salle d’eau",
+      "image": "salle_eau.png",
+      "rows": [
+        {
+          "row": 16,
+          "cells": {
+            "A": {
+              "coord": "A16",
+              "student": "Salle d’eau",
+              "correct": "Salle d’eau",
+              "kind": "label",
+              "display": "Salle d’eau"
+            },
+            "B": {
+              "coord": "B16",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "C": {
+              "coord": "C16",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "D": {
+              "coord": "D16",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 17,
+          "cells": {
+            "A": {
+              "coord": "A17",
+              "student": "A",
+              "correct": "A",
+              "kind": "label",
+              "display": "A"
+            },
+            "B": {
+              "coord": "B17",
+              "student": null,
+              "correct": 12.0,
+              "kind": "input",
+              "display": null
+            },
+            "C": {
+              "coord": "C17",
+              "student": null,
+              "correct": 216.0,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D17",
+              "student": null,
+              "correct": 2.16,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 18,
+          "cells": {
+            "A": {
+              "coord": "A18",
+              "student": "B",
+              "correct": "B",
+              "kind": "label",
+              "display": "B"
+            },
+            "B": {
+              "coord": "B18",
+              "student": null,
+              "correct": 18.9,
+              "kind": "input",
+              "display": null
+            },
+            "C": {
+              "coord": "C18",
+              "student": null,
+              "correct": 340.2,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D18",
+              "student": null,
+              "correct": 3.402,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 19,
+          "cells": {
+            "A": {
+              "coord": "A19",
+              "student": "C",
+              "correct": "C",
+              "kind": "label",
+              "display": "C"
+            },
+            "B": {
+              "coord": "B19",
+              "student": 8.4,
+              "correct": 8.4,
+              "kind": "given",
+              "display": 8.4
+            },
+            "C": {
+              "coord": "C19",
+              "student": null,
+              "correct": 151.2,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D19",
+              "student": null,
+              "correct": 1.512,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 20,
+          "cells": {
+            "A": {
+              "coord": "A20",
+              "student": "D",
+              "correct": "D",
+              "kind": "label",
+              "display": "D"
+            },
+            "B": {
+              "coord": "B20",
+              "student": null,
+              "correct": 6.5,
+              "kind": "input",
+              "display": null
+            },
+            "C": {
+              "coord": "C20",
+              "student": null,
+              "correct": 117.0,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D20",
+              "student": null,
+              "correct": 1.17,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 21,
+          "cells": {
+            "A": {
+              "coord": "A21",
+              "student": "E",
+              "correct": "E",
+              "kind": "label",
+              "display": "E"
+            },
+            "B": {
+              "coord": "B21",
+              "student": 4.0,
+              "correct": 4.0,
+              "kind": "given",
+              "display": 4.0
+            },
+            "C": {
+              "coord": "C21",
+              "student": null,
+              "correct": 72.0,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D21",
+              "student": null,
+              "correct": 0.72,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 22,
+          "cells": {
+            "A": {
+              "coord": "A22",
+              "student": null,
+              "correct": null,
+              "kind": "label",
+              "display": null
+            },
+            "B": {
+              "coord": "B22",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "C": {
+              "coord": "C22",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "D": {
+              "coord": "D22",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 23,
+          "cells": {
+            "A": {
+              "coord": "A23",
+              "student": "Surface salle d’eau (en m²) =",
+              "correct": "Surface salle d’eau (en m²) =",
+              "kind": "label",
+              "display": "Surface salle d’eau (en m²) ="
+            },
+            "B": {
+              "coord": "B23",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "C": {
+              "coord": "C23",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "D": {
+              "coord": "D23",
+              "student": null,
+              "correct": 7.34832,
+              "kind": "formula_result",
+              "display": null,
+              "hint": "Pour une surface rectangulaire : longueur × largeur."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "chambre",
+      "title": "Chambre",
+      "image": "chambre.png",
+      "rows": [
+        {
+          "row": 26,
+          "cells": {
+            "A": {
+              "coord": "A26",
+              "student": "Chambre",
+              "correct": "Chambre",
+              "kind": "label",
+              "display": "Chambre"
+            },
+            "B": {
+              "coord": "B26",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "C": {
+              "coord": "C26",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "D": {
+              "coord": "D26",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 27,
+          "cells": {
+            "A": {
+              "coord": "A27",
+              "student": "A",
+              "correct": "A",
+              "kind": "label",
+              "display": "A"
+            },
+            "B": {
+              "coord": "B27",
+              "student": null,
+              "correct": 13.5,
+              "kind": "input",
+              "display": null
+            },
+            "C": {
+              "coord": "C27",
+              "student": null,
+              "correct": 243.0,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D27",
+              "student": null,
+              "correct": 2.43,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 28,
+          "cells": {
+            "A": {
+              "coord": "A28",
+              "student": "B",
+              "correct": "B",
+              "kind": "label",
+              "display": "B"
+            },
+            "B": {
+              "coord": "B28",
+              "student": 1.4,
+              "correct": 1.4,
+              "kind": "given",
+              "display": 1.4
+            },
+            "C": {
+              "coord": "C28",
+              "student": null,
+              "correct": 25.2,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D28",
+              "student": null,
+              "correct": 0.252,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 29,
+          "cells": {
+            "A": {
+              "coord": "A29",
+              "student": "C",
+              "correct": "C",
+              "kind": "label",
+              "display": "C"
+            },
+            "B": {
+              "coord": "B29",
+              "student": null,
+              "correct": 8.0,
+              "kind": "input",
+              "display": null
+            },
+            "C": {
+              "coord": "C29",
+              "student": null,
+              "correct": 144.0,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D29",
+              "student": null,
+              "correct": 1.44,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 30,
+          "cells": {
+            "A": {
+              "coord": "A30",
+              "student": "D",
+              "correct": "D",
+              "kind": "label",
+              "display": "D"
+            },
+            "B": {
+              "coord": "B30",
+              "student": null,
+              "correct": 19.0,
+              "kind": "input",
+              "display": null
+            },
+            "C": {
+              "coord": "C30",
+              "student": null,
+              "correct": 342.0,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D30",
+              "student": null,
+              "correct": 3.42,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 31,
+          "cells": {
+            "A": {
+              "coord": "A31",
+              "student": "E",
+              "correct": "E",
+              "kind": "label",
+              "display": "E"
+            },
+            "B": {
+              "coord": "B31",
+              "student": null,
+              "correct": 7.9,
+              "kind": "input",
+              "display": null
+            },
+            "C": {
+              "coord": "C31",
+              "student": null,
+              "correct": 142.2,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D31",
+              "student": null,
+              "correct": 1.422,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 32,
+          "cells": {
+            "A": {
+              "coord": "A32",
+              "student": "F",
+              "correct": "F",
+              "kind": "label",
+              "display": "F"
+            },
+            "B": {
+              "coord": "B32",
+              "student": null,
+              "correct": 6.5,
+              "kind": "input",
+              "display": null
+            },
+            "C": {
+              "coord": "C32",
+              "student": null,
+              "correct": 117.0,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D32",
+              "student": null,
+              "correct": 1.17,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 33,
+          "cells": {
+            "A": {
+              "coord": "A33",
+              "student": "G",
+              "correct": "G",
+              "kind": "label",
+              "display": "G"
+            },
+            "B": {
+              "coord": "B33",
+              "student": 14.0,
+              "correct": 14.0,
+              "kind": "given",
+              "display": 14.0
+            },
+            "C": {
+              "coord": "C33",
+              "student": null,
+              "correct": 252.0,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D33",
+              "student": null,
+              "correct": 2.52,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 34,
+          "cells": {
+            "A": {
+              "coord": "A34",
+              "student": "H",
+              "correct": "H",
+              "kind": "label",
+              "display": "H"
+            },
+            "B": {
+              "coord": "B34",
+              "student": null,
+              "correct": 28.4,
+              "kind": "formula_sum",
+              "display": null,
+              "hint": "La mesure H de la chambre est la somme des mesures E, F et G."
+            },
+            "C": {
+              "coord": "C34",
+              "student": null,
+              "correct": 511.2,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D34",
+              "student": null,
+              "correct": 5.112,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 35,
+          "cells": {
+            "A": {
+              "coord": "A35",
+              "student": null,
+              "correct": null,
+              "kind": "label",
+              "display": null
+            },
+            "B": {
+              "coord": "B35",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "C": {
+              "coord": "C35",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "D": {
+              "coord": "D35",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 36,
+          "cells": {
+            "A": {
+              "coord": "A36",
+              "student": "Surface chambre (en m²) =",
+              "correct": "Surface chambre (en m²) =",
+              "kind": "label",
+              "display": "Surface chambre (en m²) ="
+            },
+            "B": {
+              "coord": "B36",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "C": {
+              "coord": "C36",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "D": {
+              "coord": "D36",
+              "student": null,
+              "correct": 12.42216,
+              "kind": "formula_result",
+              "display": null,
+              "hint": "Pour la chambre, repère la longueur totale utile et la largeur totale utile."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "espace_vie",
+      "title": "Espace de vie",
+      "image": "espace_vie.png",
+      "rows": [
+        {
+          "row": 39,
+          "cells": {
+            "A": {
+              "coord": "A39",
+              "student": "Espace de vie",
+              "correct": "Espace de vie",
+              "kind": "label",
+              "display": "Espace de vie"
+            },
+            "B": {
+              "coord": "B39",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "C": {
+              "coord": "C39",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "D": {
+              "coord": "D39",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 40,
+          "cells": {
+            "A": {
+              "coord": "A40",
+              "student": "A",
+              "correct": "A",
+              "kind": "label",
+              "display": "A"
+            },
+            "B": {
+              "coord": "B40",
+              "student": null,
+              "correct": 19.0,
+              "kind": "input",
+              "display": null
+            },
+            "C": {
+              "coord": "C40",
+              "student": null,
+              "correct": 342.0,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D40",
+              "student": null,
+              "correct": 3.42,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 41,
+          "cells": {
+            "A": {
+              "coord": "A41",
+              "student": "B",
+              "correct": "B",
+              "kind": "label",
+              "display": "B"
+            },
+            "B": {
+              "coord": "B41",
+              "student": null,
+              "correct": 14.1,
+              "kind": "input",
+              "display": null
+            },
+            "C": {
+              "coord": "C41",
+              "student": null,
+              "correct": 253.8,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D41",
+              "student": null,
+              "correct": 2.538,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 42,
+          "cells": {
+            "A": {
+              "coord": "A42",
+              "student": "C",
+              "correct": "C",
+              "kind": "label",
+              "display": "C"
+            },
+            "B": {
+              "coord": "B42",
+              "student": null,
+              "correct": 8.5,
+              "kind": "input",
+              "display": null
+            },
+            "C": {
+              "coord": "C42",
+              "student": null,
+              "correct": 153.0,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D42",
+              "student": null,
+              "correct": 1.53,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 43,
+          "cells": {
+            "A": {
+              "coord": "A43",
+              "student": "D",
+              "correct": "D",
+              "kind": "label",
+              "display": "D"
+            },
+            "B": {
+              "coord": "B43",
+              "student": null,
+              "correct": 6.5,
+              "kind": "input",
+              "display": null
+            },
+            "C": {
+              "coord": "C43",
+              "student": null,
+              "correct": 117.0,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D43",
+              "student": null,
+              "correct": 1.17,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 44,
+          "cells": {
+            "A": {
+              "coord": "A44",
+              "student": "E",
+              "correct": "E",
+              "kind": "label",
+              "display": "E"
+            },
+            "B": {
+              "coord": "B44",
+              "student": 1.4,
+              "correct": 1.4,
+              "kind": "given",
+              "display": 1.4
+            },
+            "C": {
+              "coord": "C44",
+              "student": null,
+              "correct": 25.2,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D44",
+              "student": null,
+              "correct": 0.252,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 45,
+          "cells": {
+            "A": {
+              "coord": "A45",
+              "student": "F",
+              "correct": "F",
+              "kind": "label",
+              "display": "F"
+            },
+            "B": {
+              "coord": "B45",
+              "student": null,
+              "correct": 16.4,
+              "kind": "formula_sum",
+              "display": null,
+              "hint": "La mesure F de l’espace de vie peut être obtenue par addition des trois segments C, D et E."
+            },
+            "C": {
+              "coord": "C45",
+              "student": null,
+              "correct": 295.2,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D45",
+              "student": null,
+              "correct": 2.952,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 46,
+          "cells": {
+            "A": {
+              "coord": "A46",
+              "student": "G",
+              "correct": "G",
+              "kind": "label",
+              "display": "G"
+            },
+            "B": {
+              "coord": "B46",
+              "student": 8.4,
+              "correct": 8.4,
+              "kind": "given",
+              "display": 8.4
+            },
+            "C": {
+              "coord": "C46",
+              "student": null,
+              "correct": 151.2,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D46",
+              "student": null,
+              "correct": 1.512,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 47,
+          "cells": {
+            "A": {
+              "coord": "A47",
+              "student": "H",
+              "correct": "H",
+              "kind": "label",
+              "display": "H"
+            },
+            "B": {
+              "coord": "B47",
+              "student": null,
+              "correct": 6.5,
+              "kind": "input",
+              "display": null
+            },
+            "C": {
+              "coord": "C47",
+              "student": null,
+              "correct": 117.0,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D47",
+              "student": null,
+              "correct": 1.17,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 48,
+          "cells": {
+            "A": {
+              "coord": "A48",
+              "student": "I",
+              "correct": "I",
+              "kind": "label",
+              "display": "I"
+            },
+            "B": {
+              "coord": "B48",
+              "student": 4.0,
+              "correct": 4.0,
+              "kind": "given",
+              "display": 4.0
+            },
+            "C": {
+              "coord": "C48",
+              "student": null,
+              "correct": 72.0,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D48",
+              "student": null,
+              "correct": 0.72,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 49,
+          "cells": {
+            "A": {
+              "coord": "A49",
+              "student": "J",
+              "correct": "J",
+              "kind": "label",
+              "display": "J"
+            },
+            "B": {
+              "coord": "B49",
+              "student": null,
+              "correct": 18.9,
+              "kind": "formula_sum",
+              "display": null,
+              "hint": "La mesure J de l’espace de vie peut être obtenue par addition des trois segments G, H et I."
+            },
+            "C": {
+              "coord": "C49",
+              "student": null,
+              "correct": 340.2,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D49",
+              "student": null,
+              "correct": 3.402,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 50,
+          "cells": {
+            "A": {
+              "coord": "A50",
+              "student": "K",
+              "correct": "K",
+              "kind": "label",
+              "display": "K"
+            },
+            "B": {
+              "coord": "B50",
+              "student": null,
+              "correct": 20.5,
+              "kind": "input",
+              "display": null
+            },
+            "C": {
+              "coord": "C50",
+              "student": null,
+              "correct": 369.0,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D50",
+              "student": null,
+              "correct": 3.69,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 51,
+          "cells": {
+            "A": {
+              "coord": "A51",
+              "student": "L",
+              "correct": "L",
+              "kind": "label",
+              "display": "L"
+            },
+            "B": {
+              "coord": "B51",
+              "student": null,
+              "correct": 6.5,
+              "kind": "input",
+              "display": null
+            },
+            "C": {
+              "coord": "C51",
+              "student": null,
+              "correct": 117.0,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D51",
+              "student": null,
+              "correct": 1.17,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 52,
+          "cells": {
+            "A": {
+              "coord": "A52",
+              "student": "M",
+              "correct": "M",
+              "kind": "label",
+              "display": "M"
+            },
+            "B": {
+              "coord": "B52",
+              "student": 8.4,
+              "correct": 8.4,
+              "kind": "given",
+              "display": 8.4
+            },
+            "C": {
+              "coord": "C52",
+              "student": null,
+              "correct": 151.2,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D52",
+              "student": null,
+              "correct": 1.512,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 53,
+          "cells": {
+            "A": {
+              "coord": "A53",
+              "student": "N",
+              "correct": "N",
+              "kind": "label",
+              "display": "N"
+            },
+            "B": {
+              "coord": "B53",
+              "student": null,
+              "correct": 35.4,
+              "kind": "formula_sum",
+              "display": null,
+              "hint": "La mesure N de l’espace de vie peut être obtenue par addition des trois segments K, L et M."
+            },
+            "C": {
+              "coord": "C53",
+              "student": null,
+              "correct": 637.2,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D53",
+              "student": null,
+              "correct": 6.372,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 54,
+          "cells": {
+            "A": {
+              "coord": "A54",
+              "student": "O",
+              "correct": "O",
+              "kind": "label",
+              "display": "O"
+            },
+            "B": {
+              "coord": "B54",
+              "student": 12.0,
+              "correct": 12.0,
+              "kind": "given",
+              "display": 12.0
+            },
+            "C": {
+              "coord": "C54",
+              "student": null,
+              "correct": 216.0,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D54",
+              "student": null,
+              "correct": 2.16,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 55,
+          "cells": {
+            "A": {
+              "coord": "A55",
+              "student": "P",
+              "correct": "P",
+              "kind": "label",
+              "display": "P"
+            },
+            "B": {
+              "coord": "B55",
+              "student": null,
+              "correct": 9.0,
+              "kind": "input",
+              "display": null
+            },
+            "C": {
+              "coord": "C55",
+              "student": null,
+              "correct": 162.0,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D55",
+              "student": null,
+              "correct": 1.62,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 56,
+          "cells": {
+            "A": {
+              "coord": "A56",
+              "student": "Q",
+              "correct": "Q",
+              "kind": "label",
+              "display": "Q"
+            },
+            "B": {
+              "coord": "B56",
+              "student": 12.0,
+              "correct": 12.0,
+              "kind": "given",
+              "display": 12.0
+            },
+            "C": {
+              "coord": "C56",
+              "student": null,
+              "correct": 216.0,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D56",
+              "student": null,
+              "correct": 2.16,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 57,
+          "cells": {
+            "A": {
+              "coord": "A57",
+              "student": "R",
+              "correct": "R",
+              "kind": "label",
+              "display": "R"
+            },
+            "B": {
+              "coord": "B57",
+              "student": null,
+              "correct": 33.0,
+              "kind": "formula_sum",
+              "display": null,
+              "hint": "La mesure R de l’espace de vie peut être obtenue par addition des trois segments O, P et Q."
+            },
+            "C": {
+              "coord": "C57",
+              "student": null,
+              "correct": 594.0,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D57",
+              "student": null,
+              "correct": 5.94,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 58,
+          "cells": {
+            "A": {
+              "coord": "A58",
+              "student": null,
+              "correct": null,
+              "kind": "label",
+              "display": null
+            },
+            "B": {
+              "coord": "B58",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "C": {
+              "coord": "C58",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "D": {
+              "coord": "D58",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 59,
+          "cells": {
+            "A": {
+              "coord": "A59",
+              "student": "Surface pièce de vie (en m²) =",
+              "correct": "Surface pièce de vie (en m²) =",
+              "kind": "label",
+              "display": "Surface pièce de vie (en m²) ="
+            },
+            "B": {
+              "coord": "B59",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "C": {
+              "coord": "C59",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "D": {
+              "coord": "D59",
+              "student": null,
+              "correct": 30.357504,
+              "kind": "formula_result",
+              "display": null,
+              "hint": "Tu peux calculer cette surface de plusieurs façons : somme de rectangles ou grand rectangle moins rectangle manquant."
+            }
+          }
+        },
+        {
+          "row": 60,
+          "cells": {
+            "A": {
+              "coord": "A60",
+              "student": null,
+              "correct": null,
+              "kind": "label",
+              "display": null
+            },
+            "B": {
+              "coord": "B60",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "C": {
+              "coord": "C60",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "D": {
+              "coord": "D60",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 61,
+          "cells": {
+            "A": {
+              "coord": "A61",
+              "student": null,
+              "correct": null,
+              "kind": "label",
+              "display": null
+            },
+            "B": {
+              "coord": "B61",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "C": {
+              "coord": "C61",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "D": {
+              "coord": "D61",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 62,
+          "cells": {
+            "A": {
+              "coord": "A62",
+              "student": "Surface totale du logement (en m²) =",
+              "correct": "Surface totale du logement (en m²) =",
+              "kind": "label",
+              "display": "Surface totale du logement (en m²) ="
+            },
+            "B": {
+              "coord": "B62",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "C": {
+              "coord": "C62",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "D": {
+              "coord": "D62",
+              "student": null,
+              "correct": 50.127984,
+              "kind": "formula_result",
+              "display": null,
+              "hint": "La surface totale est la somme des surfaces des trois pièces."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "fenetre_chambre",
+      "title": "Fenêtre chambre",
+      "image": null,
+      "rows": [
+        {
+          "row": 65,
+          "cells": {
+            "A": {
+              "coord": "A65",
+              "student": "Fenêtre chambre",
+              "correct": "Fenêtre chambre",
+              "kind": "label",
+              "display": "Fenêtre chambre"
+            },
+            "B": {
+              "coord": "B65",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "C": {
+              "coord": "C65",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "D": {
+              "coord": "D65",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 66,
+          "cells": {
+            "A": {
+              "coord": "A66",
+              "student": "hauteur",
+              "correct": "hauteur",
+              "kind": "label",
+              "display": "hauteur"
+            },
+            "B": {
+              "coord": "B66",
+              "student": null,
+              "correct": 6.5,
+              "kind": "input",
+              "display": null
+            },
+            "C": {
+              "coord": "C66",
+              "student": null,
+              "correct": 117.0,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D66",
+              "student": null,
+              "correct": 1.17,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 67,
+          "cells": {
+            "A": {
+              "coord": "A67",
+              "student": "largeur",
+              "correct": "largeur",
+              "kind": "label",
+              "display": "largeur"
+            },
+            "B": {
+              "coord": "B67",
+              "student": null,
+              "correct": 8.0,
+              "kind": "input",
+              "display": null
+            },
+            "C": {
+              "coord": "C67",
+              "student": null,
+              "correct": 144.0,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D67",
+              "student": null,
+              "correct": 1.44,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "fenetre_vie",
+      "title": "Fenêtre pièce de vie",
+      "image": null,
+      "rows": [
+        {
+          "row": 70,
+          "cells": {
+            "A": {
+              "coord": "A70",
+              "student": "Fenêtre pièce de vie",
+              "correct": "Fenêtre pièce de vie",
+              "kind": "label",
+              "display": "Fenêtre pièce de vie"
+            },
+            "B": {
+              "coord": "B70",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "C": {
+              "coord": "C70",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "D": {
+              "coord": "D70",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 71,
+          "cells": {
+            "A": {
+              "coord": "A71",
+              "student": "hauteur",
+              "correct": "hauteur",
+              "kind": "label",
+              "display": "hauteur"
+            },
+            "B": {
+              "coord": "B71",
+              "student": null,
+              "correct": 6.5,
+              "kind": "input",
+              "display": null
+            },
+            "C": {
+              "coord": "C71",
+              "student": null,
+              "correct": 117.0,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D71",
+              "student": null,
+              "correct": 1.17,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 72,
+          "cells": {
+            "A": {
+              "coord": "A72",
+              "student": "largeur",
+              "correct": "largeur",
+              "kind": "label",
+              "display": "largeur"
+            },
+            "B": {
+              "coord": "B72",
+              "student": null,
+              "correct": 9.0,
+              "kind": "input",
+              "display": null
+            },
+            "C": {
+              "coord": "C72",
+              "student": null,
+              "correct": 162.0,
+              "kind": "formula",
+              "display": null
+            },
+            "D": {
+              "coord": "D72",
+              "student": null,
+              "correct": 1.62,
+              "kind": "formula",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 73,
+          "cells": {
+            "A": {
+              "coord": "A73",
+              "student": null,
+              "correct": null,
+              "kind": "label",
+              "display": null
+            },
+            "B": {
+              "coord": "B73",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "C": {
+              "coord": "C73",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "D": {
+              "coord": "D73",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 74,
+          "cells": {
+            "A": {
+              "coord": "A74",
+              "student": null,
+              "correct": null,
+              "kind": "label",
+              "display": null
+            },
+            "B": {
+              "coord": "B74",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "C": {
+              "coord": "C74",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "D": {
+              "coord": "D74",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 75,
+          "cells": {
+            "A": {
+              "coord": "A75",
+              "student": "Surface vitrée totale du logement (en m²) =",
+              "correct": "Surface vitrée totale du logement (en m²) =",
+              "kind": "label",
+              "display": "Surface vitrée totale du logement (en m²) ="
+            },
+            "B": {
+              "coord": "B75",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "C": {
+              "coord": "C75",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "D": {
+              "coord": "D75",
+              "student": null,
+              "correct": 3.5802,
+              "kind": "formula_result",
+              "display": null,
+              "hint": "La surface vitrée totale est la somme des surfaces des deux fenêtres."
+            }
+          }
+        },
+        {
+          "row": 76,
+          "cells": {
+            "A": {
+              "coord": "A76",
+              "student": null,
+              "correct": null,
+              "kind": "label",
+              "display": null
+            },
+            "B": {
+              "coord": "B76",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "C": {
+              "coord": "C76",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "D": {
+              "coord": "D76",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 77,
+          "cells": {
+            "A": {
+              "coord": "A77",
+              "student": null,
+              "correct": null,
+              "kind": "label",
+              "display": null
+            },
+            "B": {
+              "coord": "B77",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "C": {
+              "coord": "C77",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "D": {
+              "coord": "D77",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            }
+          }
+        },
+        {
+          "row": 78,
+          "cells": {
+            "A": {
+              "coord": "A78",
+              "student": "Pourcentage de surface vitrée / surface habitable (en %) =",
+              "correct": "Pourcentage de surface vitrée / surface habitable (en %) =",
+              "kind": "label",
+              "display": "Pourcentage de surface vitrée / surface habitable (en %) ="
+            },
+            "B": {
+              "coord": "B78",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "C": {
+              "coord": "C78",
+              "student": null,
+              "correct": null,
+              "kind": "blank",
+              "display": null
+            },
+            "D": {
+              "coord": "D78",
+              "student": null,
+              "correct": 7.14211846221464,
+              "kind": "formula_result",
+              "display": null,
+              "hint": "Pourcentage = (surface vitrée × 100) / surface habitable."
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "sumRows": {
+    "34": [
+      "B31",
+      "B32",
+      "B33"
+    ],
+    "45": [
+      "B42",
+      "B43",
+      "B44"
+    ],
+    "49": [
+      "B46",
+      "B47",
+      "B48"
+    ],
+    "53": [
+      "B50",
+      "B51",
+      "B52"
+    ],
+    "57": [
+      "B54",
+      "B55",
+      "B56"
+    ]
+  },
+  "resultRows": {
+    "23": "surface_salle_eau",
+    "36": "surface_chambre",
+    "59": "surface_piece_vie",
+    "62": "surface_totale",
+    "75": "surface_vitree",
+    "78": "pourcentage_vitree"
+  },
+  "hints": {
+    "B34": "La mesure H de la chambre est la somme des mesures E, F et G.",
+    "B45": "La mesure F de l’espace de vie peut être obtenue par addition des trois segments C, D et E.",
+    "B49": "La mesure J de l’espace de vie peut être obtenue par addition des trois segments G, H et I.",
+    "B53": "La mesure N de l’espace de vie peut être obtenue par addition des trois segments K, L et M.",
+    "B57": "La mesure R de l’espace de vie peut être obtenue par addition des trois segments O, P et Q.",
+    "C3": "À l’échelle réelle, on multiplie la mesure sur la maquette par 18.",
+    "D3": "Pour passer de cm à m, on divise par 100.",
+    "D23": "Pour une surface rectangulaire : longueur × largeur.",
+    "D36": "Pour la chambre, repère la longueur totale utile et la largeur totale utile.",
+    "D59": "Tu peux calculer cette surface de plusieurs façons : somme de rectangles ou grand rectangle moins rectangle manquant.",
+    "D62": "La surface totale est la somme des surfaces des trois pièces.",
+    "D75": "La surface vitrée totale est la somme des surfaces des deux fenêtres.",
+    "D78": "Pourcentage = (surface vitrée × 100) / surface habitable."
+  },
+  "proposalPrompts": [
+    {
+      "id": "p_B34",
+      "target": "B34",
+      "label": "Propose 2 écritures correctes pour calculer H (cellule B34).",
+      "count": 2
+    },
+    {
+      "id": "p_B45",
+      "target": "B45",
+      "label": "Propose 2 écritures correctes pour calculer F (cellule B45).",
+      "count": 2
+    },
+    {
+      "id": "p_B49",
+      "target": "B49",
+      "label": "Propose 2 écritures correctes pour calculer J (cellule B49).",
+      "count": 2
+    },
+    {
+      "id": "p_B53",
+      "target": "B53",
+      "label": "Propose 2 écritures correctes pour calculer N (cellule B53).",
+      "count": 2
+    },
+    {
+      "id": "p_B57",
+      "target": "B57",
+      "label": "Propose 2 écritures correctes pour calculer R (cellule B57).",
+      "count": 2
+    },
+    {
+      "id": "p_D59",
+      "target": "D59",
+      "label": "Propose 3 méthodes correctes pour calculer la surface de la pièce de vie (cellule D59).",
+      "count": 3
+    },
+    {
+      "id": "p_D62",
+      "target": "D62",
+      "label": "Propose 2 écritures correctes pour calculer la surface totale (cellule D62).",
+      "count": 2
+    }
+  ]
+}
