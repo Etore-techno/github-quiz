@@ -10,7 +10,6 @@
   --border: rgba(255,255,255,.10);
   --border2: rgba(255,255,255,.18);
 
-  /* ✅ palette mini-jeu différente */
   --arc-bg1:#120a1e;
   --arc-bg2:#070b16;
   --arc-accent:#ff3bd4;
@@ -36,7 +35,7 @@ body{
 }
 .topbar h1{ font-size:15px; margin:0; }
 
-/* ✅ pastilles étapes en haut à droite */
+/* Pastilles étapes en haut à droite */
 .stepHeader{
   display:flex;
   gap:6px;
@@ -184,7 +183,7 @@ button:disabled{ opacity:.55; cursor:not-allowed; }
 .status.ok{ color:#bff5d8; }
 .status.bad{ color:#ffd1da; }
 
-/* ✅ Aperçu mini-jeu (palette différente) */
+/* Aperçu mini-jeu */
 .cadreApercu{
   margin:10px;
   border-radius:16px;

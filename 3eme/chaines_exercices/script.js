@@ -433,6 +433,15 @@ function buildSvg(arrows) {
     </svg>`;
 }
 
+function shuffleOptions(options) {
+  const shuffledOptions = [...options];
+  for (let i = shuffledOptions.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffledOptions[i], shuffledOptions[j]] = [shuffledOptions[j], shuffledOptions[i]];
+  }
+  return shuffledOptions;
+}
+
 function openChoiceMenu(slot) {
   const zoneId = slot.dataset.zoneId;
   const zone = state.zones[zoneId];
@@ -441,7 +450,7 @@ function openChoiceMenu(slot) {
   closeImageZoom();
 
   const exercise = exercises[state.currentExercise];
-  const options = zone.type === "energy" ? ENERGY_OPTIONS : exercise.componentOptions;
+  const options = shuffleOptions(zone.type === "energy" ? ENERGY_OPTIONS : exercise.componentOptions);
   const title = zone.type === "energy" ? "Choisir une forme d’énergie" : "Choisir une réponse";
 
   choiceMenu.innerHTML = `<div class="choice-menu-title">${title}</div>`;
