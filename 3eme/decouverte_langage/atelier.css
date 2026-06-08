@@ -245,6 +245,22 @@ button.secondary{
   background: transparent;
   color: var(--text);
 }
+
+.actions button{
+  flex:1 1 0;
+  min-width:0;
+  white-space:nowrap;
+  padding-left:8px;
+  padding-right:8px;
+}
+#btnSauvegarder:not(:disabled){
+  border-color: rgba(53,208,127,.70);
+  color:#c6ffe2;
+}
+#btnCharger:not(:disabled){
+  border-color: rgba(77,163,255,.70);
+  color:#dbe9ff;
+}
 button:disabled{ opacity:.55; cursor:not-allowed; }
 #btnRetablir:not(:disabled){
   border-color: rgba(255,179,71,.70);

@@ -50,15 +50,21 @@ const CSS_BASE = window.CSS_BASE || `/* CSS du mini-jeu */
 .applicationJeu{
   font-family: system-ui, Arial, sans-serif;
   color: #ffe8fb;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
-.entete{ text-align:center; margin-bottom:10px; }
-.zoneTitre{ font-size: 28px; font-weight: 900; margin:0 0 4px; }
-.zoneParagraphe{ font-size: 18px; opacity: .85; margin:0; }
+.entete{ text-align:center; margin-bottom:8px; flex: 0 0 auto; }
+.zoneTitre{ font-size: 32px; font-weight: 900; margin:0 0 6px; }
+.zoneParagraphe{ font-size: 22px; opacity: .9; margin:0; }
 
 .grille{
+  flex: 1;
+  min-height: 0;
   display: grid;
   grid-template-columns: 380px 1fr;
-  gap: 10px;
+  gap: 12px;
 }
 
 .tableauBord, .zoneJeu{
@@ -66,6 +72,18 @@ const CSS_BASE = window.CSS_BASE || `/* CSS du mini-jeu */
   border: 2px solid rgba(255,255,255,.12);
   border-radius: 14px;
   padding: 10px;
+}
+
+.tableauBord{
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.zoneJeu{
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .ligneStats{
@@ -81,13 +99,13 @@ const CSS_BASE = window.CSS_BASE || `/* CSS du mini-jeu */
   padding: 8px;
   text-align: center;
 }
-.labelStat{ font-size: 15px; opacity:.85; }
-.valeurStat{ font-size: 26px; font-weight: 900; margin-top: 3px; }
+.labelStat{ font-size: 19px; opacity:.9; }
+.valeurStat{ font-size: 32px; font-weight: 900; margin-top: 3px; }
 
 .ligneBoutons{
   display: flex;
-  gap: 8px;
-  margin: 10px 0 8px;
+  gap: 10px;
+  margin: 0;
 }
 button{
   flex: 1;
@@ -98,7 +116,7 @@ button{
   color: #18071f;
   font-weight: 900;
   cursor: pointer;
-  font-size: 17px;
+  font-size: 22px;
 }
 button.secondaire{
   background: transparent;
@@ -106,28 +124,26 @@ button.secondaire{
 }
 
 .messageJeu{
-  padding: 10px;
+  padding: 11px;
   border-radius: 12px;
   background: rgba(0,0,0,.20);
   border: 1px solid rgba(255,255,255,.10);
-  font-size: 17px;
-  opacity: .9;
+  font-size: 22px;
+  opacity: .95;
 }
 
 .zoneExtra:empty{ display:none; }
 .zoneExtra{
-  margin-top: 8px;
-  padding: 8px;
-  border-radius: 12px;
-  border: 1px dashed rgba(255,255,255,.18);
-  background: rgba(255,255,255,.03);
-  font-size: 17px;
-  opacity: .9;
+  margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 22px;
 }
 
 .sousTitre{
   font-weight: 900;
-  font-size: 19px;
+  font-size: 24px;
   color: #2fffd6;
   margin-bottom: 8px;
 }
@@ -152,8 +168,8 @@ button.secondaire{
 
 .missile{
   position: absolute;
-  width: 5px;
-  height: 16px;
+  width: 6px;
+  height: 18px;
   border-radius: 999px;
   background: #ffd36e;
 }
@@ -179,14 +195,12 @@ import random
 
 JEU_ACTIF = False
 
-SCORE_CIBLE = 0
 VIES_DEPART = 1
-VIES_MAX = 5
 
 VITESSE_VAISSEAU = 18
 VITESSE_MISSILE = 0
 VITESSE_ENNEMI = 0
-VITESSE_ENNEMI_MAX = 4
+VITESSE_ENNEMI_MAX = 3.8
 
 DELAI_TIR = 8
 DELAI_ENNEMI_MS = 1200
@@ -195,11 +209,13 @@ DIFFICULTE_PROGRESSIVE = False
 
 ENNEMIS = ["👾"]
 ENNEMIS_VITESSES = {"👾": 1}
-ENNEMIS_POINTS = {"👾": 1}
 ENNEMIS_DEGATS = {"👾": 1}
 
-BONUS_COEUR_ACTIF = False
-CHANCE_COEUR = 0
+OBJECTIFS_NIVEAUX = [5]
+NIVEAU_MAX = 1
+
+COEUR_PAR_NIVEAU = False
+BONUS_SANS_FAUTE = False
 DECORS_NIVEAUX = False
 MESSAGES_NIVEAUX = False
 
@@ -219,6 +235,7 @@ def element_optionnel(id_element):
         return None
 
 niveau_el = element_optionnel("niveauJeu")
+info_el = element_optionnel("infoJeu")
 
 # Stoppe l'ancien jeu si on clique plusieurs fois sur Appliquer
 # et retire les anciens écouteurs clavier pour éviter les doublons.
@@ -233,7 +250,9 @@ except:
     pass
 
 score = 0
+score_niveau = 0
 vies = VIES_DEPART
+niveau = 1
 x_vaisseau = 0
 
 en_cours = False
@@ -243,62 +262,121 @@ touches = set()
 
 id_boucle = None
 id_spawn = None
+id_info = None
 attente_tir = 0
-dernier_niveau_annonce = 1
+coeur_apparu = False
+niveau_sans_faute = True
 
 def largeur_arene():
-    return int(arene.getBoundingClientRect().width)
+    try:
+        return int(arene.offsetWidth)
+    except:
+        return int(arene.getBoundingClientRect().width)
 
 def hauteur_arene():
-    return int(arene.getBoundingClientRect().height)
+    try:
+        return int(arene.offsetHeight)
+    except:
+        return int(arene.getBoundingClientRect().height)
 
 def message(texte):
     message_el.textContent = texte
 
-def calculer_niveau():
-    return 1
+def info_temporaire(texte):
+    global id_info
+    if info_el is None:
+        return
+    info_el.textContent = texte
+    try:
+        info_el.classList.add("visible")
+    except:
+        pass
+    if id_info is not None:
+        try:
+            timer.clear_timeout(id_info)
+        except:
+            pass
+    def effacer():
+        if info_el is not None:
+            info_el.textContent = ""
+            try:
+                info_el.classList.remove("visible")
+            except:
+                pass
+    id_info = timer.set_timeout(effacer, 5000)
 
-def maj_decor():
+def objectif_niveau():
+    index = min(max(niveau - 1, 0), len(OBJECTIFS_NIVEAUX) - 1)
+    return OBJECTIFS_NIVEAUX[index]
+
+def calculer_niveau():
+    return niveau
+
+def ennemis_disponibles():
+    nombre = min(max(niveau, 1), len(ENNEMIS))
+    return ENNEMIS[:nombre]
+
+def facteur_ennemi_max_niveau():
+    disponibles = ennemis_disponibles()
+    if not disponibles:
+        return 1
+    return max([ENNEMIS_VITESSES.get(e, 1) for e in disponibles])
+
+def maj_cadre_niveau(animation=False):
+    if niveau_el is None:
+        return
+    try:
+        bloc = niveau_el.parent
+        bloc.className = "carteStat niveauActuel niveau" + str(niveau)
+        if animation:
+            bloc.classList.add("niveauFlash")
+            def fin_animation():
+                try:
+                    bloc.classList.remove("niveauFlash")
+                except:
+                    pass
+            timer.set_timeout(fin_animation, 1300)
+    except:
+        pass
+
+def maj_decor(animation=False):
     if not DECORS_NIVEAUX:
         arene.className = "areneJeu"
+        maj_cadre_niveau(animation)
         return
 
-    niveau = calculer_niveau()
-    if niveau >= 4:
-        arene.className = "areneJeu decorNiveau4"
-    elif niveau >= 3:
-        arene.className = "areneJeu decorNiveau3"
-    elif niveau >= 2:
-        arene.className = "areneJeu decorNiveau2"
-    else:
-        arene.className = "areneJeu"
+    arene.className = "areneJeu decorNiveau" + str(niveau)
+    maj_cadre_niveau(animation)
 
-def maj_affichage():
+def maj_affichage(animation_niveau=False):
     score_el.textContent = str(score)
     vies_el.textContent = str(vies)
-    objectif_el.textContent = str(SCORE_CIBLE)
+    objectif_el.textContent = str(score_niveau) + "/" + str(objectif_niveau())
     # Plus tard : afficher le niveau ici.
-    maj_decor()
+    maj_decor(animation_niveau)
 
 def annoncer_niveau_si_besoin():
-    global dernier_niveau_annonce
     if not MESSAGES_NIVEAUX:
         return
-
-    niveau = calculer_niveau()
-    if niveau > dernier_niveau_annonce:
-        dernier_niveau_annonce = niveau
-        if niveau == 2:
-            message("Niveau 2 : les ennemis accélèrent !")
-        elif niveau == 3:
-            message("Niveau 3 : attention aux ennemis spéciaux !")
-        elif niveau >= 4:
-            message("Niveau 4 : la zone devient très dangereuse !")
+    if niveau == 1:
+        message("Niveau 1 : prépare-toi !")
+    elif niveau == 2:
+        message("Niveau 2 : un nouvel ennemi apparaît !")
+    elif niveau == 3:
+        message("Niveau 3 : les ennemis sont plus variés.")
+    elif niveau == 4:
+        message("Niveau 4 : la cadence augmente.")
+    elif niveau >= 5:
+        message("Niveau 5 : tous les ennemis sont présents !")
 
 def placer_vaisseau():
     global x_vaisseau
-    marge = 28
     w = largeur_arene()
+    try:
+        largeur_vaisseau = int(vaisseau_el.offsetWidth)
+    except:
+        largeur_vaisseau = 56
+    marge = max(1, int(largeur_vaisseau / 2))
     if x_vaisseau <= 0:
         x_vaisseau = int(w / 2)
     x_vaisseau = max(marge, min(w - marge, x_vaisseau))
@@ -323,7 +401,15 @@ def creer_missile():
     m.className = "missile"
     arene <= m
 
-    y = hauteur_arene() - 55
+    try:
+        hauteur_vaisseau = int(vaisseau_el.offsetHeight)
+    except:
+        hauteur_vaisseau = 50
+    try:
+        hauteur_missile = int(m.offsetHeight)
+    except:
+        hauteur_missile = 20
+    y = hauteur_arene() - 10 - hauteur_vaisseau - hauteur_missile
     obj = {"el": m, "x": x_vaisseau, "y": y}
     missiles.append(obj)
 
@@ -331,29 +417,35 @@ def creer_missile():
     m.style.top = f"{y}px"
     m.style.transform = "translateX(-50%)"
 
-def choisir_symbole_ennemi():
-    if BONUS_COEUR_ACTIF and random.randint(1, 100) <= CHANCE_COEUR:
-        return "❤️"
-    return random.choice(ENNEMIS)
-
-def creer_ennemi():
+def creer_ennemi(coeur=False):
     if not en_cours:
         return
-    if not ENNEMIS_AUTO:
+    if not ENNEMIS_AUTO and not coeur:
         return
 
-    symbole = choisir_symbole_ennemi()
+    symbole = "❤️" if coeur else random.choice(ennemis_disponibles())
     e = document.createElement("div")
-    e.className = "bonus" if symbole == "❤️" else "ennemi"
+    e.className = "bonus" if coeur else "ennemi"
     e.textContent = symbole
     arene <= e
 
-    marge = 28
-    w = largeur_arene()
-    x = random.randint(marge, max(marge + 1, w - marge))
-    y = 8
+    try:
+        largeur_objet = int(e.offsetWidth)
+    except:
+        largeur_objet = 70
+    try:
+        hauteur_objet = int(e.offsetHeight)
+    except:
+        hauteur_objet = 70
 
-    obj = {"el": e, "x": x, "y": y, "symbole": symbole, "bonus": symbole == "❤️"}
+    marge = max(1, int(largeur_objet / 2))
+    demi_hauteur = max(1, int(hauteur_objet / 2))
+    w = largeur_arene()
+    x_max = max(marge, w - marge)
+    x = random.randint(marge, x_max)
+    y = demi_hauteur
+
+    obj = {"el": e, "x": x, "y": y, "symbole": symbole, "bonus": coeur, "demi_hauteur": demi_hauteur}
     ennemis.append(obj)
 
     e.style.left = f"{x}px"
@@ -363,14 +455,38 @@ def creer_ennemi():
 def vitesse_ennemi_actuelle():
     if not DIFFICULTE_PROGRESSIVE:
         return VITESSE_ENNEMI
-    bonus = calculer_niveau() - 1
+    bonus = (niveau - 1) * 0.18
     return min(VITESSE_ENNEMI + bonus, VITESSE_ENNEMI_MAX)
 
 def vitesse_objet(obj):
     if obj.get("bonus"):
-        return max(1, VITESSE_ENNEMI * 0.8)
+        return vitesse_ennemi_actuelle() * facteur_ennemi_max_niveau() * 2
     facteur = ENNEMIS_VITESSES.get(obj["symbole"], 1)
     return vitesse_ennemi_actuelle() * facteur
+
+def delai_ennemi_actuel():
+    if not DIFFICULTE_PROGRESSIVE:
+        return DELAI_ENNEMI_MS
+    return max(560, DELAI_ENNEMI_MS - (niveau - 1) * 130)
+
+def maj_spawn():
+    global id_spawn
+    if id_spawn is not None:
+        timer.clear_interval(id_spawn)
+        id_spawn = None
+    if en_cours and ENNEMIS_AUTO:
+        id_spawn = timer.set_interval(creer_ennemi, delai_ennemi_actuel())
+
+def verifier_coeur_moitie():
+    global coeur_apparu
+    if not COEUR_PAR_NIVEAU:
+        return
+    if coeur_apparu:
+        return
+    if score_niveau >= objectif_niveau() / 2:
+        coeur_apparu = True
+        creer_ennemi(coeur=True)
+        info_temporaire("Cœur bonus : touchez-le pour gagner 1 vie !")
 
 def collision(missile, objet):
     rect_m = missile["el"].getBoundingClientRect()
@@ -383,8 +499,44 @@ def collision(missile, objet):
         rect_m.top > rect_o.bottom
     )
 
+def passer_niveau_ou_gagner():
+    global niveau, score_niveau, coeur_apparu, niveau_sans_faute, vies
+
+    if score_niveau < objectif_niveau():
+        return False
+
+    bonus_sans_faute = BONUS_SANS_FAUTE and niveau_sans_faute
+    if bonus_sans_faute:
+        vies += 1
+
+    if niveau >= NIVEAU_MAX or niveau >= len(OBJECTIFS_NIVEAUX):
+        if bonus_sans_faute:
+            info_temporaire("Dernier niveau sans faute : +1 vie !")
+        gagner()
+        return True
+
+    niveau += 1
+    score_niveau = 0
+    coeur_apparu = False
+    niveau_sans_faute = True
+    supprimer_liste(missiles)
+    supprimer_liste(ennemis)
+    maj_spawn()
+    annoncer_niveau_si_besoin()
+    maj_affichage(animation_niveau=True)
+
+    if MESSAGES_NIVEAUX:
+        if bonus_sans_faute:
+            info_temporaire("Niveau " + str(niveau) + " atteint : sans faute, +1 vie !")
+        elif BONUS_SANS_FAUTE:
+            info_temporaire("Niveau " + str(niveau) + " atteint : pas de bonus sans-faute.")
+        else:
+            info_temporaire("Niveau " + str(niveau) + " atteint !")
+
+    return True
+
 def boucle():
-    global x_vaisseau, score, vies, attente_tir
+    global x_vaisseau, score, score_niveau, vies, attente_tir, niveau_sans_faute
 
     if not en_cours:
         return
@@ -419,7 +571,7 @@ def boucle():
         e["y"] += vitesse_objet(e)
         e["el"].style.top = f"{e['y']}px"
 
-        if e["y"] > hauteur_arene() - 20:
+        if e["y"] >= hauteur_arene() - e.get("demi_hauteur", 30):
             try:
                 e["el"].remove()
             except:
@@ -431,7 +583,14 @@ def boucle():
 
             degats = ENNEMIS_DEGATS.get(e["symbole"], 1)
             vies -= degats
+            niveau_sans_faute = False
             maj_affichage()
+
+            if MESSAGES_NIVEAUX:
+                if vies > 0:
+                    info_temporaire("Un ennemi a atteint le bas : -1 vie. Il reste " + str(vies) + " vie(s).")
+                else:
+                    info_temporaire("Un ennemi a atteint le bas : dernière vie perdue !")
 
             if vies <= 0:
                 perdre()
@@ -452,28 +611,26 @@ def boucle():
                     ennemis.remove(e)
 
                 if e.get("bonus"):
-                    vies = min(VIES_MAX, vies + 1)
-                    message("Bonus récupéré : +1 vie !")
+                    vies += 1
+                    info_temporaire("Cœur touché : +1 vie !")
                 else:
-                    points = ENNEMIS_POINTS.get(e["symbole"], 1)
-                    score += points
-                    annoncer_niveau_si_besoin()
+                    score += 1
+                    score_niveau += 1
+                    verifier_coeur_moitie()
 
                 maj_affichage()
-
-                if SCORE_CIBLE > 0 and score >= SCORE_CIBLE:
-                    gagner()
+                if passer_niveau_ou_gagner():
                     return
                 break
 
 def demarrer():
-    global en_cours, score, vies, id_boucle, id_spawn, x_vaisseau, dernier_niveau_annonce
+    global en_cours, score, score_niveau, vies, niveau, id_boucle, x_vaisseau, attente_tir, coeur_apparu, niveau_sans_faute
 
     if not JEU_ACTIF:
         message("Le jeu n'est pas encore activé.")
         return
 
-    if SCORE_CIBLE <= 0 or VITESSE_MISSILE <= 0 or VITESSE_ENNEMI <= 0 or not ENNEMIS_AUTO:
+    if VITESSE_MISSILE <= 0 or VITESSE_ENNEMI <= 0 or not ENNEMIS_AUTO:
         message("Le jeu est presque prêt : continue les exercices.")
         return
 
@@ -484,18 +641,24 @@ def demarrer():
     supprimer_liste(ennemis)
 
     score = 0
+    score_niveau = 0
     vies = VIES_DEPART
-    dernier_niveau_annonce = 1
+    niveau = 1
+    attente_tir = 0
+    coeur_apparu = False
+    niveau_sans_faute = True
     x_vaisseau = int(largeur_arene() / 2)
     placer_vaisseau()
-    maj_affichage()
+    maj_affichage(animation_niveau=True)
 
     en_cours = True
     btn_demarrer.disabled = True
-    message("Détruis les ennemis avant qu'ils atteignent le bas !")
+    annoncer_niveau_si_besoin()
+    if not MESSAGES_NIVEAUX:
+        message("Détruis les ennemis avant qu'ils atteignent le bas !")
 
     id_boucle = timer.set_interval(boucle, 30)
-    id_spawn = timer.set_interval(creer_ennemi, DELAI_ENNEMI_MS)
+    maj_spawn()
     creer_ennemi()
 
 def arreter():
@@ -512,25 +675,31 @@ def arreter():
         id_spawn = None
 
 def reinitialiser():
-    global score, vies, x_vaisseau, dernier_niveau_annonce
+    global score, score_niveau, vies, niveau, x_vaisseau, coeur_apparu, niveau_sans_faute, attente_tir
     arreter()
     supprimer_liste(missiles)
     supprimer_liste(ennemis)
 
     score = 0
+    score_niveau = 0
     vies = VIES_DEPART
-    dernier_niveau_annonce = 1
+    niveau = 1
+    attente_tir = 0
+    coeur_apparu = False
+    niveau_sans_faute = True
     x_vaisseau = int(largeur_arene() / 2)
 
     placer_vaisseau()
-    maj_affichage()
+    maj_affichage(animation_niveau=True)
     message("Prêt ? Clique sur Démarrer.")
+    if info_el is not None:
+        info_el.textContent = ""
 
 def gagner():
     arreter()
     supprimer_liste(missiles)
     supprimer_liste(ennemis)
-    message("Bravo, mission réussie !")
+    message("Bravo, mission réussie : les 5 niveaux sont terminés !")
 
 def perdre():
     arreter()
@@ -611,14 +780,22 @@ function setHtmlContentById(html, tag, id, value){
 }
 
 function addAideTouches(html){
-  if(/class=["']aideTouches["']/i.test(html)) return html;
-  return html.replace(/<div([^>]*)id=["']zoneExtra["']([^>]*)><\/div>/i,
-    '<div$1id="zoneExtra"$2>\n        <p class="aideTouches">← → : déplacer | Espace : tirer</p>\n      </div>');
+  let n = html;
+  if(!/class=["']aideTouches["']/i.test(n)){
+    n = n.replace(/<div([^>]*)id=["']zoneExtra["']([^>]*)><\/div>/i,
+      '<div$1id="zoneExtra"$2>\n        <p class="aideTouches">← → : déplacer | Espace : tirer</p>\n      </div>');
+  }
+  if(!/id=["']infoJeu["']/i.test(n)){
+    n = n.replace(/(<\/p>\s*)<\/div>/i,
+      '$1\n        <div id="infoJeu" class="infoJeu"></div>\n      </div>');
+  }
+  return n;
 }
 
 function removeAideTouches(html){
   return html
     .replace(/\s*<p[^>]*class=["']aideTouches["'][^>]*>\s*← → : déplacer \| Espace : tirer\s*<\/p>\s*/i, "")
+    .replace(/\s*<div[^>]*id=["']infoJeu["'][^>]*>\s*<\/div>\s*/i, "")
     .replace(/<div([^>]*)id=["']zoneExtra["']([^>]*)>\s*<\/div>/i, '<div$1id="zoneExtra"$2></div>');
 }
 
@@ -668,7 +845,11 @@ function removeCssRule(css, selector){
 }
 
 function addDecorRules(css){
-  const rules = `.areneJeu.decorNiveau2{
+  const rules = `.areneJeu.decorNiveau1{
+  background: radial-gradient(circle at top, #1a2a52, #050712);
+}
+
+.areneJeu.decorNiveau2{
   background: radial-gradient(circle at top, #3a1a52, #050712);
 }
 
@@ -678,17 +859,32 @@ function addDecorRules(css){
 
 .areneJeu.decorNiveau4{
   background: radial-gradient(circle at top, #5b1828, #050712);
+}
+
+.areneJeu.decorNiveau5{
+  background: radial-gradient(circle at top, #123b3a, #050712);
+}
+
+.niveauActuel.niveau1{ border-color: rgba(47,255,214,.55); }
+.niveauActuel.niveau2{ border-color: rgba(77,163,255,.75); }
+.niveauActuel.niveau3{ border-color: rgba(255,211,110,.80); }
+.niveauActuel.niveau4{ border-color: rgba(255,128,80,.85); }
+.niveauActuel.niveau5{ border-color: rgba(255,59,212,.95); }
+
+.niveauFlash{
+  animation: flashNiveau .35s alternate 4;
+}
+
+@keyframes flashNiveau{
+  from{ transform: scale(1); filter: brightness(1); }
+  to{ transform: scale(1.08); filter: brightness(1.9); }
 }`;
-  css = removeCssRule(css, ".areneJeu.decorNiveau2");
-  css = removeCssRule(css, ".areneJeu.decorNiveau3");
-  css = removeCssRule(css, ".areneJeu.decorNiveau4");
+  [".areneJeu.decorNiveau1", ".areneJeu.decorNiveau2", ".areneJeu.decorNiveau3", ".areneJeu.decorNiveau4", ".areneJeu.decorNiveau5", ".niveauActuel.niveau1", ".niveauActuel.niveau2", ".niveauActuel.niveau3", ".niveauActuel.niveau4", ".niveauActuel.niveau5", ".niveauFlash", "@keyframes flashNiveau"].forEach(sel => { css = removeCssRule(css, sel); });
   return css.trimEnd() + "\n\n" + rules + "\n";
 }
 
 function removeDecorRules(css){
-  css = removeCssRule(css, ".areneJeu.decorNiveau2");
-  css = removeCssRule(css, ".areneJeu.decorNiveau3");
-  css = removeCssRule(css, ".areneJeu.decorNiveau4");
+  [".areneJeu.decorNiveau1", ".areneJeu.decorNiveau2", ".areneJeu.decorNiveau3", ".areneJeu.decorNiveau4", ".areneJeu.decorNiveau5", ".niveauActuel.niveau1", ".niveauActuel.niveau2", ".niveauActuel.niveau3", ".niveauActuel.niveau4", ".niveauActuel.niveau5", ".niveauFlash", "@keyframes flashNiveau"].forEach(sel => { css = removeCssRule(css, sel); });
   return css;
 }
 
@@ -723,6 +919,90 @@ function appliquerModifs(c, modifs){
     if(m.type === "cssProp") n.css = setCssProperty(n.css, m.selector, m.prop, m.value);
     if(m.type === "pyConst") n.py = setPythonConst(n.py, m.name, m.value);
   });
+  return n;
+}
+
+
+function retablirProgressionComplete(c){
+  let n = cloneCode(c);
+  n = appliquerModifs(n, [
+    {type:"htmlClass", tag:"h1", className:"zoneTitre", value:"Space Défense"},
+    {type:"htmlClass", tag:"p", className:"zoneParagraphe", value:"Protège ta base contre les envahisseurs !"},
+    {type:"htmlId", tag:"button", id:"btnDemarrer", value:"Démarrer"},
+    {type:"htmlId", tag:"button", id:"btnReinitialiser", value:"Recommencer"},
+    {type:"htmlId", tag:"div", id:"vaisseau", value:"🚀"},
+  ]);
+  n.html = addAideTouches(n.html);
+  n.html = addBlocNiveau(n.html);
+  n.html = addClasseNiveau(n.html);
+  n.css = setCssProperty(n.css, ".areneJeu", "height", "720px");
+  n.css = setCssProperty(n.css, ".grille", "gap", "12px");
+  n.css = setCssProperty(n.css, ".ligneBoutons", "margin", "0");
+  n.css = setCssProperty(n.css, ".zoneExtra", "gap", "14px");
+  n.css = addCssRule(n.css, ".tableauBord", `.tableauBord{
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}`);
+  n.css = addCssRule(n.css, ".zoneJeu", `.zoneJeu{
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}`);
+  n.css = setCssProperty(n.css, ".areneJeu", "background", "radial-gradient(circle at top, #1a2a52, #050712)");
+  n.css = setCssProperty(n.css, ".vaisseau", "font-size", "44px");
+  n.css = setCssProperty(n.css, ".missile", "background", "#2fffd6");
+  n.css = setCssProperty(n.css, ".missile", "height", "20px");
+  n.css = setCssProperty(n.css, ".ennemi", "font-size", "64px");
+  n.css = setCssProperty(n.css, ".bonus", "font-size", "64px");
+  n.css = setCssProperty(n.css, ".ligneStats", "grid-template-columns", "repeat(2, 1fr)");
+  n.css = setCssProperty(n.css, ".zoneTitre", "font-size", "38px");
+  n.css = setCssProperty(n.css, ".zoneParagraphe", "font-size", "26px");
+  n.css = setCssProperty(n.css, ".labelStat", "font-size", "23px");
+  n.css = setCssProperty(n.css, ".valeurStat", "font-size", "40px");
+  n.css = setCssProperty(n.css, "button", "font-size", "25px");
+  n.css = setCssProperty(n.css, ".messageJeu", "font-size", "25px");
+  n.css = setCssProperty(n.css, ".sousTitre", "font-size", "28px");
+  n.css = addCssRule(n.css, ".aideTouches", `.aideTouches{
+  color: #2fffd6;
+  text-align: center;
+  font-weight: 900;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px dashed rgba(47,255,214,.35);
+  background: rgba(47,255,214,.08);
+}`);
+  n.css = addCssRule(n.css, ".infoJeu", `.infoJeu{
+  min-height: 54px;
+  padding: 10px;
+  border-radius: 12px;
+  border: 2px solid rgba(255,211,110,.38);
+  background: rgba(255,211,110,.10);
+  color: #fff2c2;
+  font-size: 23px;
+  font-weight: 800;
+}`);
+  n.css = addDecorRules(n.css);
+  n.py = setPythonConst(n.py, "JEU_ACTIF", "True");
+  n.py = setPythonConst(n.py, "OBJECTIFS_NIVEAUX", "[20]");
+  n.py = setPythonConst(n.py, "VITESSE_MISSILE", "10");
+  n.py = setPythonConst(n.py, "VITESSE_ENNEMI", "1.8");
+  n.py = setPythonConst(n.py, "VITESSE_VAISSEAU", "22");
+  n.py = setPythonConst(n.py, "DELAI_TIR", "18");
+  n.py = setPythonConst(n.py, "ENNEMIS_AUTO", "True");
+  n.py = addAffichageNiveau(n.py);
+  n.py = setPythonConst(n.py, "ENNEMIS", '["👾", "🛸", "☄️", "🛰️", "👽"]');
+  n.py = setPythonConst(n.py, "ENNEMIS_VITESSES", '{"👾": 1, "🛸": 1.25, "☄️": 1.5, "🛰️": 1.75, "👽": 2}');
+  n.py = setPythonConst(n.py, "ENNEMIS_DEGATS", '{"👾": 1, "🛸": 1, "☄️": 1, "🛰️": 1, "👽": 1}');
+  n.py = setPythonConst(n.py, "DIFFICULTE_PROGRESSIVE", "True");
+  n.py = setPythonConst(n.py, "DELAI_ENNEMI_MS", "1100");
+  n.py = setPythonConst(n.py, "VITESSE_ENNEMI_MAX", "4.4");
+  n.py = setPythonConst(n.py, "OBJECTIFS_NIVEAUX", "[20, 40, 60, 80, 100]");
+  n.py = setPythonConst(n.py, "NIVEAU_MAX", "5");
+  n.py = setPythonConst(n.py, "COEUR_PAR_NIVEAU", "True");
+  n.py = setPythonConst(n.py, "BONUS_SANS_FAUTE", "True");
+  n.py = setPythonConst(n.py, "DECORS_NIVEAUX", "True");
+  n.py = setPythonConst(n.py, "MESSAGES_NIVEAUX", "True");
   return n;
 }
 
@@ -772,10 +1052,10 @@ const ETAPES = window.ETAPES || [
   },
   {
     langage:"CSS", titre:"CSS 1 — agrandir la zone de jeu",
-    objectif:`Dans <code>.areneJeu</code>, remplace exactement <code>height: 320px;</code> par <code>height: 760px;</code>.`,
+    objectif:`Dans <code>.areneJeu</code>, remplace exactement <code>height: 320px;</code> par <code>height: 720px;</code>.`,
     indice:`Cherche la règle CSS <code>.areneJeu</code>.`,
-    verif:(c)=> /\.areneJeu\s*\{[\s\S]*height\s*:\s*760px\s*;/i.test(c.css),
-    restore:(c)=> appliquerModifs(c, [{type:"cssProp", selector:".areneJeu", prop:"height", value:"760px"}]),
+    verif:(c)=> /\.areneJeu\s*\{[\s\S]*height\s*:\s*720px\s*;/i.test(c.css),
+    restore:(c)=> appliquerModifs(c, [{type:"cssProp", selector:".areneJeu", prop:"height", value:"720px"}]),
     reset:(c)=> appliquerModifs(c, [{type:"cssProp", selector:".areneJeu", prop:"height", value:"320px"}]),
   },
   {
@@ -788,25 +1068,61 @@ const ETAPES = window.ETAPES || [
   },
   {
     langage:"CSS", titre:"CSS 3 — taille du vaisseau",
-    objectif:`Dans <code>.vaisseau</code>, remplace exactement <code>font-size: 28px;</code> par <code>font-size: 38px;</code>.`,
-    indice:`Cherche la règle CSS <code>.vaisseau</code>.`,
-    verif:(c)=> /\.vaisseau\s*\{[\s\S]*font-size\s*:\s*38px\s*;/i.test(c.css),
-    restore:(c)=> appliquerModifs(c, [{type:"cssProp", selector:".vaisseau", prop:"font-size", value:"38px"}]),
+    objectif:`Dans <code>.vaisseau</code>, remplace exactement <code>font-size: 28px;</code> par <code>font-size: 44px;</code>.`,
+    indice:`Le vaisseau sera plus visible sans prendre toute la place.`,
+    verif:(c)=> /\.vaisseau\s*\{[\s\S]*font-size\s*:\s*44px\s*;/i.test(c.css),
+    restore:(c)=> appliquerModifs(c, [{type:"cssProp", selector:".vaisseau", prop:"font-size", value:"44px"}]),
     reset:(c)=> appliquerModifs(c, [{type:"cssProp", selector:".vaisseau", prop:"font-size", value:"28px"}]),
   },
   {
-    langage:"CSS", titre:"CSS 4 — missiles et ennemis",
-    objectif:`Dans <code>.missile</code>, écris exactement <code>background: #2fffd6;</code>. Dans <code>.ennemi</code>, écris exactement <code>font-size: 32px;</code>.`,
-    indice:`Il y a deux modifications à faire pour réussir cette étape.`,
+    langage:"CSS", titre:"CSS 4 — ennemis plus faciles à toucher",
+    objectif:`Dans <code>.missile</code>, écris <code>background: #2fffd6;</code> et <code>height: 20px;</code>. Dans <code>.ennemi</code> et <code>.bonus</code>, écris exactement <code>font-size: 64px;</code>.`,
+    indice:`Les ennemis et les cœurs seront environ deux fois plus grands, donc plus faciles à toucher.`,
     verif:(c)=> /\.missile\s*\{[\s\S]*background\s*:\s*#2fffd6\s*;/i.test(c.css)
-      && /\.ennemi\s*\{[\s\S]*font-size\s*:\s*32px\s*;/i.test(c.css),
+      && /\.missile\s*\{[\s\S]*height\s*:\s*20px\s*;/i.test(c.css)
+      && /\.ennemi\s*\{[\s\S]*font-size\s*:\s*64px\s*;/i.test(c.css)
+      && /\.bonus\s*\{[\s\S]*font-size\s*:\s*64px\s*;/i.test(c.css),
     restore:(c)=> appliquerModifs(c, [
       {type:"cssProp", selector:".missile", prop:"background", value:"#2fffd6"},
-      {type:"cssProp", selector:".ennemi", prop:"font-size", value:"32px"},
+      {type:"cssProp", selector:".missile", prop:"height", value:"20px"},
+      {type:"cssProp", selector:".ennemi", prop:"font-size", value:"64px"},
+      {type:"cssProp", selector:".bonus", prop:"font-size", value:"64px"},
     ]),
     reset:(c)=> appliquerModifs(c, [
       {type:"cssProp", selector:".missile", prop:"background", value:"#ffd36e"},
+      {type:"cssProp", selector:".missile", prop:"height", value:"18px"},
       {type:"cssProp", selector:".ennemi", prop:"font-size", value:"24px"},
+      {type:"cssProp", selector:".bonus", prop:"font-size", value:"26px"},
+    ]),
+  },
+  {
+    langage:"CSS", titre:"CSS 5 — textes du mini-jeu plus grands",
+    objectif:`Agrandis les textes du mini-jeu : <code>.zoneTitre</code> à <code>38px</code>, <code>.zoneParagraphe</code> à <code>26px</code>, <code>.labelStat</code> à <code>23px</code>, <code>.valeurStat</code> à <code>40px</code>, <code>button</code> à <code>25px</code>, <code>.messageJeu</code> à <code>25px</code> et <code>.sousTitre</code> à <code>28px</code>.`,
+    indice:`Il y a plusieurs règles CSS à modifier, mais seulement des tailles de police.`,
+    verif:(c)=> /\.zoneTitre\s*\{[\s\S]*font-size\s*:\s*38px\s*;/i.test(c.css)
+      && /\.zoneParagraphe\s*\{[\s\S]*font-size\s*:\s*26px\s*;/i.test(c.css)
+      && /\.labelStat\s*\{[\s\S]*font-size\s*:\s*23px\s*;/i.test(c.css)
+      && /\.valeurStat\s*\{[\s\S]*font-size\s*:\s*40px\s*;/i.test(c.css)
+      && /button\s*\{[\s\S]*font-size\s*:\s*25px\s*;/i.test(c.css)
+      && /\.messageJeu\s*\{[\s\S]*font-size\s*:\s*25px\s*;/i.test(c.css)
+      && /\.sousTitre\s*\{[\s\S]*font-size\s*:\s*28px\s*;/i.test(c.css),
+    restore:(c)=> appliquerModifs(c, [
+      {type:"cssProp", selector:".zoneTitre", prop:"font-size", value:"38px"},
+      {type:"cssProp", selector:".zoneParagraphe", prop:"font-size", value:"26px"},
+      {type:"cssProp", selector:".labelStat", prop:"font-size", value:"23px"},
+      {type:"cssProp", selector:".valeurStat", prop:"font-size", value:"40px"},
+      {type:"cssProp", selector:"button", prop:"font-size", value:"25px"},
+      {type:"cssProp", selector:".messageJeu", prop:"font-size", value:"25px"},
+      {type:"cssProp", selector:".sousTitre", prop:"font-size", value:"28px"},
+    ]),
+    reset:(c)=> appliquerModifs(c, [
+      {type:"cssProp", selector:".zoneTitre", prop:"font-size", value:"32px"},
+      {type:"cssProp", selector:".zoneParagraphe", prop:"font-size", value:"22px"},
+      {type:"cssProp", selector:".labelStat", prop:"font-size", value:"19px"},
+      {type:"cssProp", selector:".valeurStat", prop:"font-size", value:"32px"},
+      {type:"cssProp", selector:"button", prop:"font-size", value:"22px"},
+      {type:"cssProp", selector:".messageJeu", prop:"font-size", value:"22px"},
+      {type:"cssProp", selector:".sousTitre", prop:"font-size", value:"24px"},
     ]),
   },
   {
@@ -818,27 +1134,21 @@ const ETAPES = window.ETAPES || [
     reset:(c)=> appliquerModifs(c, [{type:"pyConst", name:"JEU_ACTIF", value:"False"}]),
   },
   {
-    langage:"Python", titre:"Python 2 — objectif et vies",
-    objectif:`Dans le Python, fais les deux modifications suivantes : <code>SCORE_CIBLE = 5</code> et <code>VIES_DEPART = 3</code>. Les deux lignes doivent être correctes pour valider l'exercice.`,
-    indice:`Le score cible sert à gagner. Les vies de départ servent à éviter de perdre dès la première erreur.`,
-    verif:(c)=> /^\s*SCORE_CIBLE\s*=\s*5\s*$/m.test(c.py) && /^\s*VIES_DEPART\s*=\s*3\s*$/m.test(c.py),
-    restore:(c)=> appliquerModifs(c, [
-      {type:"pyConst", name:"SCORE_CIBLE", value:"5"},
-      {type:"pyConst", name:"VIES_DEPART", value:"3"},
-    ]),
-    reset:(c)=> appliquerModifs(c, [
-      {type:"pyConst", name:"SCORE_CIBLE", value:"0"},
-      {type:"pyConst", name:"VIES_DEPART", value:"1"},
-    ]),
+    langage:"Python", titre:"Python 2 — objectif du premier niveau",
+    objectif:`Dans le Python, remplace <code>OBJECTIFS_NIVEAUX = [5]</code> par <code>OBJECTIFS_NIVEAUX = [20]</code>. Le joueur commence toujours avec <code>VIES_DEPART = 1</code>.`,
+    indice:`Le nombre entre crochets indique l'objectif du niveau 1.`,
+    verif:(c)=> /^\s*OBJECTIFS_NIVEAUX\s*=\s*\[\s*20(?:\s*,[\s\S]*?)?\]\s*$/m.test(c.py) && /^\s*VIES_DEPART\s*=\s*1\s*$/m.test(c.py),
+    restore:(c)=> appliquerModifs(c, [{type:"pyConst", name:"OBJECTIFS_NIVEAUX", value:"[20]"}]),
+    reset:(c)=> appliquerModifs(c, [{type:"pyConst", name:"OBJECTIFS_NIVEAUX", value:"[5]"}]),
   },
   {
     langage:"Python", titre:"Python 3 — vitesses des tirs et ennemis",
-    objectif:`Dans le Python, fais les deux modifications suivantes : <code>VITESSE_MISSILE = 10</code> et <code>VITESSE_ENNEMI = 2</code>.`,
-    indice:`Sans vitesse de missile, le joueur ne peut pas tirer. Sans vitesse d'ennemi, les ennemis ne descendent pas.`,
-    verif:(c)=> /^\s*VITESSE_MISSILE\s*=\s*10\s*$/m.test(c.py) && /^\s*VITESSE_ENNEMI\s*=\s*2\s*$/m.test(c.py),
+    objectif:`Dans le Python, fais les deux modifications suivantes : <code>VITESSE_MISSILE = 10</code> et <code>VITESSE_ENNEMI = 1.8</code>.`,
+    indice:`Les ennemis sont un peu plus rapides, mais le jeu reste jouable.`,
+    verif:(c)=> /^\s*VITESSE_MISSILE\s*=\s*10\s*$/m.test(c.py) && /^\s*VITESSE_ENNEMI\s*=\s*1\.8\s*$/m.test(c.py),
     restore:(c)=> appliquerModifs(c, [
       {type:"pyConst", name:"VITESSE_MISSILE", value:"10"},
-      {type:"pyConst", name:"VITESSE_ENNEMI", value:"2"},
+      {type:"pyConst", name:"VITESSE_ENNEMI", value:"1.8"},
     ]),
     reset:(c)=> appliquerModifs(c, [
       {type:"pyConst", name:"VITESSE_MISSILE", value:"0"},
@@ -854,41 +1164,66 @@ const ETAPES = window.ETAPES || [
     reset:(c)=> appliquerModifs(c, [{type:"pyConst", name:"VITESSE_VAISSEAU", value:"18"}]),
   },
   {
-    langage:"Python", titre:"Python 5 — délai entre deux tirs",
-    objectif:`Dans le Python, remplace « <code>DELAI_TIR = 8</code> » par « <code>DELAI_TIR = 6</code> ».`,
-    indice:`Plus le nombre est petit, plus le vaisseau peut tirer rapidement.`,
-    verif:(c)=> /^\s*DELAI_TIR\s*=\s*6\s*$/m.test(c.py),
-    restore:(c)=> appliquerModifs(c, [{type:"pyConst", name:"DELAI_TIR", value:"6"}]),
+    langage:"Python", titre:"Python 5 — tirs moins rapides",
+    objectif:`Dans le Python, remplace « <code>DELAI_TIR = 8</code> » par « <code>DELAI_TIR = 18</code> ».`,
+    indice:`Plus le nombre est grand, plus il faut attendre entre deux missiles : cela évite de balayer tout l'écran en restant appuyé sur Espace.`,
+    verif:(c)=> /^\s*DELAI_TIR\s*=\s*18\s*$/m.test(c.py),
+    restore:(c)=> appliquerModifs(c, [{type:"pyConst", name:"DELAI_TIR", value:"18"}]),
     reset:(c)=> appliquerModifs(c, [{type:"pyConst", name:"DELAI_TIR", value:"8"}]),
   },
   {
     langage:"Python", titre:"Python 6 — apparition des ennemis",
     objectif:`Dans le Python, remplace « <code>ENNEMIS_AUTO = False</code> » par « <code>ENNEMIS_AUTO = True</code> ».`,
-    indice:`Après cette étape, le jeu devient jouable : on peut gagner ou perdre.`,
+    indice:`Après cette étape, les ennemis apparaissent automatiquement.`,
     verif:(c)=> /^\s*ENNEMIS_AUTO\s*=\s*True\s*$/m.test(c.py),
     restore:(c)=> appliquerModifs(c, [{type:"pyConst", name:"ENNEMIS_AUTO", value:"True"}]),
     reset:(c)=> appliquerModifs(c, [{type:"pyConst", name:"ENNEMIS_AUTO", value:"False"}]),
   },
   {
-    langage:"HTML", titre:"HTML 5 — ajouter les commandes",
-    objectif:`Dans le HTML, trouve <code>&lt;div id="zoneExtra" class="zoneExtra"&gt;&lt;/div&gt;</code>. Transforme cette ligne pour placer à l’intérieur : <code>&lt;p class="aideTouches"&gt;← → : déplacer | Espace : tirer&lt;/p&gt;</code>.`,
-    indice:`La balise <code>&lt;p&gt;</code> doit être écrite entre l’ouverture <code>&lt;div id="zoneExtra" class="zoneExtra"&gt;</code> et la fermeture <code>&lt;/div&gt;</code>. La barre <code>|</code> doit rester présente.`,
-    verif:(c)=> /<div[^>]*id=["']zoneExtra["'][^>]*>[\s\S]*<p[^>]*class=["']aideTouches["'][^>]*>\s*← → : déplacer \| Espace : tirer\s*<\/p>[\s\S]*<\/div>/i.test(c.html),
+    langage:"HTML", titre:"HTML 5 — ajouter l’aide et les messages",
+    objectif:`Dans le HTML, trouve <code>&lt;div id="zoneExtra" class="zoneExtra"&gt;&lt;/div&gt;</code>. Ajoute à l'intérieur l'aide <code>&lt;p class="aideTouches"&gt;← → : déplacer | Espace : tirer&lt;/p&gt;</code> puis un cadre vide <code>&lt;div id="infoJeu" class="infoJeu"&gt;&lt;/div&gt;</code>.`,
+    indice:`L'aide et le message de jeu doivent être dans deux cadres séparés.`,
+    verif:(c)=> /<div[^>]*id=["']zoneExtra["'][^>]*>[\s\S]*<p[^>]*class=["']aideTouches["'][^>]*>\s*← → : déplacer \| Espace : tirer\s*<\/p>[\s\S]*<div[^>]*id=["']infoJeu["'][^>]*class=["']infoJeu["'][^>]*>\s*<\/div>[\s\S]*<\/div>/i.test(c.html),
     restore:(c)=> ({...c, html:addAideTouches(c.html)}),
     reset:(c)=> ({...c, html:removeAideTouches(c.html)}),
   },
   {
-    langage:"CSS", titre:"CSS 5 — créer et améliorer l’aide",
-    objectif:`Dans le CSS, ajoute une règle <code>.aideTouches</code> contenant exactement ces trois propriétés : <code>color: #2fffd6;</code>, <code>text-align: center;</code> et <code>font-weight: 900;</code>.`,
-    indice:`Tu peux ajouter cette règle à la fin du fichier CSS.`,
+    langage:"CSS", titre:"CSS 6 — deux cadres pour l’aide et les infos",
+    objectif:`Dans le CSS, ajoute une règle <code>.aideTouches</code> et une règle <code>.infoJeu</code>. L'aide doit contenir <code>color: #2fffd6;</code>, <code>text-align: center;</code> et <code>font-weight: 900;</code>. Le cadre info doit contenir <code>font-size: 23px;</code> et <code>font-weight: 800;</code>. Dans <code>.zoneExtra</code>, règle aussi <code>gap: 14px;</code>.`,
+    indice:`Les cadres Aide et Infos de jeu seront séparés plus nettement.`,
     verif:(c)=> /\.aideTouches\s*\{[\s\S]*color\s*:\s*#2fffd6\s*;[\s\S]*text-align\s*:\s*center\s*;[\s\S]*font-weight\s*:\s*900\s*;/i.test(c.css)
-      || /\.aideTouches\s*\{[\s\S]*color\s*:\s*#2fffd6\s*;[\s\S]*font-weight\s*:\s*900\s*;[\s\S]*text-align\s*:\s*center\s*;/i.test(c.css),
-    restore:(c)=> ({...c, css:addCssRule(c.css, ".aideTouches", `.aideTouches{
+      && /\.infoJeu\s*\{[\s\S]*font-size\s*:\s*23px\s*;[\s\S]*font-weight\s*:\s*800\s*;/i.test(c.css)
+      && /\.zoneExtra\s*\{[\s\S]*gap\s*:\s*14px\s*;/i.test(c.css),
+    restore:(c)=> {
+      let css = addCssRule(c.css, ".aideTouches", `.aideTouches{
   color: #2fffd6;
   text-align: center;
   font-weight: 900;
-}`)}),
-    reset:(c)=> ({...c, css:removeCssRule(c.css, ".aideTouches")}),
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px dashed rgba(47,255,214,.35);
+  background: rgba(47,255,214,.08);
+}`);
+      css = addCssRule(css, ".infoJeu", `.infoJeu{
+  min-height: 54px;
+  padding: 10px;
+  border-radius: 12px;
+  border: 2px solid rgba(255,211,110,.38);
+  background: rgba(255,211,110,.10);
+  color: #fff2c2;
+  font-size: 23px;
+  font-weight: 800;
+}`);
+      css = setCssProperty(css, ".zoneExtra", "gap", "14px");
+      css = setCssProperty(css, ".ligneBoutons", "margin", "0");
+      css = addCssRule(css, ".tableauBord", `.tableauBord{
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}`);
+      return {...c, css};
+    },
+    reset:(c)=> ({...c, css:removeCssRule(removeCssRule(c.css, ".aideTouches"), ".infoJeu")}),
   },
   {
     langage:"HTML", titre:"HTML 6 — ajouter l’affichage du niveau",
@@ -899,163 +1234,136 @@ const ETAPES = window.ETAPES || [
     reset:(c)=> ({...c, html:removeBlocNiveau(c.html)}),
   },
   {
-    langage:"CSS", titre:"CSS 6 — quatre statistiques",
-    objectif:`Dans <code>.ligneStats</code>, remplace exactement <code>repeat(3, 1fr)</code> par <code>repeat(4, 1fr)</code>.`,
-    indice:`Cela permet d'afficher correctement Score, Vies, Objectif et Niveau.`,
-    verif:(c)=> /\.ligneStats\s*\{[\s\S]*grid-template-columns\s*:\s*repeat\(4,\s*1fr\)\s*;/i.test(c.css),
-    restore:(c)=> appliquerModifs(c, [{type:"cssProp", selector:".ligneStats", prop:"grid-template-columns", value:"repeat(4, 1fr)"}]),
+    langage:"CSS", titre:"CSS 7 — quatre statistiques sur deux lignes",
+    objectif:`Dans <code>.ligneStats</code>, remplace exactement <code>repeat(3, 1fr)</code> par <code>repeat(2, 1fr)</code>.`,
+    indice:`Score, Vies, Objectif et Niveau s'afficheront en deux colonnes et deux lignes.`,
+    verif:(c)=> /\.ligneStats\s*\{[\s\S]*grid-template-columns\s*:\s*repeat\(2,\s*1fr\)\s*;/i.test(c.css),
+    restore:(c)=> appliquerModifs(c, [{type:"cssProp", selector:".ligneStats", prop:"grid-template-columns", value:"repeat(2, 1fr)"}]),
     reset:(c)=> appliquerModifs(c, [{type:"cssProp", selector:".ligneStats", prop:"grid-template-columns", value:"repeat(3, 1fr)"}]),
   },
   {
     langage:"HTML", titre:"HTML 7 — classe du bloc Niveau",
     objectif:`Sur le bloc <code>Niveau</code>, remplace exactement <code>class="carteStat"</code> par <code>class="carteStat niveauActuel"</code>.`,
-    indice:`Cette classe permettra de donner une bordure différente au bloc Niveau.`,
+    indice:`Cette classe permettra de donner une couleur différente au bloc Niveau.`,
     verif:(c)=> /<div[^>]*class=["'][^"']*\bcarteStat\b[^"']*\bniveauActuel\b[^"']*["'][^>]*>[\s\S]*Niveau[\s\S]*id=["']niveauJeu["']/i.test(c.html),
     restore:(c)=> ({...c, html:addClasseNiveau(c.html)}),
     reset:(c)=> ({...c, html:removeClasseNiveau(c.html)}),
   },
   {
-    langage:"CSS", titre:"CSS 7 — style du niveau",
-    objectif:`Dans le CSS, ajoute une règle <code>.niveauActuel</code> avec exactement <code>border-color: rgba(47,255,214,.45);</code>.`,
-    indice:`La virgule et le point devant <code>.45</code> sont importants.`,
-    verif:(c)=> /\.niveauActuel\s*\{[\s\S]*border-color\s*:\s*rgba\(47,\s*255,\s*214,\s*\.45\)\s*;/i.test(c.css),
-    restore:(c)=> ({...c, css:addCssRule(c.css, ".niveauActuel", `.niveauActuel{
-  border-color: rgba(47,255,214,.45);
-}`)}),
-    reset:(c)=> ({...c, css:removeCssRule(c.css, ".niveauActuel")}),
-  },
-  {
-    langage:"Python", titre:"Python 7 — ajouter un deuxième ennemi",
-    objectif:`Dans le Python, remplace « <code>ENNEMIS = ["👾"]</code> » par « <code>ENNEMIS = ["👾", "🛸"]</code> ».`,
-    indice:`Chaque ennemi doit être dans ses propres guillemets. Il faut une virgule entre les deux.`,
-    verif:(c)=> /^\s*ENNEMIS\s*=\s*\[\s*["']👾["']\s*,\s*["']🛸["']\s*\]\s*$/m.test(c.py),
-    restore:(c)=> appliquerModifs(c, [{type:"pyConst", name:"ENNEMIS", value:'["👾", "🛸"]'}]),
-    reset:(c)=> appliquerModifs(c, [{type:"pyConst", name:"ENNEMIS", value:'["👾"]'}]),
-  },
-  {
-    langage:"Python", titre:"Python 8 — difficulté progressive",
-    objectif:`Dans le Python, fais les deux modifications suivantes : <code>DIFFICULTE_PROGRESSIVE = True</code> et <code>VITESSE_ENNEMI_MAX = 6</code>.`,
-    indice:`La première ligne active l'accélération progressive. La deuxième fixe une limite pour éviter que le jeu devienne injouable.`,
-    verif:(c)=> /^\s*DIFFICULTE_PROGRESSIVE\s*=\s*True\s*$/m.test(c.py) && /^\s*VITESSE_ENNEMI_MAX\s*=\s*6\s*$/m.test(c.py),
-    restore:(c)=> appliquerModifs(c, [
-      {type:"pyConst", name:"DIFFICULTE_PROGRESSIVE", value:"True"},
-      {type:"pyConst", name:"VITESSE_ENNEMI_MAX", value:"6"},
-    ]),
-    reset:(c)=> appliquerModifs(c, [
-      {type:"pyConst", name:"DIFFICULTE_PROGRESSIVE", value:"False"},
-      {type:"pyConst", name:"VITESSE_ENNEMI_MAX", value:"4"},
-    ]),
-  },
-  {
-    langage:"Python", titre:"Python 9 — ennemis plus fréquents",
-    objectif:`Dans le Python, remplace « <code>DELAI_ENNEMI_MS = 1200</code> » par « <code>DELAI_ENNEMI_MS = 900</code> ».`,
-    indice:`Le délai est en millisecondes : plus il est petit, plus les ennemis apparaissent souvent.`,
-    verif:(c)=> /^\s*DELAI_ENNEMI_MS\s*=\s*900\s*$/m.test(c.py),
-    restore:(c)=> appliquerModifs(c, [{type:"pyConst", name:"DELAI_ENNEMI_MS", value:"900"}]),
-    reset:(c)=> appliquerModifs(c, [{type:"pyConst", name:"DELAI_ENNEMI_MS", value:"1200"}]),
-  },
-  {
-    langage:"Python", titre:"Python 10 — calcul du niveau",
-    objectif:`Dans <code>calculer_niveau()</code>, remplace « <code>return 1</code> » par « <code>return 1 + score // 5</code> ».`,
-    indice:`Le symbole <code>//</code> permet de faire une division entière. Le niveau augmente tous les 5 points.`,
-    verif:(c)=> /def\s+calculer_niveau\s*\(\)\s*:\s*\n\s*return\s+1\s*\+\s*score\s*\/\/\s*5\s*$/m.test(c.py),
-    restore:(c)=> ({...c, py:setCalculerNiveau(c.py, "1 + score // 5")}),
-    reset:(c)=> ({...c, py:setCalculerNiveau(c.py, "1")}),
-  },
-  {
-    langage:"Python", titre:"Python 11 — afficher le niveau",
+    langage:"Python", titre:"Python 7 — afficher le niveau",
     objectif:`Dans <code>maj_affichage()</code>, remplace le commentaire <code># Plus tard : afficher le niveau ici.</code> par <code>if niveau_el is not None:</code> puis, à la ligne suivante, <code>niveau_el.textContent = str(calculer_niveau())</code>.`,
-    indice:`La ligne <code>if</code> doit être dans la fonction. La ligne <code>niveau_el...</code> doit être encore plus décalée vers la droite.`,
-    verif:(c)=> /def\s+maj_affichage\s*\(\)\s*:[\s\S]*if\s+niveau_el\s+is\s+not\s+None\s*:\s*\n\s+niveau_el\.textContent\s*=\s*str\(calculer_niveau\(\)\)/.test(c.py),
+    indice:`Fais cette étape avant les niveaux multiples pour voir le changement de niveau pendant le jeu.`,
+    verif:(c)=> /def\s+maj_affichage\s*\([^)]*\)\s*:[\s\S]*if\s+niveau_el\s+is\s+not\s+None\s*:\s*\n\s+niveau_el\.textContent\s*=\s*str\(calculer_niveau\(\)\)/.test(c.py),
     restore:(c)=> ({...c, py:addAffichageNiveau(c.py)}),
     reset:(c)=> ({...c, py:removeAffichageNiveau(c.py)}),
   },
   {
-    langage:"Python", titre:"Python 12 — ajouter plusieurs ennemis",
-    objectif:`Dans le Python, remplace la liste des ennemis par exactement <code>ENNEMIS = ["👾", "🛸", "☄️", "🛰️"]</code>.`,
-    indice:`Il faut quatre éléments séparés par des virgules.`,
-    verif:(c)=> /^\s*ENNEMIS\s*=\s*\[\s*["']👾["']\s*,\s*["']🛸["']\s*,\s*["']☄️["']\s*,\s*["']🛰️["']\s*\]\s*$/m.test(c.py),
-    restore:(c)=> appliquerModifs(c, [{type:"pyConst", name:"ENNEMIS", value:'["👾", "🛸", "☄️", "🛰️"]'}]),
-    reset:(c)=> appliquerModifs(c, [{type:"pyConst", name:"ENNEMIS", value:'["👾", "🛸"]'}]),
+    langage:"Python", titre:"Python 8 — cinq types d’ennemis",
+    objectif:`Dans le Python, remplace la liste des ennemis par exactement <code>ENNEMIS = ["👾", "🛸", "☄️", "🛰️", "👽"]</code>.`,
+    indice:`Le jeu utilisera seulement les premiers ennemis au début, puis un nouvel ennemi apparaîtra à chaque niveau.`,
+    verif:(c)=> /^\s*ENNEMIS\s*=\s*\[\s*["']👾["']\s*,\s*["']🛸["']\s*,\s*["']☄️["']\s*,\s*["']🛰️["']\s*,\s*["']👽["']\s*\]\s*$/m.test(c.py),
+    restore:(c)=> appliquerModifs(c, [{type:"pyConst", name:"ENNEMIS", value:'["👾", "🛸", "☄️", "🛰️", "👽"]'}]),
+    reset:(c)=> appliquerModifs(c, [{type:"pyConst", name:"ENNEMIS", value:'["👾"]'}]),
   },
   {
-    langage:"Python", titre:"Python 13 — vitesses différentes",
-    objectif:`Dans le Python, remplace la ligne <code>ENNEMIS_VITESSES</code> par « <code>ENNEMIS_VITESSES = {"👾": 1, "🛸": 1.4, "☄️": 2, "🛰️": 0.7}</code> ».`,
-    indice:`Le dictionnaire indique un coefficient de vitesse pour chaque ennemi.`,
-    verif:(c)=> /^\s*ENNEMIS_VITESSES\s*=\s*\{\s*["']👾["']\s*:\s*1\s*,\s*["']🛸["']\s*:\s*1\.4\s*,\s*["']☄️["']\s*:\s*2\s*,\s*["']🛰️["']\s*:\s*0\.7\s*\}\s*$/m.test(c.py),
-    restore:(c)=> appliquerModifs(c, [{type:"pyConst", name:"ENNEMIS_VITESSES", value:'{"👾": 1, "🛸": 1.4, "☄️": 2, "🛰️": 0.7}'}]),
+    langage:"Python", titre:"Python 9 — vitesses différentes",
+    objectif:`Dans le Python, remplace <code>ENNEMIS_VITESSES</code> par <code>ENNEMIS_VITESSES = {"👾": 1, "🛸": 1.25, "☄️": 1.5, "🛰️": 1.75, "👽": 2}</code>.`,
+    indice:`Chaque nouvel ennemi est légèrement plus rapide que le précédent.`,
+    verif:(c)=> /^\s*ENNEMIS_VITESSES\s*=\s*\{\s*["']👾["']\s*:\s*1\s*,\s*["']🛸["']\s*:\s*1\.25\s*,\s*["']☄️["']\s*:\s*1\.5\s*,\s*["']🛰️["']\s*:\s*1\.75\s*,\s*["']👽["']\s*:\s*2\s*\}\s*$/m.test(c.py),
+    restore:(c)=> appliquerModifs(c, [{type:"pyConst", name:"ENNEMIS_VITESSES", value:'{"👾": 1, "🛸": 1.25, "☄️": 1.5, "🛰️": 1.75, "👽": 2}'}]),
     reset:(c)=> appliquerModifs(c, [{type:"pyConst", name:"ENNEMIS_VITESSES", value:'{"👾": 1}'}]),
   },
   {
-    langage:"Python", titre:"Python 14 — ennemi dangereux",
-    objectif:`Dans le Python, ajoute l'ennemi dangereux <code>💀</code> dans <code>ENNEMIS</code>, puis remplace exactement <code>ENNEMIS_DEGATS</code> par <code>ENNEMIS_DEGATS = {"👾": 1, "🛸": 1, "☄️": 1, "🛰️": 1, "💀": 2}</code>.`,
-    indice:`Si <code>💀</code> atteint le bas, le joueur perd 2 vies.`,
-    verif:(c)=> /^\s*ENNEMIS\s*=\s*\[\s*["']👾["']\s*,\s*["']🛸["']\s*,\s*["']☄️["']\s*,\s*["']🛰️["']\s*,\s*["']💀["']\s*\]\s*$/m.test(c.py)
-      && /^\s*ENNEMIS_DEGATS\s*=\s*\{\s*["']👾["']\s*:\s*1\s*,\s*["']🛸["']\s*:\s*1\s*,\s*["']☄️["']\s*:\s*1\s*,\s*["']🛰️["']\s*:\s*1\s*,\s*["']💀["']\s*:\s*2\s*\}\s*$/m.test(c.py),
+    langage:"Python", titre:"Python 10 — mêmes dégâts pour tous",
+    objectif:`Dans le Python, remplace <code>ENNEMIS_DEGATS</code> par <code>ENNEMIS_DEGATS = {"👾": 1, "🛸": 1, "☄️": 1, "🛰️": 1, "👽": 1}</code>.`,
+    indice:`Tous les ennemis font perdre 1 vie s'ils atteignent le bas.`,
+    verif:(c)=> /^\s*ENNEMIS_DEGATS\s*=\s*\{\s*["']👾["']\s*:\s*1\s*,\s*["']🛸["']\s*:\s*1\s*,\s*["']☄️["']\s*:\s*1\s*,\s*["']🛰️["']\s*:\s*1\s*,\s*["']👽["']\s*:\s*1\s*\}\s*$/m.test(c.py),
+    restore:(c)=> appliquerModifs(c, [{type:"pyConst", name:"ENNEMIS_DEGATS", value:'{"👾": 1, "🛸": 1, "☄️": 1, "🛰️": 1, "👽": 1}'}]),
+    reset:(c)=> appliquerModifs(c, [{type:"pyConst", name:"ENNEMIS_DEGATS", value:'{"👾": 1}'}]),
+  },
+  {
+    langage:"Python", titre:"Python 11 — difficulté progressive",
+    objectif:`Dans le Python, fais les trois modifications suivantes : <code>DIFFICULTE_PROGRESSIVE = True</code>, <code>DELAI_ENNEMI_MS = 1100</code> et <code>VITESSE_ENNEMI_MAX = 4.4</code>.`,
+    indice:`Les ennemis arrivent un peu plus nombreux et descendent un peu plus vite à chaque niveau, sans devenir impossibles trop tôt.`,
+    verif:(c)=> /^\s*DIFFICULTE_PROGRESSIVE\s*=\s*True\s*$/m.test(c.py)
+      && /^\s*DELAI_ENNEMI_MS\s*=\s*1100\s*$/m.test(c.py)
+      && /^\s*VITESSE_ENNEMI_MAX\s*=\s*4\.4\s*$/m.test(c.py),
     restore:(c)=> appliquerModifs(c, [
-      {type:"pyConst", name:"ENNEMIS", value:'["👾", "🛸", "☄️", "🛰️", "💀"]'},
-      {type:"pyConst", name:"ENNEMIS_DEGATS", value:'{"👾": 1, "🛸": 1, "☄️": 1, "🛰️": 1, "💀": 2}'},
+      {type:"pyConst", name:"DIFFICULTE_PROGRESSIVE", value:"True"},
+      {type:"pyConst", name:"DELAI_ENNEMI_MS", value:"1100"},
+      {type:"pyConst", name:"VITESSE_ENNEMI_MAX", value:"4.4"},
     ]),
     reset:(c)=> appliquerModifs(c, [
-      {type:"pyConst", name:"ENNEMIS", value:'["👾", "🛸", "☄️", "🛰️"]'},
-      {type:"pyConst", name:"ENNEMIS_DEGATS", value:'{"👾": 1}'},
+      {type:"pyConst", name:"DIFFICULTE_PROGRESSIVE", value:"False"},
+      {type:"pyConst", name:"DELAI_ENNEMI_MS", value:"1200"},
+      {type:"pyConst", name:"VITESSE_ENNEMI_MAX", value:"3.8"},
     ]),
   },
   {
-    langage:"Python", titre:"Python 15 — ennemis qui rapportent plus",
-    objectif:`Dans le Python, remplace <code>ENNEMIS_POINTS</code> par « <code>ENNEMIS_POINTS = {"👾": 1, "🛸": 1, "☄️": 2, "🛰️": 3, "💀": 4}</code> ».`,
-    indice:`Les ennemis plus difficiles peuvent rapporter plus de points.`,
-    verif:(c)=> /^\s*ENNEMIS_POINTS\s*=\s*\{\s*["']👾["']\s*:\s*1\s*,\s*["']🛸["']\s*:\s*1\s*,\s*["']☄️["']\s*:\s*2\s*,\s*["']🛰️["']\s*:\s*3\s*,\s*["']💀["']\s*:\s*4\s*\}\s*$/m.test(c.py),
-    restore:(c)=> appliquerModifs(c, [{type:"pyConst", name:"ENNEMIS_POINTS", value:'{"👾": 1, "🛸": 1, "☄️": 2, "🛰️": 3, "💀": 4}'}]),
-    reset:(c)=> appliquerModifs(c, [{type:"pyConst", name:"ENNEMIS_POINTS", value:'{"👾": 1}'}]),
-  },
-  {
-    langage:"Python", titre:"Python 16 — bonus cœur",
-    objectif:`Dans le Python, fais les deux modifications suivantes : <code>BONUS_COEUR_ACTIF = True</code> et <code>CHANCE_COEUR = 8</code>.`,
-    indice:`Le cœur apparaît parfois. Si le joueur le touche avec un missile, il gagne 1 vie, sans dépasser le maximum.`,
-    verif:(c)=> /^\s*BONUS_COEUR_ACTIF\s*=\s*True\s*$/m.test(c.py) && /^\s*CHANCE_COEUR\s*=\s*8\s*$/m.test(c.py),
+    langage:"Python", titre:"Python 12 — cinq objectifs de niveau",
+    objectif:`Dans le Python, remplace <code>OBJECTIFS_NIVEAUX</code> par <code>OBJECTIFS_NIVEAUX = [20, 40, 60, 80, 100]</code> et remplace <code>NIVEAU_MAX = 1</code> par <code>NIVEAU_MAX = 5</code>.`,
+    indice:`Il faut atteindre 20 ennemis pour passer au niveau 2, puis 40, 60, 80 et 100.`,
+    verif:(c)=> /^\s*OBJECTIFS_NIVEAUX\s*=\s*\[\s*20\s*,\s*40\s*,\s*60\s*,\s*80\s*,\s*100\s*\]\s*$/m.test(c.py)
+      && /^\s*NIVEAU_MAX\s*=\s*5\s*$/m.test(c.py),
     restore:(c)=> appliquerModifs(c, [
-      {type:"pyConst", name:"BONUS_COEUR_ACTIF", value:"True"},
-      {type:"pyConst", name:"CHANCE_COEUR", value:"8"},
+      {type:"pyConst", name:"OBJECTIFS_NIVEAUX", value:"[20, 40, 60, 80, 100]"},
+      {type:"pyConst", name:"NIVEAU_MAX", value:"5"},
     ]),
     reset:(c)=> appliquerModifs(c, [
-      {type:"pyConst", name:"BONUS_COEUR_ACTIF", value:"False"},
-      {type:"pyConst", name:"CHANCE_COEUR", value:"0"},
+      {type:"pyConst", name:"OBJECTIFS_NIVEAUX", value:"[20]"},
+      {type:"pyConst", name:"NIVEAU_MAX", value:"1"},
     ]),
   },
   {
-    langage:"CSS", titre:"CSS 8 — décors selon le niveau",
-    objectif:`Dans le CSS, ajoute les trois règles <code>.areneJeu.decorNiveau2</code>, <code>.areneJeu.decorNiveau3</code> et <code>.areneJeu.decorNiveau4</code> données dans l'indice.`,
-    indice:`Utilise ces fonds : niveau 2 <code>radial-gradient(circle at top, #3a1a52, #050712)</code>, niveau 3 <code>radial-gradient(circle at top, #523b1a, #050712)</code>, niveau 4 <code>radial-gradient(circle at top, #5b1828, #050712)</code>.`,
-    verif:(c)=> /\.areneJeu\.decorNiveau2\s*\{[\s\S]*#3a1a52[\s\S]*#050712[\s\S]*\}/i.test(c.css)
-      && /\.areneJeu\.decorNiveau3\s*\{[\s\S]*#523b1a[\s\S]*#050712[\s\S]*\}/i.test(c.css)
-      && /\.areneJeu\.decorNiveau4\s*\{[\s\S]*#5b1828[\s\S]*#050712[\s\S]*\}/i.test(c.css),
+    langage:"Python", titre:"Python 13 — cœur à la moitié du niveau",
+    objectif:`Dans le Python, remplace « <code>COEUR_PAR_NIVEAU = False</code> » par « <code>COEUR_PAR_NIVEAU = True</code> ».`,
+    indice:`Un cœur apparaîtra une fois par niveau, à la moitié de l'objectif. Il descend deux fois plus vite que l'ennemi le plus rapide du niveau.`,
+    verif:(c)=> /^\s*COEUR_PAR_NIVEAU\s*=\s*True\s*$/m.test(c.py),
+    restore:(c)=> appliquerModifs(c, [{type:"pyConst", name:"COEUR_PAR_NIVEAU", value:"True"}]),
+    reset:(c)=> appliquerModifs(c, [{type:"pyConst", name:"COEUR_PAR_NIVEAU", value:"False"}]),
+  },
+  {
+    langage:"Python", titre:"Python 14 — bonus sans-faute",
+    objectif:`Dans le Python, remplace « <code>BONUS_SANS_FAUTE = False</code> » par « <code>BONUS_SANS_FAUTE = True</code> ».`,
+    indice:`Si aucun ennemi ne passe pendant un niveau, le joueur gagne 1 vie en passant au niveau suivant.`,
+    verif:(c)=> /^\s*BONUS_SANS_FAUTE\s*=\s*True\s*$/m.test(c.py),
+    restore:(c)=> appliquerModifs(c, [{type:"pyConst", name:"BONUS_SANS_FAUTE", value:"True"}]),
+    reset:(c)=> appliquerModifs(c, [{type:"pyConst", name:"BONUS_SANS_FAUTE", value:"False"}]),
+  },
+  {
+    langage:"CSS", titre:"CSS 8 — décors et bloc niveau",
+    objectif:`Dans le CSS, ajoute les règles des décors de niveaux et les couleurs du bloc <code>Niveau</code>. Il faut aussi ajouter <code>.niveauFlash</code> avec une animation <code>flashNiveau</code>.`,
+    indice:`Tu peux utiliser le bouton Rétablir si tu veux remettre automatiquement toutes les règles de décor et de clignotement.`,
+    verif:(c)=> /\.areneJeu\.decorNiveau5\s*\{[\s\S]*#123b3a[\s\S]*#050712[\s\S]*\}/i.test(c.css)
+      && /\.niveauActuel\.niveau5\s*\{[\s\S]*border-color\s*:/i.test(c.css)
+      && /\.niveauFlash\s*\{[\s\S]*animation\s*:\s*flashNiveau/i.test(c.css)
+      && /@keyframes\s+flashNiveau/i.test(c.css),
     restore:(c)=> ({...c, css:addDecorRules(c.css)}),
     reset:(c)=> ({...c, css:removeDecorRules(c.css)}),
   },
   {
-    langage:"Python", titre:"Python 17 — activer les décors",
+    langage:"Python", titre:"Python 15 — activer les décors",
     objectif:`Dans le Python, remplace « <code>DECORS_NIVEAUX = False</code> » par « <code>DECORS_NIVEAUX = True</code> ».`,
-    indice:`Le décor changera automatiquement selon le niveau atteint.`,
+    indice:`Le décor et la couleur du bloc Niveau changeront selon le niveau atteint.`,
     verif:(c)=> /^\s*DECORS_NIVEAUX\s*=\s*True\s*$/m.test(c.py),
     restore:(c)=> appliquerModifs(c, [{type:"pyConst", name:"DECORS_NIVEAUX", value:"True"}]),
     reset:(c)=> appliquerModifs(c, [{type:"pyConst", name:"DECORS_NIVEAUX", value:"False"}]),
   },
   {
-    langage:"Python", titre:"Python 18 — messages de niveau",
+    langage:"Python", titre:"Python 16 — messages temporaires",
     objectif:`Dans le Python, remplace « <code>MESSAGES_NIVEAUX = False</code> » par « <code>MESSAGES_NIVEAUX = True</code> ».`,
-    indice:`Le jeu affichera un message quand le joueur passe à un niveau supérieur.`,
+    indice:`Le jeu affichera quelques informations utiles pendant 5 secondes, par exemple pour le cœur, la perte d’une vie, le changement de niveau ou le bonus sans-faute.`,
     verif:(c)=> /^\s*MESSAGES_NIVEAUX\s*=\s*True\s*$/m.test(c.py),
     restore:(c)=> appliquerModifs(c, [{type:"pyConst", name:"MESSAGES_NIVEAUX", value:"True"}]),
     reset:(c)=> appliquerModifs(c, [{type:"pyConst", name:"MESSAGES_NIVEAUX", value:"False"}]),
   },
   {
-    langage:"Python", titre:"Python 19 — objectif final",
-    objectif:`Dans le Python, remplace « <code>SCORE_CIBLE = 5</code> » par « <code>SCORE_CIBLE = 20</code> ».`,
-    indice:`Le jeu dure plus longtemps et permet de voir les nouveaux niveaux.`,
-    verif:(c)=> /^\s*SCORE_CIBLE\s*=\s*20\s*$/m.test(c.py),
-    restore:(c)=> appliquerModifs(c, [{type:"pyConst", name:"SCORE_CIBLE", value:"20"}]),
-    reset:(c)=> appliquerModifs(c, [{type:"pyConst", name:"SCORE_CIBLE", value:"5"}]),
+    langage:"Libre", titre:"Projet libre — personnaliser le jeu",
+    objectif:`Le jeu est terminé. Tu peux maintenant modifier ce que tu veux : couleurs, textes, vitesse, symboles, décor, taille du vaisseau, etc. Clique sur <strong>Appliquer</strong> pour tester, puis sur <strong>Enregistrer</strong> pour garder tes modifications libres.`,
+    indice:`Le bouton Réinitialiser remet le code dans l'état de l'exercice précédent, juste avant les modifications libres.`,
+    verif:(c)=> true,
+    restore:(c)=> retablirProgressionComplete(c),
+    reset:(c)=> retablirProgressionComplete(c),
   },
 ];
 
@@ -1090,6 +1398,9 @@ const ui = {
   btnReinit: $("btnReinit"),
   btnRetablir: $("btnRetablir"),
   btnSuivant: $("btnSuivant"),
+  btnSauvegarder: $("btnSauvegarder"),
+  btnCharger: $("btnCharger"),
+  inputSauvegarde: $("inputSauvegarde"),
   zoneStatut: $("zoneStatut"),
   apercu: $("apercu"),
   styleEleve: $("styleEleve"),
@@ -1116,6 +1427,205 @@ const etat = {
   dejaReussi: Array(ETAPES.length).fill(false),
   code: { html: HTML_BASE, css: CSS_BASE, py: PY_BASE },
 };
+
+const CLE_SAUVEGARDE_AUTO = "atelier_space_defense_sauvegarde_auto_v1";
+const TYPE_SAUVEGARDE = "sauvegarde-space-defense";
+const VERSION_SAUVEGARDE = 1;
+
+let travailModifieDepuisExport = false;
+let timerSauvegardeAuto = null;
+
+function copieEtatPourSauvegarde(){
+  return {
+    etape: etat.etape,
+    statut: etat.statut.slice(),
+    dejaReussi: etat.dejaReussi.slice(),
+    code: {
+      html: etat.code.html,
+      css: etat.code.css,
+      py: etat.code.py,
+    },
+  };
+}
+
+function creerObjetSauvegarde(){
+  collecterCode();
+  return {
+    type: TYPE_SAUVEGARDE,
+    version: VERSION_SAUVEGARDE,
+    application: "HTML CSS Python - Space Défense",
+    date: new Date().toISOString(),
+    nombreEtapes: ETAPES.length,
+    etat: copieEtatPourSauvegarde(),
+  };
+}
+
+function normaliserEtatSauvegarde(obj){
+  if(!obj || typeof obj !== "object") throw new Error("Fichier de sauvegarde invalide.");
+
+  const source = obj.etat || obj;
+  if(!source || typeof source !== "object") throw new Error("Fichier de sauvegarde invalide.");
+  if(!source.code || typeof source.code !== "object") throw new Error("Le code enregistré est introuvable.");
+
+  const html = typeof source.code.html === "string" ? source.code.html : null;
+  const css = typeof source.code.css === "string" ? source.code.css : null;
+  const py = typeof source.code.py === "string" ? source.code.py : null;
+  if(html === null || css === null || py === null) throw new Error("Le fichier ne contient pas les trois codes HTML, CSS et Python.");
+
+  const statut = Array.isArray(source.statut) ? source.statut.slice(0, ETAPES.length) : [];
+  while(statut.length < ETAPES.length) statut.push(ETAT_NON_FAIT);
+
+  const dejaReussi = Array.isArray(source.dejaReussi) ? source.dejaReussi.slice(0, ETAPES.length) : [];
+  while(dejaReussi.length < ETAPES.length) dejaReussi.push(false);
+
+  let etape = Number.isInteger(source.etape) ? source.etape : 0;
+  etape = Math.max(0, Math.min(ETAPES.length - 1, etape));
+
+  return {
+    etape,
+    statut: statut.map(s => [ETAT_NON_FAIT, ETAT_REUSSI, ETAT_REINITIALISE].includes(s) ? s : ETAT_NON_FAIT),
+    dejaReussi: dejaReussi.map(Boolean),
+    code: { html, css, py },
+  };
+}
+
+function remplacerEtat(nouvelEtat){
+  etat.etape = nouvelEtat.etape;
+  etat.statut = nouvelEtat.statut;
+  etat.dejaReussi = nouvelEtat.dejaReussi;
+  etat.code = nouvelEtat.code;
+}
+
+function sauvegarderAutoLocalement(){
+  try{
+    const sauvegarde = creerObjetSauvegarde();
+    localStorage.setItem(CLE_SAUVEGARDE_AUTO, JSON.stringify(sauvegarde));
+    return true;
+  }catch(err){
+    console.warn("Sauvegarde automatique impossible", err);
+    return false;
+  }
+}
+
+function programmerSauvegardeAuto(){
+  clearTimeout(timerSauvegardeAuto);
+  timerSauvegardeAuto = setTimeout(()=> sauvegarderAutoLocalement(), 400);
+}
+
+function marquerTravailModifie(){
+  travailModifieDepuisExport = true;
+  programmerSauvegardeAuto();
+}
+
+function nomFichierSauvegarde(){
+  const date = new Date();
+  const pad = (n)=> String(n).padStart(2, "0");
+  const horodatage = `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}_${pad(date.getHours())}-${pad(date.getMinutes())}`;
+  return `sauvegarde_space_defense_${horodatage}.json`;
+}
+
+async function enregistrerTravail(){
+  const sauvegarde = creerObjetSauvegarde();
+  const contenu = JSON.stringify(sauvegarde, null, 2);
+  const blob = new Blob([contenu], { type:"application/json" });
+  const nom = nomFichierSauvegarde();
+
+  try{
+    if(window.showSaveFilePicker){
+      const handle = await window.showSaveFilePicker({
+        suggestedName: nom,
+        types: [{ description:"Sauvegarde Space Défense", accept:{ "application/json":[".json"] } }],
+      });
+      const writable = await handle.createWritable();
+      await writable.write(blob);
+      await writable.close();
+    }else{
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = nom;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(()=> URL.revokeObjectURL(url), 1000);
+    }
+
+    sauvegarderAutoLocalement();
+    travailModifieDepuisExport = false;
+    definirStatut("Travail enregistré. Range le fichier dans ton dossier personnel réseau.", "ok");
+  }catch(err){
+    if(err && err.name === "AbortError"){
+      definirStatut("Enregistrement annulé.", "reset");
+    }else{
+      console.error(err);
+      definirStatut("Impossible d'enregistrer le fichier de sauvegarde.", "bad");
+    }
+  }
+}
+
+function chargerTravailDepuisFichier(fichier){
+  if(!fichier) return;
+
+  const lecteur = new FileReader();
+  lecteur.onload = ()=>{
+    try{
+      const obj = JSON.parse(String(lecteur.result || ""));
+      const nouvelEtat = normaliserEtatSauvegarde(obj);
+      remplacerEtat(nouvelEtat);
+      afficherCode();
+      rendreEtapesHaut();
+      rendreConsigne();
+      appliquerApercu({ valider:false, messageAuto:false });
+      sauvegarderAutoLocalement();
+      travailModifieDepuisExport = false;
+      definirStatut("Sauvegarde chargée. Tu peux continuer ton travail.", "ok");
+    }catch(err){
+      console.error(err);
+      definirStatut("Fichier de sauvegarde invalide ou illisible.", "bad");
+    }finally{
+      ui.inputSauvegarde.value = "";
+    }
+  };
+  lecteur.onerror = ()=>{
+    definirStatut("Impossible de lire le fichier de sauvegarde.", "bad");
+    ui.inputSauvegarde.value = "";
+  };
+  lecteur.readAsText(fichier, "utf-8");
+}
+
+function proposerRestaurationAuto(){
+  let brut = null;
+  try{
+    brut = localStorage.getItem(CLE_SAUVEGARDE_AUTO);
+  }catch(err){
+    return false;
+  }
+  if(!brut) return false;
+
+  try{
+    const obj = JSON.parse(brut);
+    const nouvelEtat = normaliserEtatSauvegarde(obj);
+    const date = obj.date ? new Date(obj.date) : null;
+    const dateLisible = date && !Number.isNaN(date.getTime()) ? date.toLocaleString("fr-FR") : "date inconnue";
+    const ok = confirm(`Une sauvegarde automatique a été trouvée (${dateLisible}).\n\nVoulez-vous la restaurer ?`);
+    if(!ok) return false;
+
+    remplacerEtat(nouvelEtat);
+    travailModifieDepuisExport = true;
+    definirStatut("Sauvegarde automatique restaurée. Pense à enregistrer ton travail dans ton dossier réseau.", "reset");
+    return true;
+  }catch(err){
+    console.warn("Sauvegarde automatique ignorée", err);
+    return false;
+  }
+}
+
+window.addEventListener("beforeunload", (event)=>{
+  if(!travailModifieDepuisExport) return;
+  sauvegarderAutoLocalement();
+  event.preventDefault();
+  event.returnValue = "";
+});
 
 function definirStatut(texte, type=""){
   ui.zoneStatut.classList.remove("ok","bad","reset");
@@ -1194,7 +1704,7 @@ function rendreConsigne(){
     <p>${e.objectif}</p>
     <div class="indice">Indice : ${e.indice}</div>
   `;
-  const ong = (e.langage === "HTML") ? "html" : (e.langage === "CSS") ? "css" : "py";
+  const ong = (e.langage === "HTML") ? "html" : (e.langage === "CSS") ? "css" : (e.langage === "Python") ? "py" : "html";
   definirOnglet(ong);
 }
 
@@ -1301,21 +1811,45 @@ function allerEtape(i){
   afficherCode();
   definirStatut("Étape sélectionnée");
   appliquerApercu({ valider:false, messageAuto:false });
+  marquerTravailModifie();
 }
 
 /* Events */
 onglets.forEach(b=> b.addEventListener("click", ()=> definirOnglet(b.dataset.tab)));
-ui.btnAppliquer.addEventListener("click", ()=> appliquerApercu({ valider:true, messageAuto:true }));
-ui.btnReinit.addEventListener("click", reinitialiserEtape);
-ui.btnRetablir.addEventListener("click", retablirEtape);
-ui.btnSuivant.addEventListener("click", etapeSuivante);
+[ui.codeHtml, ui.codeCss, ui.codePy].forEach(zone=>{
+  zone.addEventListener("input", ()=>{
+    collecterCode();
+    marquerTravailModifie();
+  });
+});
+ui.btnAppliquer.addEventListener("click", ()=>{
+  appliquerApercu({ valider:true, messageAuto:true });
+  marquerTravailModifie();
+});
+ui.btnReinit.addEventListener("click", ()=>{
+  reinitialiserEtape();
+  marquerTravailModifie();
+});
+ui.btnRetablir.addEventListener("click", ()=>{
+  retablirEtape();
+  marquerTravailModifie();
+});
+ui.btnSuivant.addEventListener("click", ()=>{
+  etapeSuivante();
+  marquerTravailModifie();
+});
+ui.btnSauvegarder.addEventListener("click", enregistrerTravail);
+ui.btnCharger.addEventListener("click", ()=> ui.inputSauvegarde.click());
+ui.inputSauvegarde.addEventListener("change", ()=> chargerTravailDepuisFichier(ui.inputSauvegarde.files[0]));
 
 /* Init */
 (function init(){
   updateScale();
+  const restauration = proposerRestaurationAuto();
   afficherCode();
   rendreEtapesHaut();
   rendreConsigne();
-  definirStatut("Modifier le code puis cliquer sur Appliquer");
+  if(!restauration) definirStatut("Modifier le code puis cliquer sur Appliquer");
   appliquerApercu({ valider:false, messageAuto:false });
+  sauvegarderAutoLocalement();
 })();
