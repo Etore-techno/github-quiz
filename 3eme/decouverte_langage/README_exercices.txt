@@ -1,56 +1,54 @@
-Atelier Space Défense — progression des exercices
+HTML • CSS • Python — progression des exercices
 
-Structure conservée :
+Structure :
 - éditeur HTML / CSS / Python à gauche ;
 - aperçu du mini-jeu à droite ;
-- validation progressive par étapes.
+- validation progressive par étapes ;
+- mise en page fixe redimensionnée automatiquement.
 
 Objectif final : créer progressivement un mini-jeu inspiré de Space Invaders.
-Le joueur déplace un vaisseau horizontalement, tire des missiles vers le haut et doit empêcher les ennemis d’atteindre le bas de la zone de jeu.
+Le joueur déplace un vaisseau horizontalement, tire des missiles vers le haut et empêche les ennemis d’atteindre le bas de la zone de jeu.
 
-Partie 1 — jeu simple jouable
-1. HTML : remplacer le titre par Space Défense.
-2. HTML : remplacer le paragraphe par la phrase de présentation.
-3. HTML : renommer les boutons Démarrer et Recommencer.
-4. HTML : remplacer le symbole du vaisseau par 🚀.
-5. CSS : agrandir la zone de jeu.
-6. CSS : créer un fond spatial.
-7. CSS : agrandir le vaisseau.
-8. CSS : modifier le style des missiles et des ennemis.
-9. Python : activer le jeu.
-10. Python : fixer le score à atteindre.
-11. Python : donner 3 vies au joueur.
-12. Python : régler la vitesse des missiles.
-13. Python : régler la vitesse des ennemis.
-14. Python : activer l’apparition automatique des ennemis.
+1. HTML 1 — titre du jeu.
+2. HTML 2 — phrase de présentation.
+3. HTML 3 — nom des boutons.
+4. HTML 4 — symbole du vaisseau.
+5. CSS 1 — agrandir fortement la zone de jeu.
+6. CSS 2 — fond spatial.
+7. CSS 3 — taille du vaisseau.
+8. CSS 4 — missiles et ennemis.
+9. Python 1 — activer le jeu.
+10. Python 2 — objectif et vies.
+11. Python 3 — vitesses des tirs et ennemis.
+12. Python 4 — vitesse du vaisseau.
+13. Python 5 — délai entre deux tirs.
+14. Python 6 — apparition des ennemis.
+15. HTML 5 — ajouter les commandes.
+16. CSS 5 — créer et améliorer l’aide.
+17. HTML 6 — ajouter l’affichage du niveau.
+18. CSS 6 — quatre statistiques.
+19. HTML 7 — classe du bloc Niveau.
+20. CSS 7 — style du niveau.
+21. Python 7 — ajouter un deuxième ennemi.
+22. Python 8 — difficulté progressive.
+23. Python 9 — ennemis plus fréquents.
+24. Python 10 — calcul du niveau.
+25. Python 11 — afficher le niveau.
+26. Python 12 — ajouter plusieurs ennemis.
+27. Python 13 — vitesses différentes.
+28. Python 14 — ennemi dangereux.
+29. Python 15 — ennemis qui rapportent plus.
+30. Python 16 — bonus cœur.
+31. CSS 8 — décors selon le niveau.
+32. Python 17 — activer les décors.
+33. Python 18 — messages de niveau.
+34. Python 19 — objectif final.
 
-À la fin de l’étape 14, le jeu est jouable : le joueur peut gagner ou perdre.
-
-Partie 2 — amélioration progressive du jeu
-15. HTML : ajouter une aide indiquant les touches.
-16. CSS : créer la classe de l’aide.
-17. CSS : améliorer l’aide en la centrant et en la mettant en gras.
-18. HTML : ajouter un 4e bloc de statistique pour le niveau, juste après Objectif.
-19. CSS : afficher correctement les 4 blocs de statistique.
-20. HTML : ajouter la classe niveauActuel sur le bloc Niveau.
-21. CSS : créer le style de la classe niveauActuel.
-22. Python : ajouter un deuxième type d’ennemi.
-23. Python : activer la difficulté progressive.
-24. Python : augmenter la vitesse maximale des ennemis.
-25. Python : rendre les ennemis plus fréquents.
-26. Python : calculer le niveau en fonction du score.
-27. Python : afficher le niveau dans le tableau de bord.
-
-Corrections de cette version :
-- l’étape 17 n’utilise plus box-shadow sur .zoneJeu pour éviter l’ambiguïté avec la règle commune .tableauBord, .zoneJeu ;
-- l’étape 18 parle de "bloc de statistique" plutôt que de "carte" ;
-- l’étape 18 accepte l’ajout du bloc Niveau sans exiger la classe niveauActuel ;
-- la classe niveauActuel est demandée dans une étape séparée, plus claire.
-
-
-Corrections v3 :
-- Python 7 : écrire ENNEMIS = ["👾", "🛸"]. Les deux ennemis doivent être dans des guillemets séparés, avec une virgule entre les deux.
-- Python 12 : dans maj_affichage(), remplacer le commentaire par :
-    if niveau_el is not None:
-        niveau_el.textContent = str(calculer_niveau())
-  La ligne if doit être indentée dans la fonction, et la ligne niveau_el doit être encore plus indentée.
+Dernières corrections :
+- les textes de consigne utilisent des guillemets pour mieux voir ce qui doit être écrit exactement ;
+- les anciennes phrases d’avertissement inutiles ont été supprimées des consignes ;
+- la page utilise un conteneur fixe 1920 × 1080 redimensionné automatiquement ;
+- les tailles des textes de l’interface, des pastilles et du mini-jeu ont été augmentées ;
+- les barres de défilement du code sont stylées pour rester visuellement stables avec le zoom ;
+- le bouton Réinitialiser ne bloque pas toute la progression, et le bouton Rétablir permet de récupérer une étape déjà réussie.
+- la colonne du tableau de bord du mini-jeu est plus large, et la zone de jeu est moins large mais beaucoup plus haute après l’exercice CSS 1.

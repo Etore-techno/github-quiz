@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Atelier : HTML • CSS • Python — Space Défense</title>
+  <title>HTML • CSS • Python</title>
   <link rel="stylesheet" href="atelier.css" />
 
   <!-- Brython -->
@@ -12,12 +12,14 @@
 </head>
 
 <body onload="brython({cache:'none'})">
-  <header class="topbar">
-    <h1>Atelier : HTML • CSS • Python — Space Défense</h1>
+  <div id="viewport">
+    <main id="app">
+      <header class="topbar">
+    <h1>HTML • CSS • Python</h1>
     <div class="stepHeader" id="stepHeader"></div>
   </header>
 
-  <div class="grid">
+      <div class="grid">
     <!-- GAUCHE -->
     <section class="panel left">
       <div class="task" id="zoneConsigne"></div>
@@ -43,6 +45,7 @@
       <div class="actions">
         <button id="btnAppliquer">Appliquer</button>
         <button id="btnReinit" class="secondary">Réinitialiser</button>
+        <button id="btnRetablir" class="secondary" disabled>Rétablir</button>
         <button id="btnSuivant" class="secondary" disabled>Suivant</button>
       </div>
 
@@ -58,6 +61,9 @@
         <script id="pythonEleve" type="text/python"></script>
       </div>
     </section>
+  </div>
+
+    </main>
   </div>
 
   <script src="atelier.js"></script>

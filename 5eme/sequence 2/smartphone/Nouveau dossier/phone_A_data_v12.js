@@ -473,7 +473,7 @@ window.PROFILES.A = {
         "bio": "foot • skate • Saint‑Nom‑la‑Bretèche",
         "avatar": "skate.jpg",
         "stats": {
-          "posts": "42",
+          "posts": "43",
           "followers": "193",
           "following": "219"
         },
@@ -623,6 +623,49 @@ window.PROFILES.A = {
             {
               "user": "mathis_g",
               "text": "ah oui j’avais pas fait attention"
+            }
+          ]
+        },
+        {
+          "user": "mathis_g",
+          "date": "{{yesterday:16:42}}",
+          "text": "Dernières semaines devant le collège… bientôt le lycée 😅🎒",
+          "image": "college.jpg",
+          "location": "Devant le collège",
+          "likes": "41",
+          "commentsCount": "8",
+          "comments": [
+            {
+              "user": "sarah.78",
+              "text": "ça va faire bizarre de partir"
+            },
+            {
+              "user": "hugo_sk8",
+              "text": "team lycée l’année prochaine"
+            },
+            {
+              "user": "lea_3e",
+              "text": "profitez des dernières semaines"
+            },
+            {
+              "user": "tom.3e",
+              "text": "on va enfin être grands 😂"
+            },
+            {
+              "user": "ines_78",
+              "text": "nouvelle étape, nouveaux trajets aussi"
+            },
+            {
+              "user": "mathis_g",
+              "text": "j’avoue, ça passe trop vite"
+            },
+            {
+              "user": "clara_78",
+              "text": "on fera une photo le dernier jour"
+            },
+            {
+              "user": "malo78",
+              "text": "faut survivre au brevet d’abord"
             }
           ]
         },
