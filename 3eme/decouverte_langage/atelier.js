@@ -1368,6 +1368,115 @@ const ETAPES = window.ETAPES || [
 ];
 
 /* =========================================================
+   RÉFÉRENCES STRICTES DES ÉTAPES
+   - état avant l'exercice : code validé de l'exercice précédent ;
+   - état après l'exercice : seul résultat accepté, sans modification parasite.
+========================================================= */
+
+let cacheReferencesEtapes = null;
+
+function normaliserCodePourComparaison(texte){
+  return String(texte || "")
+    .replace(/\r\n/g, "\n")
+    .replace(/\r/g, "\n")
+    .replace(/[ \t]+$/gm, "")
+    .trim();
+}
+
+function codesIdentiques(a, b){
+  return normaliserCodePourComparaison(a.html) === normaliserCodePourComparaison(b.html)
+    && normaliserCodePourComparaison(a.css) === normaliserCodePourComparaison(b.css)
+    && normaliserCodePourComparaison(a.py) === normaliserCodePourComparaison(b.py);
+}
+
+function codesDifferents(a, b){
+  const differences = [];
+  if(normaliserCodePourComparaison(a.html) !== normaliserCodePourComparaison(b.html)) differences.push("HTML");
+  if(normaliserCodePourComparaison(a.css) !== normaliserCodePourComparaison(b.css)) differences.push("CSS");
+  if(normaliserCodePourComparaison(a.py) !== normaliserCodePourComparaison(b.py)) differences.push("Python");
+  return differences;
+}
+
+function construireReferencesEtapes(){
+  const refs = [];
+  let courant = cloneCode({ html: HTML_BASE, css: CSS_BASE, py: PY_BASE });
+
+  ETAPES.forEach((e)=>{
+    const avant = cloneCode(courant);
+    let apres = cloneCode(courant);
+
+    if(typeof e.restore === "function"){
+      apres = e.restore(cloneCode(courant));
+    }
+
+    refs.push({ avant: cloneCode(avant), apres: cloneCode(apres) });
+    courant = cloneCode(apres);
+  });
+
+  return refs;
+}
+
+function referencesEtapes(){
+  if(!cacheReferencesEtapes){
+    cacheReferencesEtapes = construireReferencesEtapes();
+  }
+  return cacheReferencesEtapes;
+}
+
+function codeAvantEtape(index){
+  const refs = referencesEtapes();
+  const i = Math.max(0, Math.min(index, refs.length - 1));
+  return cloneCode(refs[i].avant);
+}
+
+function codeApresEtape(index){
+  const refs = referencesEtapes();
+  const i = Math.max(0, Math.min(index, refs.length - 1));
+  return cloneCode(refs[i].apres);
+}
+
+function etapeLibre(index){
+  const e = ETAPES[index];
+  return e && e.langage === "Libre";
+}
+
+function diagnostiquerValidationEtape(){
+  const index = etat.etape;
+  const e = ETAPES[index];
+  const codeCourant = { html: etat.code.html, css: etat.code.css, py: etat.code.py };
+
+  if(etapeLibre(index)){
+    try{
+      return { ok: !!e.verif(codeCourant), message: "Étape réussie" };
+    }catch{
+      return { ok: false, message: "Pas encore : vérifie ton code." };
+    }
+  }
+
+  let modificationDemandeeOK = false;
+  try{
+    modificationDemandeeOK = !!e.verif(codeCourant);
+  }catch{
+    modificationDemandeeOK = false;
+  }
+
+  const attendu = codeApresEtape(index);
+  if(codesIdentiques(codeCourant, attendu)){
+    return { ok: true, message: "Étape réussie" };
+  }
+
+  if(modificationDemandeeOK){
+    const parties = codesDifferents(codeCourant, attendu).join(", ");
+    return {
+      ok: false,
+      message: `La modification demandée est présente, mais un autre changement non demandé a été trouvé${parties ? " dans : " + parties : ""}. Clique sur Réinitialiser pour revenir au code propre de l'exercice précédent.`
+    };
+  }
+
+  return { ok: false, message: "Pas encore : vérifie seulement la modification demandée dans la consigne." };
+}
+
+/* =========================================================
    DOM
 ========================================================= */
 const $ = (id)=> document.getElementById(id);
@@ -1719,12 +1828,7 @@ function scopeCSS(css){
 }
 
 function validerEtape(){
-  const e = ETAPES[etat.etape];
-  try{
-    return e.verif({ html: etat.code.html, css: etat.code.css, py: etat.code.py });
-  }catch{
-    return false;
-  }
+  return diagnostiquerValidationEtape().ok;
 }
 
 function appliquerApercu(options={ valider:true, messageAuto:true }){
@@ -1739,15 +1843,16 @@ function appliquerApercu(options={ valider:true, messageAuto:true }){
   try{ brython({cache:"none"}); }catch(err){ console.error(err); }
 
   if(options.valider){
-    if(validerEtape()){
+    const diagnostic = diagnostiquerValidationEtape();
+    if(diagnostic.ok){
       etat.statut[etat.etape] = ETAT_REUSSI;
       etat.dejaReussi[etat.etape] = true;
-      if(options.messageAuto) definirStatut("Étape réussie", "ok");
+      if(options.messageAuto) definirStatut(diagnostic.message || "Étape réussie", "ok");
     }else{
       if(etat.statut[etat.etape] !== ETAT_REINITIALISE){
         etat.statut[etat.etape] = ETAT_NON_FAIT;
       }
-      if(options.messageAuto) definirStatut("Pas encore", "bad");
+      if(options.messageAuto) definirStatut(diagnostic.message || "Pas encore", "bad");
     }
   }
 
@@ -1757,17 +1862,19 @@ function appliquerApercu(options={ valider:true, messageAuto:true }){
 
 function reinitialiserEtape(){
   collecterCode();
-  const e = ETAPES[etat.etape];
-  if(typeof e.reset === "function"){
-    etat.code = e.reset(etat.code);
-  }
+
+  etat.code = codeAvantEtape(etat.etape);
 
   if(etat.dejaReussi[etat.etape]){
     etat.statut[etat.etape] = ETAT_REINITIALISE;
-    definirStatut("Exercice réinitialisé. Tu peux cliquer sur Rétablir pour remettre la version réussie.", "reset");
+    definirStatut("Les trois codes ont été remis à l'état validé de l'exercice précédent. Tu peux cliquer sur Rétablir pour remettre la version réussie de cet exercice.", "reset");
   }else{
     etat.statut[etat.etape] = ETAT_NON_FAIT;
-    definirStatut("Exercice réinitialisé.");
+    if(etat.etape === 0){
+      definirStatut("Les trois codes ont été remis à l'état de départ.", "reset");
+    }else{
+      definirStatut("Les trois codes ont été remis à l'état validé de l'exercice précédent.", "reset");
+    }
   }
 
   afficherCode();
@@ -1776,12 +1883,9 @@ function reinitialiserEtape(){
 
 function retablirEtape(){
   collecterCode();
-  const e = ETAPES[etat.etape];
   if(!(etat.statut[etat.etape] === ETAT_REINITIALISE && etat.dejaReussi[etat.etape])) return;
 
-  if(typeof e.restore === "function"){
-    etat.code = e.restore(etat.code);
-  }
+  etat.code = codeApresEtape(etat.etape);
 
   etat.statut[etat.etape] = ETAT_REUSSI;
   afficherCode();

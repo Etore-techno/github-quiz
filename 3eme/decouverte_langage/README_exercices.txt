@@ -78,3 +78,10 @@ Corrections supplémentaires :
 - les messages temporaires restent affichés environ 5 secondes ;
 - un message apparaît quand un cœur est touché, quand une vie est perdue, et quand le joueur change de niveau, avec ou sans bonus sans-faute.
 - la progression des exercices a été revérifiée : les changements visuels apparaissent progressivement, avec le jeu jouable avant les niveaux multiples, les cœurs, les décors et les messages.
+
+Correction du bouton Réinitialiser et de la validation stricte :
+- le bouton Réinitialiser remet maintenant les trois codes HTML, CSS et Python dans l’état validé de l’exercice précédent ;
+- il ne corrige plus seulement la partie travaillée dans l’exercice en cours ;
+- la validation vérifie maintenant que le code correspond exactement à l’état attendu après l’exercice ;
+- si la modification demandée est correcte mais qu’un autre changement non demandé a été fait, l’exercice n’est plus validé ;
+- les sauvegardes existantes restent chargeables, car le format général du fichier JSON n’a pas été modifié.
