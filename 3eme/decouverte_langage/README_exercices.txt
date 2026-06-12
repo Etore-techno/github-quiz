@@ -27,7 +27,6 @@ Le joueur déplace un vaisseau horizontalement, tire des missiles vers le haut e
 - les tirs sont moins fréquents pour éviter qu’un appui continu sur Espace balaie tout l’écran ;
 - la vitesse de base des ennemis a été légèrement augmentée ;
 - les ennemis arrivent plus nombreux et descendent un peu plus vite au fil des niveaux ;
-- le bloc Niveau change de couleur et clignote lors d’un changement de niveau ;
 - un cadre d’informations temporaires affiche certains messages pendant environ 5 secondes.
 
 Progression des exercices :
@@ -59,29 +58,28 @@ Progression des exercices :
 26. Python 12 — cinq objectifs de niveau.
 27. Python 13 — cœur à la moitié du niveau.
 28. Python 14 — bonus sans-faute.
-29. CSS 8 — décors et bloc niveau.
-30. Python 15 — activer les décors.
-31. Python 16 — messages temporaires.
-32. Projet libre — personnaliser le jeu.
+29. CSS 8 — décors des niveaux.
+30. CSS 9 — compléter les décors.
+31. Python 15 — activer les décors.
+32. Python 16 — messages temporaires.
+33. Projet libre — personnaliser le jeu.
 
 Dernières corrections :
+- les consignes des exercices 9, 17, 18 et 21 ont été ajustées ;
+- l’ancien exercice 29 est maintenant découpé en deux exercices : création des 5 règles de décor, puis remplacement des valeurs de <code>radial-gradient(...)</code> ;
+- la progression contient maintenant 33 exercices ;
+- les anciennes sauvegardes à 32 ou 34 exercices restent compatibles : elles sont adaptées automatiquement au chargement ;
+- la validation vérifie la modification demandée dans l’exercice ;
+- quand l’élève clique sur Suivant, les trois codes sont remis dans l’état propre officiel de l’exercice réussi ;
+- le bouton Réinitialiser remet les trois codes dans l’état propre de l’exercice précédent ;
+- le dernier exercice reste libre : l’élève peut modifier ce qu’il veut et enregistrer ses personnalisations.
+
+Corrections supplémentaires précédentes :
 - les cadres Score, Vies, Objectif et Niveau s’affichent sur deux lignes ;
 - les cadres d’aide et d’informations sont séparés ;
 - les textes du mini-jeu ont été agrandis ;
-- le dernier exercice est une étape libre : l’élève peut modifier ce qu’il veut ;
-- à l’étape libre, le bouton Réinitialiser remet le code dans l’état de l’exercice précédent ;
-- les sauvegardes enregistrent aussi les modifications libres faites par les élèves.
-
-Corrections supplémentaires :
-- les dimensions de la zone de jeu sont maintenant calculées avec les tailles réelles en pixels CSS, ce qui corrige le déplacement du vaisseau, l’apparition des ennemis et le départ des missiles même quand la page est redimensionnée ;
+- les dimensions de la zone de jeu sont calculées avec les tailles réelles en pixels CSS, ce qui corrige le déplacement du vaisseau, l’apparition des ennemis et le départ des missiles même quand la page est redimensionnée ;
 - la hauteur finale de la zone de jeu est ajustée à 720 px pour rester visible avec les textes agrandis ;
 - les messages temporaires restent affichés environ 5 secondes ;
-- un message apparaît quand un cœur est touché, quand une vie est perdue, et quand le joueur change de niveau, avec ou sans bonus sans-faute.
+- un message apparaît quand un cœur est touché, quand une vie est perdue, et quand le joueur change de niveau, avec ou sans bonus sans-faute ;
 - la progression des exercices a été revérifiée : les changements visuels apparaissent progressivement, avec le jeu jouable avant les niveaux multiples, les cœurs, les décors et les messages.
-
-Correction du bouton Réinitialiser et de la validation stricte :
-- le bouton Réinitialiser remet maintenant les trois codes HTML, CSS et Python dans l’état validé de l’exercice précédent ;
-- il ne corrige plus seulement la partie travaillée dans l’exercice en cours ;
-- la validation vérifie maintenant que le code correspond exactement à l’état attendu après l’exercice ;
-- si la modification demandée est correcte mais qu’un autre changement non demandé a été fait, l’exercice n’est plus validé ;
-- les sauvegardes existantes restent chargeables, car le format général du fichier JSON n’a pas été modifié.

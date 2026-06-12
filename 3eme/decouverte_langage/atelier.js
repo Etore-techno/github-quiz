@@ -55,9 +55,21 @@ const CSS_BASE = window.CSS_BASE || `/* CSS du mini-jeu */
   flex-direction: column;
   min-height: 0;
 }
-.entete{ text-align:center; margin-bottom:8px; flex: 0 0 auto; }
-.zoneTitre{ font-size: 32px; font-weight: 900; margin:0 0 6px; }
-.zoneParagraphe{ font-size: 22px; opacity: .9; margin:0; }
+.entete{
+  text-align:center;
+  margin-bottom:8px;
+  flex: 0 0 auto;
+}
+.zoneTitre{
+  font-size: 32px;
+  font-weight: 900;
+  margin:0 0 6px;
+}
+.zoneParagraphe{
+  font-size: 22px;
+  opacity: .9;
+  margin:0;
+}
 
 .grille{
   flex: 1;
@@ -99,8 +111,15 @@ const CSS_BASE = window.CSS_BASE || `/* CSS du mini-jeu */
   padding: 8px;
   text-align: center;
 }
-.labelStat{ font-size: 19px; opacity:.9; }
-.valeurStat{ font-size: 32px; font-weight: 900; margin-top: 3px; }
+.labelStat{
+  font-size: 19px;
+  opacity:.9;
+}
+.valeurStat{
+  font-size: 32px;
+  font-weight: 900;
+  margin-top: 3px;
+}
 
 .ligneBoutons{
   display: flex;
@@ -132,7 +151,9 @@ button.secondaire{
   opacity: .95;
 }
 
-.zoneExtra:empty{ display:none; }
+.zoneExtra:empty{
+  display:none;
+}
 .zoneExtra{
   margin-top: 0;
   display: flex;
@@ -187,7 +208,9 @@ button.secondaire{
 }
 
 @media (max-width: 900px){
-  .grille{ grid-template-columns: 1fr; }
+  .grille{
+    grid-template-columns: 1fr;
+  }
 }`;
 
 const PY_BASE = `from browser import document, timer, window
@@ -840,11 +863,34 @@ function addCssRule(css, selector, ruleText){
 }
 
 function removeCssRule(css, selector){
-  const re = new RegExp("\\n?\\s*" + escRegExp(selector) + "\\s*\\{[\\s\\S]*?\\}\\s*", "i");
-  return css.replace(re, "\n");
+  const re = new RegExp("\\n?\\s*" + escRegExp(selector) + "\\s*\\{", "i");
+  const match = re.exec(css);
+  if(!match) return css;
+
+  const debut = match.index;
+  const accoladeDebut = css.indexOf("{", debut);
+  if(accoladeDebut < 0) return css;
+
+  let profondeur = 0;
+  let fin = -1;
+  for(let i = accoladeDebut; i < css.length; i++){
+    if(css[i] === "{") profondeur++;
+    if(css[i] === "}"){
+      profondeur--;
+      if(profondeur === 0){
+        fin = i + 1;
+        break;
+      }
+    }
+  }
+  if(fin < 0) return css;
+
+  while(fin < css.length && /\s/.test(css[fin])) fin++;
+  return css.slice(0, debut) + "\n" + css.slice(fin);
 }
 
-function addDecorRules(css){
+
+function addDecorFondRules(css){
   const rules = `.areneJeu.decorNiveau1{
   background: radial-gradient(circle at top, #1a2a52, #050712);
 }
@@ -863,28 +909,102 @@ function addDecorRules(css){
 
 .areneJeu.decorNiveau5{
   background: radial-gradient(circle at top, #123b3a, #050712);
+}`;
+  [".areneJeu.decorNiveau1", ".areneJeu.decorNiveau2", ".areneJeu.decorNiveau3", ".areneJeu.decorNiveau4", ".areneJeu.decorNiveau5"].forEach(sel => { css = removeCssRule(css, sel); });
+  return css.trimEnd() + "\n\n" + rules + "\n";
 }
 
-.niveauActuel.niveau1{ border-color: rgba(47,255,214,.55); }
-.niveauActuel.niveau2{ border-color: rgba(77,163,255,.75); }
-.niveauActuel.niveau3{ border-color: rgba(255,211,110,.80); }
-.niveauActuel.niveau4{ border-color: rgba(255,128,80,.85); }
-.niveauActuel.niveau5{ border-color: rgba(255,59,212,.95); }
+function addDecorFondPlaceholderRules(css){
+  const rules = `.areneJeu.decorNiveau1{
+  background: radial-gradient(...);
+}
 
-.niveauFlash{
+.areneJeu.decorNiveau2{
+  background: radial-gradient(...);
+}
+
+.areneJeu.decorNiveau3{
+  background: radial-gradient(...);
+}
+
+.areneJeu.decorNiveau4{
+  background: radial-gradient(...);
+}
+
+.areneJeu.decorNiveau5{
+  background: radial-gradient(...);
+}`;
+  [".areneJeu.decorNiveau1", ".areneJeu.decorNiveau2", ".areneJeu.decorNiveau3", ".areneJeu.decorNiveau4", ".areneJeu.decorNiveau5"].forEach(sel => { css = removeCssRule(css, sel); });
+  return css.trimEnd() + "\n\n" + rules + "\n";
+}
+
+function removeDecorFondRules(css){
+  [".areneJeu.decorNiveau1", ".areneJeu.decorNiveau2", ".areneJeu.decorNiveau3", ".areneJeu.decorNiveau4", ".areneJeu.decorNiveau5"].forEach(sel => { css = removeCssRule(css, sel); });
+  return css;
+}
+
+function addDecorCouleurRules(css){
+  const rules = `.niveauActuel.niveau1{
+  border-color: rgba(47,255,214,.55);
+}
+
+.niveauActuel.niveau2{
+  border-color: rgba(77,163,255,.75);
+}
+
+.niveauActuel.niveau3{
+  border-color: rgba(255,211,110,.80);
+}
+
+.niveauActuel.niveau4{
+  border-color: rgba(255,128,80,.85);
+}
+
+.niveauActuel.niveau5{
+  border-color: rgba(255,59,212,.95);
+}`;
+  [".niveauActuel.niveau1", ".niveauActuel.niveau2", ".niveauActuel.niveau3", ".niveauActuel.niveau4", ".niveauActuel.niveau5"].forEach(sel => { css = removeCssRule(css, sel); });
+  return css.trimEnd() + "\n\n" + rules + "\n";
+}
+
+function removeDecorCouleurRules(css){
+  [".niveauActuel.niveau1", ".niveauActuel.niveau2", ".niveauActuel.niveau3", ".niveauActuel.niveau4", ".niveauActuel.niveau5"].forEach(sel => { css = removeCssRule(css, sel); });
+  return css;
+}
+
+function addDecorAnimationRules(css){
+  const rules = `.niveauFlash{
   animation: flashNiveau .35s alternate 4;
 }
 
 @keyframes flashNiveau{
-  from{ transform: scale(1); filter: brightness(1); }
-  to{ transform: scale(1.08); filter: brightness(1.9); }
+  from{
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  to{
+    transform: scale(1.08);
+    filter: brightness(1.9);
+  }
 }`;
-  [".areneJeu.decorNiveau1", ".areneJeu.decorNiveau2", ".areneJeu.decorNiveau3", ".areneJeu.decorNiveau4", ".areneJeu.decorNiveau5", ".niveauActuel.niveau1", ".niveauActuel.niveau2", ".niveauActuel.niveau3", ".niveauActuel.niveau4", ".niveauActuel.niveau5", ".niveauFlash", "@keyframes flashNiveau"].forEach(sel => { css = removeCssRule(css, sel); });
+  [".niveauFlash", "@keyframes flashNiveau"].forEach(sel => { css = removeCssRule(css, sel); });
   return css.trimEnd() + "\n\n" + rules + "\n";
 }
 
+function removeDecorAnimationRules(css){
+  [".niveauFlash", "@keyframes flashNiveau"].forEach(sel => { css = removeCssRule(css, sel); });
+  return css;
+}
+
+function addDecorRules(css){
+  css = addDecorFondRules(css);
+  return css;
+}
+
 function removeDecorRules(css){
-  [".areneJeu.decorNiveau1", ".areneJeu.decorNiveau2", ".areneJeu.decorNiveau3", ".areneJeu.decorNiveau4", ".areneJeu.decorNiveau5", ".niveauActuel.niveau1", ".niveauActuel.niveau2", ".niveauActuel.niveau3", ".niveauActuel.niveau4", ".niveauActuel.niveau5", ".niveauFlash", "@keyframes flashNiveau"].forEach(sel => { css = removeCssRule(css, sel); });
+  css = removeDecorFondRules(css);
+  css = removeDecorCouleurRules(css);
+  css = removeDecorAnimationRules(css);
   return css;
 }
 
@@ -1030,7 +1150,7 @@ const ETAPES = window.ETAPES || [
   {
     langage:"HTML", titre:"HTML 3 — nom des boutons",
     objectif:`Dans le HTML, remplace le texte du premier bouton par « <code>Démarrer</code> » et celui du second bouton par « <code>Recommencer</code> ».`,
-    indice:`Cherche <code>id="btnDemarrer"</code> puis <code>id="btnReinitialiser"</code>.`,
+    indice:`Le texte d'un bouton se trouve entre les balises <code>&lt;button ...&gt;</code> et <code>&lt;/button&gt;</code>. Cherche <code>id="btnDemarrer"</code> puis <code>id="btnReinitialiser"</code>.`,
     verif:(c)=> /<button[^>]*id=["']btnDemarrer["'][^>]*>\s*Démarrer\s*<\/button>/i.test(c.html)
       && /<button[^>]*id=["']btnReinitialiser["'][^>]*>\s*Recommencer\s*<\/button>/i.test(c.html),
     restore:(c)=> appliquerModifs(c, [
@@ -1076,8 +1196,8 @@ const ETAPES = window.ETAPES || [
   },
   {
     langage:"CSS", titre:"CSS 4 — ennemis plus faciles à toucher",
-    objectif:`Dans <code>.missile</code>, écris <code>background: #2fffd6;</code> et <code>height: 20px;</code>. Dans <code>.ennemi</code> et <code>.bonus</code>, écris exactement <code>font-size: 64px;</code>.`,
-    indice:`Les ennemis et les cœurs seront environ deux fois plus grands, donc plus faciles à toucher.`,
+    objectif:`Dans <code>.missile</code>, remplace la valeur de <code>background</code> par <code>#2fffd6</code> et la valeur de <code>height</code> par <code>20px</code>. Dans <code>.ennemi</code> et <code>.bonus</code>, remplace la valeur de <code>font-size</code> par <code>64px</code>.`,
+    indice:`Ne crée pas de nouvelle règle : cherche les règles déjà existantes <code>.missile</code>, <code>.ennemi</code> et <code>.bonus</code>, puis remplace seulement les valeurs demandées.`,
     verif:(c)=> /\.missile\s*\{[\s\S]*background\s*:\s*#2fffd6\s*;/i.test(c.css)
       && /\.missile\s*\{[\s\S]*height\s*:\s*20px\s*;/i.test(c.css)
       && /\.ennemi\s*\{[\s\S]*font-size\s*:\s*64px\s*;/i.test(c.css)
@@ -1098,7 +1218,7 @@ const ETAPES = window.ETAPES || [
   {
     langage:"CSS", titre:"CSS 5 — textes du mini-jeu plus grands",
     objectif:`Agrandis les textes du mini-jeu : <code>.zoneTitre</code> à <code>38px</code>, <code>.zoneParagraphe</code> à <code>26px</code>, <code>.labelStat</code> à <code>23px</code>, <code>.valeurStat</code> à <code>40px</code>, <code>button</code> à <code>25px</code>, <code>.messageJeu</code> à <code>25px</code> et <code>.sousTitre</code> à <code>28px</code>.`,
-    indice:`Il y a plusieurs règles CSS à modifier, mais seulement des tailles de police.`,
+    indice:`La taille d'un texte se règle avec la ligne <code>font-size: ...;</code>.`,
     verif:(c)=> /\.zoneTitre\s*\{[\s\S]*font-size\s*:\s*38px\s*;/i.test(c.css)
       && /\.zoneParagraphe\s*\{[\s\S]*font-size\s*:\s*26px\s*;/i.test(c.css)
       && /\.labelStat\s*\{[\s\S]*font-size\s*:\s*23px\s*;/i.test(c.css)
@@ -1181,8 +1301,8 @@ const ETAPES = window.ETAPES || [
   },
   {
     langage:"HTML", titre:"HTML 5 — ajouter l’aide et les messages",
-    objectif:`Dans le HTML, trouve <code>&lt;div id="zoneExtra" class="zoneExtra"&gt;&lt;/div&gt;</code>. Ajoute à l'intérieur l'aide <code>&lt;p class="aideTouches"&gt;← → : déplacer | Espace : tirer&lt;/p&gt;</code> puis un cadre vide <code>&lt;div id="infoJeu" class="infoJeu"&gt;&lt;/div&gt;</code>.`,
-    indice:`L'aide et le message de jeu doivent être dans deux cadres séparés.`,
+    objectif:`Dans le HTML, l'intérieur d'un bloc est ce qui se trouve entre la balise d'ouverture <code>&lt;div ...&gt;</code> et la balise de fermeture <code>&lt;/div&gt;</code>. Dans <code>zoneExtra</code>, ajoute l'aide <code>&lt;p class="aideTouches"&gt;← → : déplacer | Espace : tirer&lt;/p&gt;</code>, puis juste après, encore à l'intérieur de <code>zoneExtra</code>, ajoute le cadre <code>&lt;div id="infoJeu" class="infoJeu"&gt;&lt;/div&gt;</code>.`,
+    indice:`Les deux ajouts doivent être placés entre <code>&lt;div id="zoneExtra"...&gt;</code> et le <code>&lt;/div&gt;</code> qui ferme ce bloc. Ce bloc <code>zoneExtra</code> se trouve juste avant la fin de la section <code>&lt;/section&gt;</code>.`,
     verif:(c)=> /<div[^>]*id=["']zoneExtra["'][^>]*>[\s\S]*<p[^>]*class=["']aideTouches["'][^>]*>\s*← → : déplacer \| Espace : tirer\s*<\/p>[\s\S]*<div[^>]*id=["']infoJeu["'][^>]*class=["']infoJeu["'][^>]*>\s*<\/div>[\s\S]*<\/div>/i.test(c.html),
     restore:(c)=> ({...c, html:addAideTouches(c.html)}),
     reset:(c)=> ({...c, html:removeAideTouches(c.html)}),
@@ -1190,7 +1310,7 @@ const ETAPES = window.ETAPES || [
   {
     langage:"CSS", titre:"CSS 6 — deux cadres pour l’aide et les infos",
     objectif:`Dans le CSS, ajoute une règle <code>.aideTouches</code> et une règle <code>.infoJeu</code>. L'aide doit contenir <code>color: #2fffd6;</code>, <code>text-align: center;</code> et <code>font-weight: 900;</code>. Le cadre info doit contenir <code>font-size: 23px;</code> et <code>font-weight: 800;</code>. Dans <code>.zoneExtra</code>, règle aussi <code>gap: 14px;</code>.`,
-    indice:`Les cadres Aide et Infos de jeu seront séparés plus nettement.`,
+    indice:`Pour ajouter une nouvelle règle CSS, inspire-toi des autres :`,
     verif:(c)=> /\.aideTouches\s*\{[\s\S]*color\s*:\s*#2fffd6\s*;[\s\S]*text-align\s*:\s*center\s*;[\s\S]*font-weight\s*:\s*900\s*;/i.test(c.css)
       && /\.infoJeu\s*\{[\s\S]*font-size\s*:\s*23px\s*;[\s\S]*font-weight\s*:\s*800\s*;/i.test(c.css)
       && /\.zoneExtra\s*\{[\s\S]*gap\s*:\s*14px\s*;/i.test(c.css),
@@ -1227,8 +1347,8 @@ const ETAPES = window.ETAPES || [
   },
   {
     langage:"HTML", titre:"HTML 6 — ajouter l’affichage du niveau",
-    objectif:`Dans <code>ligneStats</code>, ajoute un 4e bloc juste après <code>Objectif</code>. Ce bloc doit contenir exactement le label <code>Niveau</code> et la valeur <code>id="niveauJeu"</code>.`,
-    indice:`Copie un bloc <code>carteStat</code> existant, colle-le après Objectif, puis remplace le label et l'id.`,
+    objectif:`Dans <code>ligneStats</code>, ajoute un 4e bloc <code>carteStat</code> juste après <code>Objectif</code>. Un bloc <code>carteStat</code> commence par une ligne <code>&lt;div class="carteStat"&gt;</code> et finit par une ligne <code>&lt;/div&gt;</code> : il est affiché sur 4 lignes.`,
+    indice:`Remplace le label (texte comme <code>Score</code>, <code>Vie</code> ou <code>Objectif</code>) par <code>Niveau</code> et l'id par <code>niveauJeu</code>.`,
     verif:(c)=> /id=["']objectifJeu["'][\s\S]*<div[^>]*class=["'][^"']*\bcarteStat\b[^"']*["'][^>]*>[\s\S]*Niveau[\s\S]*id=["']niveauJeu["']/i.test(c.html),
     restore:(c)=> ({...c, html:addBlocNiveau(c.html)}),
     reset:(c)=> ({...c, html:removeBlocNiveau(c.html)}),
@@ -1251,8 +1371,7 @@ const ETAPES = window.ETAPES || [
   },
   {
     langage:"Python", titre:"Python 7 — afficher le niveau",
-    objectif:`Dans <code>maj_affichage()</code>, remplace le commentaire <code># Plus tard : afficher le niveau ici.</code> par <code>if niveau_el is not None:</code> puis, à la ligne suivante, <code>niveau_el.textContent = str(calculer_niveau())</code>.`,
-    indice:`Fais cette étape avant les niveaux multiples pour voir le changement de niveau pendant le jeu.`,
+    objectif:`Dans <code>maj_affichage()</code>, remplace le commentaire <code># Plus tard : afficher le niveau ici.</code> par <code>if niveau_el is not None:</code> puis, à la ligne suivante, avec un décalage vers la droite (indentation), <code>niveau_el.textContent = str(calculer_niveau())</code>.`,
     verif:(c)=> /def\s+maj_affichage\s*\([^)]*\)\s*:[\s\S]*if\s+niveau_el\s+is\s+not\s+None\s*:\s*\n\s+niveau_el\.textContent\s*=\s*str\(calculer_niveau\(\)\)/.test(c.py),
     restore:(c)=> ({...c, py:addAffichageNiveau(c.py)}),
     reset:(c)=> ({...c, py:removeAffichageNiveau(c.py)}),
@@ -1331,15 +1450,26 @@ const ETAPES = window.ETAPES || [
     reset:(c)=> appliquerModifs(c, [{type:"pyConst", name:"BONUS_SANS_FAUTE", value:"False"}]),
   },
   {
-    langage:"CSS", titre:"CSS 8 — décors et bloc niveau",
-    objectif:`Dans le CSS, ajoute les règles des décors de niveaux et les couleurs du bloc <code>Niveau</code>. Il faut aussi ajouter <code>.niveauFlash</code> avec une animation <code>flashNiveau</code>.`,
-    indice:`Tu peux utiliser le bouton Rétablir si tu veux remettre automatiquement toutes les règles de décor et de clignotement.`,
-    verif:(c)=> /\.areneJeu\.decorNiveau5\s*\{[\s\S]*#123b3a[\s\S]*#050712[\s\S]*\}/i.test(c.css)
-      && /\.niveauActuel\.niveau5\s*\{[\s\S]*border-color\s*:/i.test(c.css)
-      && /\.niveauFlash\s*\{[\s\S]*animation\s*:\s*flashNiveau/i.test(c.css)
-      && /@keyframes\s+flashNiveau/i.test(c.css),
-    restore:(c)=> ({...c, css:addDecorRules(c.css)}),
-    reset:(c)=> ({...c, css:removeDecorRules(c.css)}),
+    langage:"CSS", titre:"CSS 8 — décors des niveaux",
+    objectif:`Dans le CSS, ajoute tout en bas 5 règles de décor : <code>.areneJeu.decorNiveau1</code> à <code>.areneJeu.decorNiveau5</code>. Dans chaque règle, ajoute une ligne <code>background: radial-gradient(...);</code>.`,
+    verif:(c)=> /\.areneJeu\.decorNiveau1\s*\{[\s\S]*background\s*:\s*radial-gradient\s*\(\s*\.\.\.\s*\)\s*;/i.test(c.css)
+      && /\.areneJeu\.decorNiveau2\s*\{[\s\S]*background\s*:\s*radial-gradient\s*\(\s*\.\.\.\s*\)\s*;/i.test(c.css)
+      && /\.areneJeu\.decorNiveau3\s*\{[\s\S]*background\s*:\s*radial-gradient\s*\(\s*\.\.\.\s*\)\s*;/i.test(c.css)
+      && /\.areneJeu\.decorNiveau4\s*\{[\s\S]*background\s*:\s*radial-gradient\s*\(\s*\.\.\.\s*\)\s*;/i.test(c.css)
+      && /\.areneJeu\.decorNiveau5\s*\{[\s\S]*background\s*:\s*radial-gradient\s*\(\s*\.\.\.\s*\)\s*;/i.test(c.css),
+    restore:(c)=> ({...c, css:addDecorFondPlaceholderRules(c.css)}),
+    reset:(c)=> ({...c, css:removeDecorFondRules(c.css)}),
+  },
+  {
+    langage:"CSS", titre:"CSS 9 — compléter les décors",
+    objectif:`Dans les 5 règles de décor, remplace les points de suspension dans <code>radial-gradient(...)</code> par les valeurs suivantes pour chaque niveau : <code>circle at top, #1a2a52, #050712</code>, puis <code>circle at top, #3a1a52, #050712</code>, <code>circle at top, #523b1a, #050712</code>, <code>circle at top, #5b1828, #050712</code> et pour le niveau 5 : <code>circle at top, #123b3a, #050712</code>.`,
+    verif:(c)=> /\.areneJeu\.decorNiveau1\s*\{[\s\S]*background\s*:\s*radial-gradient\(circle at top,\s*#1a2a52,\s*#050712\)\s*;/i.test(c.css)
+      && /\.areneJeu\.decorNiveau2\s*\{[\s\S]*background\s*:\s*radial-gradient\(circle at top,\s*#3a1a52,\s*#050712\)\s*;/i.test(c.css)
+      && /\.areneJeu\.decorNiveau3\s*\{[\s\S]*background\s*:\s*radial-gradient\(circle at top,\s*#523b1a,\s*#050712\)\s*;/i.test(c.css)
+      && /\.areneJeu\.decorNiveau4\s*\{[\s\S]*background\s*:\s*radial-gradient\(circle at top,\s*#5b1828,\s*#050712\)\s*;/i.test(c.css)
+      && /\.areneJeu\.decorNiveau5\s*\{[\s\S]*background\s*:\s*radial-gradient\(circle at top,\s*#123b3a,\s*#050712\)\s*;/i.test(c.css),
+    restore:(c)=> ({...c, css:addDecorFondRules(c.css)}),
+    reset:(c)=> ({...c, css:addDecorFondPlaceholderRules(c.css)}),
   },
   {
     langage:"Python", titre:"Python 15 — activer les décors",
@@ -1368,9 +1498,9 @@ const ETAPES = window.ETAPES || [
 ];
 
 /* =========================================================
-   RÉFÉRENCES STRICTES DES ÉTAPES
+   RÉFÉRENCES PROPRES DES ÉTAPES
    - état avant l'exercice : code validé de l'exercice précédent ;
-   - état après l'exercice : seul résultat accepté, sans modification parasite.
+   - état après l'exercice : code officiel remis au clic sur Suivant.
 ========================================================= */
 
 let cacheReferencesEtapes = null;
@@ -1445,32 +1575,16 @@ function diagnostiquerValidationEtape(){
   const e = ETAPES[index];
   const codeCourant = { html: etat.code.html, css: etat.code.css, py: etat.code.py };
 
-  if(etapeLibre(index)){
-    try{
-      return { ok: !!e.verif(codeCourant), message: "Étape réussie" };
-    }catch{
-      return { ok: false, message: "Pas encore : vérifie ton code." };
-    }
-  }
-
-  let modificationDemandeeOK = false;
   try{
-    modificationDemandeeOK = !!e.verif(codeCourant);
+    if(!!e.verif(codeCourant)){
+      return { ok: true, message: "Étape réussie" };
+    }
   }catch{
-    modificationDemandeeOK = false;
+    // On laisse le message d'erreur général ci-dessous.
   }
 
-  const attendu = codeApresEtape(index);
-  if(codesIdentiques(codeCourant, attendu)){
-    return { ok: true, message: "Étape réussie" };
-  }
-
-  if(modificationDemandeeOK){
-    const parties = codesDifferents(codeCourant, attendu).join(", ");
-    return {
-      ok: false,
-      message: `La modification demandée est présente, mais un autre changement non demandé a été trouvé${parties ? " dans : " + parties : ""}. Clique sur Réinitialiser pour revenir au code propre de l'exercice précédent.`
-    };
+  if(etapeLibre(index)){
+    return { ok: false, message: "Pas encore : vérifie ton code." };
   }
 
   return { ok: false, message: "Pas encore : vérifie seulement la modification demandée dans la consigne." };
@@ -1569,6 +1683,79 @@ function creerObjetSauvegarde(){
   };
 }
 
+function migrerSauvegardeVersProgressionActuelle(obj, source, statutSource, dejaSource, etapeSource){
+  const nombreAncien = Number.isInteger(obj.nombreEtapes)
+    ? obj.nombreEtapes
+    : (Array.isArray(source.statut) ? source.statut.length : null);
+
+  if(nombreAncien === ETAPES.length){
+    return { statut: statutSource, dejaReussi: dejaSource, etape: etapeSource };
+  }
+
+  const statut = Array(ETAPES.length).fill(ETAT_NON_FAIT);
+  const dejaReussi = Array(ETAPES.length).fill(false);
+  const copier = (ancienIndex, nouveauIndex)=>{
+    if(nouveauIndex < 0 || nouveauIndex >= ETAPES.length) return;
+    statut[nouveauIndex] = statutSource[ancienIndex] || ETAT_NON_FAIT;
+    dejaReussi[nouveauIndex] = !!dejaSource[ancienIndex];
+  };
+
+  // Ancienne version à 32 exercices : l'exercice 29 était un seul exercice CSS décors.
+  if(nombreAncien === 32){
+    for(let i = 0; i <= 27; i++) copier(i, i);
+
+    const ancienDecorReussi = statutSource[28] === ETAT_REUSSI;
+    const ancienDecorStatut = statutSource[28] || ETAT_NON_FAIT;
+    statut[28] = ancienDecorReussi ? ETAT_REUSSI : ancienDecorStatut;
+    dejaReussi[28] = ancienDecorReussi;
+    statut[29] = ancienDecorReussi ? ETAT_REUSSI : ETAT_NON_FAIT;
+    dejaReussi[29] = ancienDecorReussi;
+
+    copier(29, 30);
+    copier(30, 31);
+    copier(31, 32);
+
+    let etape = etapeSource;
+    if(etapeSource <= 27) etape = etapeSource;
+    else if(etapeSource === 28) etape = ancienDecorReussi ? 30 : 28;
+    else if(etapeSource === 29) etape = 30;
+    else if(etapeSource === 30) etape = 31;
+    else if(etapeSource === 31) etape = 32;
+
+    return { statut, dejaReussi, etape };
+  }
+
+  // Version intermédiaire à 34 exercices : les anciens exercices 30 et 31
+  // (bordures + clignotement) sont supprimés dans la progression actuelle.
+  if(nombreAncien === 34){
+    for(let i = 0; i <= 27; i++) copier(i, i);
+
+    const ancienDecorReussi = statutSource[28] === ETAT_REUSSI;
+    const ancienDecorStatut = statutSource[28] || ETAT_NON_FAIT;
+    statut[28] = ancienDecorReussi ? ETAT_REUSSI : ancienDecorStatut;
+    dejaReussi[28] = ancienDecorReussi;
+    statut[29] = ancienDecorReussi ? ETAT_REUSSI : ETAT_NON_FAIT;
+    dejaReussi[29] = ancienDecorReussi;
+
+    copier(31, 30);
+    copier(32, 31);
+    copier(33, 32);
+
+    let etape = etapeSource;
+    if(etapeSource <= 27) etape = etapeSource;
+    else if(etapeSource === 28) etape = ancienDecorReussi ? 30 : 28;
+    else if(etapeSource === 29) etape = 30;
+    else if(etapeSource === 30) etape = 30;
+    else if(etapeSource === 31) etape = 30;
+    else if(etapeSource === 32) etape = 31;
+    else if(etapeSource === 33) etape = 32;
+
+    return { statut, dejaReussi, etape };
+  }
+
+  return { statut: statutSource, dejaReussi: dejaSource, etape: etapeSource };
+}
+
 function normaliserEtatSauvegarde(obj){
   if(!obj || typeof obj !== "object") throw new Error("Fichier de sauvegarde invalide.");
 
@@ -1581,13 +1768,17 @@ function normaliserEtatSauvegarde(obj){
   const py = typeof source.code.py === "string" ? source.code.py : null;
   if(html === null || css === null || py === null) throw new Error("Le fichier ne contient pas les trois codes HTML, CSS et Python.");
 
-  const statut = Array.isArray(source.statut) ? source.statut.slice(0, ETAPES.length) : [];
-  while(statut.length < ETAPES.length) statut.push(ETAT_NON_FAIT);
-
-  const dejaReussi = Array.isArray(source.dejaReussi) ? source.dejaReussi.slice(0, ETAPES.length) : [];
-  while(dejaReussi.length < ETAPES.length) dejaReussi.push(false);
-
+  let statut = Array.isArray(source.statut) ? source.statut.slice() : [];
+  let dejaReussi = Array.isArray(source.dejaReussi) ? source.dejaReussi.slice() : [];
   let etape = Number.isInteger(source.etape) ? source.etape : 0;
+
+  const migration = migrerSauvegardeVersProgressionActuelle(obj, source, statut, dejaReussi, etape);
+  statut = migration.statut.slice(0, ETAPES.length);
+  dejaReussi = migration.dejaReussi.slice(0, ETAPES.length);
+  etape = migration.etape;
+
+  while(statut.length < ETAPES.length) statut.push(ETAT_NON_FAIT);
+  while(dejaReussi.length < ETAPES.length) dejaReussi.push(false);
   etape = Math.max(0, Math.min(ETAPES.length - 1, etape));
 
   return {
@@ -1808,10 +1999,11 @@ function rendreEtapesHaut(){
 
 function rendreConsigne(){
   const e = ETAPES[etat.etape];
+  const blocIndice = e.indice ? `<div class="indice">Indice : ${e.indice}</div>` : "";
   ui.zoneConsigne.innerHTML = `
     <h3>${etat.etape + 1}. ${e.titre}</h3>
     <p>${e.objectif}</p>
-    <div class="indice">Indice : ${e.indice}</div>
+    ${blocIndice}
   `;
   const ong = (e.langage === "HTML") ? "html" : (e.langage === "CSS") ? "css" : (e.langage === "Python") ? "py" : "html";
   definirOnglet(ong);
@@ -1897,6 +2089,9 @@ function etapeSuivante(){
   if(etat.statut[etat.etape] !== ETAT_REUSSI) return;
 
   if(etat.etape < ETAPES.length - 1){
+    if(!etapeLibre(etat.etape)){
+      etat.code = codeApresEtape(etat.etape);
+    }
     etat.etape += 1;
     rendreConsigne();
     afficherCode();
