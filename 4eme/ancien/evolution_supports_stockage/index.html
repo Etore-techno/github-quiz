@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <!-- Viewport identique à tes pages d’origine -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>Accueil — Supports de stockage</title>
+  <link rel="stylesheet" href="style2.css" />
+
+
+</head>
+<body>
+  <div id="portrait-warning">Veuillez tourner votre appareil en mode paysage.</div>
+
+  <div id="cadre-fixe">
+    <div class="total-container">
+      <div class="main-container">
+
+        <!-- Colonne de gauche : 5 onglets (ordre demandé) -->
+        <div class="left-column">
+          <div class="home-icon" onclick="window.location.href='index.html'">
+            <img src="images/home.png" alt="Accueil" title="Retour à l'accueil">
+          </div>
+
+          <div class="thumbnail" data-id="disquette" onclick="afficherTheme('disquette')">
+            <p>Disquette</p>
+          </div>
+          <div class="thumbnail" data-id="cd_dvd_bluray" onclick="afficherTheme('cd_dvd_bluray')">
+            <p>CD / DVD / Blu-ray</p>
+          </div>
+          <div class="thumbnail" data-id="cle_usb" onclick="afficherTheme('cle_usb')">
+            <p>Clé USB</p>
+          </div>
+          <div class="thumbnail" data-id="hdd" onclick="afficherTheme('hdd')">
+            <p>Disque dur (HDD)</p>
+          </div>
+          <div class="thumbnail" data-id="ssd" onclick="afficherTheme('ssd')">
+            <p>SSD</p>
+          </div>
+        </div>
+
+        <!-- Colonne de droite -->
+        <div class="right-column">
+          <!-- Titre principal : change selon accueil / thème -->
+<div class="titre-icone-container">
+  <img id="icon-left" class="titre-icon" src="" alt="Icône gauche">
+  <h1 id="top-title" class="titre-principal">Supports de stockage</h1>
+  <img id="icon-right" class="titre-icon" src="" alt="Icône droite">
+</div>
+
+          <div id="info-panel" class="info-panel">
+            <!-- Accueil : uniquement l’image -->
+           <div id="accueil-visuel" class="image-colonne">
+  <img src="images/accueil/accueil.jpg" alt="Accueil supports de stockage">
+</div>
+
+
+            <!-- Contenu diapo (injecté par JS) -->
+            <div id="bloc-contenu" class="texte-colonne" style="display:none;"></div>
+
+            <!-- Image liée à la partie (1/4, 2/4, 3/4, 4/4) -->
+<div id="bloc-image-diapo" class="image-colonne"></div>
+
+
+            <!-- Flèches (masquées sur accueil et en 1/4 ou 4/4 selon le cas) -->
+            <button id="btn-left"  class="nav-arrow nav-left"  aria-label="Précédent" onclick="prevSlide()">
+  <img src="images/fleche_gauche.png" alt="Précédent">
+</button>
+<button id="btn-right" class="nav-arrow nav-right" aria-label="Suivant" onclick="nextSlide()">
+  <img src="images/fleche_droite.png" alt="Suivant">
+</button>
+
+
+            <!-- Indicateurs (masqués sur accueil) -->
+            <div id="dots" class="nav-dots" aria-hidden="true"></div>
+          </div>
+        </div>
+
+      </div><!-- /.main-container -->
+    </div><!-- /.total-container -->
+  </div><!-- /#cadre-fixe -->
+
+  <!-- Script d’auto-mise à l’échelle/centrage (comme avant) -->
+  <script src="script2.js" defer></script>
+  <!-- Mini-SPA -->
+  <script src="script_home.js" defer></script>
+</body>
+</html>

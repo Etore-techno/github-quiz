@@ -1,0 +1,163 @@
+:root{
+  --bg:#eef3fb;
+  --panel:#ffffff;
+  --line:#cbd5e1;
+  --text:#0f172a;
+  --muted:#475569;
+  --blue:#2563eb;
+  --blue2:#dbeafe;
+  --green:#16a34a;
+  --green2:#dcfce7;
+  --purple:#7c3aed;
+  --purple2:#ede9fe;
+  --red:#dc2626;
+  --red2:#fee2e2;
+  --yellow:#eab308;
+  --shadow:0 12px 28px rgba(15,23,42,.08);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,#eff6ff 0%,#eef2ff 55%,#f8fafc 100%);color:var(--text)}
+.topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;padding:24px 28px;background:#0f172a;color:white}
+.topbar h1{margin:0 0 8px;font-size:38px}
+.topbar p{margin:0;max-width:880px;line-height:1.45;color:#dbeafe;font-size:18px}
+.badge{background:#1d4ed8;color:white;padding:10px 14px;border-radius:999px;font-weight:700;white-space:nowrap}
+.nav{display:flex;gap:10px;flex-wrap:wrap;padding:16px 24px;border-bottom:1px solid #dbeafe;background:rgba(255,255,255,.75);backdrop-filter:blur(8px);position:sticky;top:0;z-index:10}
+.navBtn{border:1px solid #bfdbfe;background:white;color:#1e3a8a;padding:10px 14px;border-radius:14px;font-weight:700;cursor:pointer}
+.navBtn.active{background:#2563eb;color:white;border-color:#2563eb}
+main{padding:24px}
+.activity{display:none}
+.activity.active{display:block}
+.activityHeader{margin-bottom:16px}
+.activityHeader h2{margin:0 0 8px;font-size:32px;color:#0f172a}
+.activityHeader p{margin:0;color:var(--muted);font-size:18px;line-height:1.45}
+.heroCard,.panel{background:var(--panel);border:1px solid #dbeafe;border-radius:24px;box-shadow:var(--shadow)}
+.heroCard{padding:24px}
+.heroCard h2{margin-top:0;font-size:32px}
+.lead{font-size:18px;color:var(--muted)}
+.cardsGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:20px 0}
+.miniCard{background:#f8fbff;border:1px solid #dbeafe;border-radius:18px;padding:18px;display:grid;gap:8px;min-height:110px}
+.miniCard strong{font-size:19px;color:#1e3a8a}
+.teacherNote{background:#f8fafc;border-left:6px solid #3b82f6;border-radius:18px;padding:16px 18px;margin-top:18px}
+.teacherNote h3,.teacherNote h4{margin:0 0 8px}
+.twoCols{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+.threeCols{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.panel{padding:20px}
+.fullWidthPanel{margin-top:18px}
+.panel h3{margin:0 0 10px;font-size:27px;color:#1e3a8a}
+.panel h4{margin:0 0 8px;font-size:21px;color:#0f172a}
+.panel p,.panel li,.panel label,.panel figcaption{font-size:17px;line-height:1.45}
+.panelTitleLine{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;flex-wrap:wrap}
+.smallMuted{color:var(--muted)}
+.mono{font-family:"Courier New",monospace;font-weight:700}
+.binaryIntroList{margin:0 0 14px 0;padding-left:22px}
+.lessonBasics{margin-top:14px}
+.miniLessonBox{background:#f8fbff;border:1px solid #dbeafe;border-radius:20px;padding:16px;display:grid;gap:12px}
+.translationBox{background:#f8fafc;border:1px solid var(--line);border-radius:18px;padding:14px 16px;display:grid;gap:10px}
+
+.signalBuilder,.signalViewer{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-items:end}
+.signalSlot,.viewerSlot{background:#fff;border:1px solid var(--line);border-radius:16px;padding:10px;display:grid;gap:10px;justify-items:center}
+.switchBtn{border:none;border-radius:12px;padding:8px 10px;font-weight:700;cursor:pointer;width:100%}
+.switchBtn.open{background:#e2e8f0;color:#334155}
+.switchBtn.closed{background:#bbf7d0;color:#166534}
+.signalColumn{display:grid;grid-template-rows:1fr 1fr;gap:8px;width:100%;height:120px}
+.signalColumn.static{height:100px}
+.level{border-radius:12px;border:2px solid #cbd5e1;display:flex;align-items:center;justify-content:center;font-weight:800;color:#64748b;background:#f8fafc}
+.level.high.active{background:#bfdbfe;border-color:#2563eb;color:#1d4ed8}
+.level.low.active{background:#e2e8f0;border-color:#64748b;color:#334155}
+.slotBit{font-size:26px}
+.counterBits{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.bitCard{border:2px solid #cbd5e1;background:white;border-radius:18px;padding:12px;display:grid;gap:6px;justify-items:center;cursor:pointer}
+.bitCard.on{background:#dbeafe;border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.bitWeight{font-size:24px;font-weight:800;color:#1e3a8a}
+.bitState{font-size:28px}
+
+.smallBtn,.checkBtn{border:none;border-radius:14px;padding:10px 14px;font-size:16px;font-weight:700;cursor:pointer;background:#2563eb;color:white}
+.smallBtn.secondary{background:#e2e8f0;color:#0f172a}
+.checkBtn{justify-self:start}
+.feedback{min-height:24px;font-weight:700}
+.feedback.ok{color:#15803d}
+.feedback.bad{color:#b91c1c}
+label{display:grid;gap:6px;font-weight:700}
+input,textarea{font:inherit;padding:10px 12px;border:1px solid #cbd5e1;border-radius:12px;width:100%}
+
+.calcCourseStage{display:grid;grid-template-columns:390px 1fr;gap:24px;align-items:start;margin-top:16px}
+.calcUnitLarge{background:linear-gradient(180deg,#dbeafe 0%,#bfdbfe 100%);border:4px solid #1e3a8a;border-radius:28px;padding:16px;box-shadow:0 16px 28px rgba(37,99,235,.18)}
+.calcScreen{background:#ecfccb;border:2px solid #65a30d;border-radius:16px;min-height:72px;padding:12px 14px;display:flex;align-items:center;justify-content:flex-end;font-size:36px;font-weight:800;letter-spacing:2px;color:#3f6212;margin-bottom:12px}
+.calcScreen.big{font-size:32px;min-height:62px;background:#fef9c3;border-color:#ca8a04}
+.largeDisplay{min-height:84px;font-size:42px}
+.keypad{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.calcKey{border:none;border-radius:16px;padding:14px 8px;font-size:26px;font-weight:800;background:#1f2937;color:white;box-shadow:inset 0 -3px 0 rgba(255,255,255,.08),0 6px 10px rgba(15,23,42,.18);cursor:pointer}
+.calcKey.operator{background:#111827}
+.calcKey.plusKey{background:#fb923c}
+.calcKey.func{background:#60a5fa}
+.calcKey.active{outline:4px solid #facc15;transform:scale(1.03)}
+.guidedPad .calcKey{font-size:28px;padding:16px 8px}
+.calcInteriorStage{display:grid;gap:18px}
+.boardSurface{position:relative;min-height:290px;background:radial-gradient(circle at 20% 20%,#1b5e20 0%,#14532d 45%,#0f3f23 100%);border-radius:28px;border:6px solid #334155;overflow:hidden;box-shadow:inset 0 0 0 4px rgba(255,255,255,.07),0 18px 24px rgba(15,23,42,.16)}
+.boardSurface::before{content:'';position:absolute;inset:0;background-image:linear-gradient(90deg,transparent 0 18px,rgba(250,204,21,.06) 18px 19px),linear-gradient(transparent 0 18px,rgba(250,204,21,.05) 18px 19px);background-size:24px 24px;opacity:.35}
+.chip{position:absolute;display:flex;align-items:center;justify-content:center;border-radius:18px;background:#111827;color:white;font-weight:800;box-shadow:0 10px 14px rgba(0,0,0,.3);padding:8px 12px;min-height:68px;min-width:120px;border:3px solid rgba(255,255,255,.15)}
+.chip span{position:relative;z-index:1}
+.chip::before,.chip::after{content:'';position:absolute;left:-14px;right:-14px;height:10px;background:repeating-linear-gradient(90deg,#d4d4d8 0 8px,transparent 8px 14px);opacity:.6}
+.chip::before{top:-6px}.chip::after{bottom:-6px}
+.chipKeyboard{left:30px;top:90px;border-color:#60a5fa}
+.chipCoding{left:215px;top:50px;border-color:#4ade80}
+.chipMemory{left:220px;top:180px;border-color:#a78bfa}
+.chipCpu{right:220px;top:108px;min-width:150px;min-height:86px;border-color:#f87171}
+.chipDisplay{right:40px;top:110px;border-color:#60a5fa}
+.activeChip{box-shadow:0 0 0 6px rgba(255,255,255,.12),0 0 28px currentColor,0 10px 14px rgba(0,0,0,.35);transform:translateY(-2px)}
+.flowLine{position:absolute;height:8px;border-radius:999px;background:#94a3b8;opacity:.35}
+.line1{left:145px;top:122px;width:90px}.line2{left:340px;top:122px;width:80px}.line3{left:345px;top:210px;width:95px;transform:rotate(-28deg)}.line4{right:145px;top:146px;width:85px}
+.calcStatusPanel{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.miniInfo{background:#f8fafc;border:1px solid #cbd5e1;border-radius:16px;padding:12px;font-size:17px}
+.lessonStateRow{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.stepBadge{display:inline-flex;align-items:center;justify-content:center;padding:8px 14px;border-radius:999px;background:#dbeafe;color:#1e3a8a;font-weight:800}
+.guideInstruction{font-size:20px;font-weight:800;color:#0f172a}
+.calcGuideExplanation{margin-top:14px;font-size:18px}
+
+.codeTable{width:100%;border-collapse:collapse;margin-top:10px;font-size:16px}
+.codeTable th,.codeTable td{border:1px solid #cbd5e1;padding:10px 12px;text-align:left}
+.codeTable th{background:#eff6ff;color:#1e3a8a}
+.exercise{display:grid;gap:10px;padding:14px 0;border-top:1px dashed #cbd5e1}
+.exercise:first-child{border-top:none;padding-top:0}
+.codeBlock{background:#0f172a;color:#f8fafc;padding:14px 16px;border-radius:16px;overflow:auto;font-size:18px;line-height:1.45;margin:0}
+.codeBlock.small{font-size:16px}
+.bitmapWrap{display:grid;gap:16px;align-items:start}
+.pixelGrid{display:grid;gap:3px;justify-content:start;background:#e2e8f0;padding:8px;border-radius:14px;width:max-content}
+.grid8{grid-template-columns:repeat(8,28px)}
+.grid5{grid-template-columns:repeat(5,42px)}
+.pixel{width:28px;height:28px;border:none;background:white;border-radius:4px;padding:0}
+.grid5 .pixel{width:42px;height:42px}
+.pixel.on{background:#111827}
+.scanInfo{display:grid;gap:8px;font-size:17px}
+.legend{display:flex;gap:14px;align-items:center;font-size:16px;margin:10px 0 12px}
+.swatch{display:inline-block;width:18px;height:18px;border-radius:4px;border:1px solid #334155;vertical-align:middle;margin-right:6px}
+.swatch.white{background:white}.swatch.black{background:#111827}
+.colorGrid .pixel{border:1px solid #cbd5e1}
+.asciiDemo{display:grid;gap:8px;justify-items:center}
+.binaryChips,.decimalChips,.letterChips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;min-height:50px}
+.arrowDown{font-size:28px;font-weight:900;color:#475569}
+.chipBadge{display:inline-flex;padding:10px 12px;border-radius:12px;background:#e0f2fe;border:1px solid #7dd3fc;font-weight:800}
+.wordResult{font-size:34px;font-weight:900;color:#1e3a8a;min-height:44px}
+.joyLayout{display:grid;grid-template-columns:240px 1fr;gap:20px;align-items:center}
+.joystickPad{position:relative;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,#dbeafe 0%,#93c5fd 60%,#60a5fa 100%);border:4px solid #1d4ed8;box-shadow:inset 0 0 0 10px rgba(255,255,255,.22)}
+.smallJoy{width:190px;height:190px}
+.axis{position:absolute;background:#1d4ed8;opacity:.35}
+.xAxis{left:14px;right:14px;top:50%;height:4px;transform:translateY(-50%)}
+.yAxis{top:14px;bottom:14px;left:50%;width:4px;transform:translateX(-50%)}
+.joystickKnob{position:absolute;width:26px;height:26px;border-radius:50%;background:#111827;border:4px solid white;box-shadow:0 8px 16px rgba(15,23,42,.2)}
+.miniValues{margin-top:8px;font-weight:700}
+footer{padding:18px 24px 28px;text-align:center;color:#64748b}
+
+@media (max-width: 1100px){
+  .twoCols,.threeCols,.calcCourseStage,.joyLayout{grid-template-columns:1fr}
+  .calcUnitLarge{max-width:430px;margin:auto}
+  .calcStatusPanel{grid-template-columns:1fr}
+}
+@media (max-width: 760px){
+  .topbar{padding:18px;display:grid}.topbar h1{font-size:30px}
+  main{padding:14px}.activityHeader h2{font-size:28px}
+  .panel{padding:16px}.panel h3{font-size:24px}
+  .grid8{grid-template-columns:repeat(8,24px)} .pixel{width:24px;height:24px}
+  .grid5{grid-template-columns:repeat(5,36px)} .grid5 .pixel{width:36px;height:36px}
+  .joystickPad{width:220px;height:220px}
+}

@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Codes binaires — Cours, démonstrations et exercices</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>Codes binaires</h1>
+      <p>Comprendre comment des 0 et des 1 peuvent représenter des calculs, des images, du texte et des commandes.</p>
+    </div>
+    <div class="badge">Site local autonome</div>
+  </header>
+
+  <nav class="nav" aria-label="Navigation des activités">
+    <button class="navBtn active" data-target="accueil">Accueil</button>
+    <button class="navBtn" data-target="calculatrice">1. Calculatrice</button>
+    <button class="navBtn" data-target="bitmapNB">2. Bitmap N/B</button>
+    <button class="navBtn" data-target="bitmapCouleur">3. Bitmap couleur</button>
+    <button class="navBtn" data-target="ascii">4. Code ASCII</button>
+    <button class="navBtn" data-target="joystick">5. Stick de manette</button>
+  </nav>
+
+  <main>
+    <section id="accueil" class="activity active">
+      <div class="heroCard">
+        <h2>Parcours proposé</h2>
+        <p class="lead">Chaque activité contient une partie cours, une animation, une zone de manipulation et des exercices corrigés automatiquement.</p>
+        <div class="cardsGrid">
+          <article class="miniCard"><strong>Calculatrice</strong><span>Un code binaire représente une touche.</span></article>
+          <article class="miniCard"><strong>Image noir et blanc</strong><span>Un bit représente un pixel.</span></article>
+          <article class="miniCard"><strong>Image couleur</strong><span>Plusieurs bits représentent une couleur.</span></article>
+          <article class="miniCard"><strong>Texte ASCII</strong><span>Un caractère correspond à un nombre, puis à du binaire.</span></article>
+          <article class="miniCard"><strong>Stick de manette</strong><span>Un capteur fournit deux valeurs numériques.</span></article>
+        </div>
+        <div class="teacherNote">
+          <h3>Idée générale à retenir</h3>
+          <p>Un ordinateur manipule seulement des informations numériques. Selon le contexte, les mêmes 0 et 1 peuvent représenter une touche, un pixel, une lettre, une couleur ou la position d’un capteur.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="calculatrice" class="activity">
+      <div class="activityHeader">
+        <h2>Activité 1 — Simuler une calculatrice</h2>
+        <p>Avant de comprendre la calculatrice, on commence par voir comment circulent des 0 et des 1. Ensuite, on suit pas à pas ce qui se passe quand on tape <span class="mono">3 + 5 =</span>.</p>
+      </div>
+
+      <article class="panel fullWidthPanel">
+        <div class="panelTitleLine">
+          <h3>Avant la calculatrice — comment circulent les 0 et les 1 ?</h3>
+        </div>
+        <p>Dans un circuit numérique simplifié, on distingue deux états : un <strong>niveau bas</strong> (que l’on associe à <span class="mono">0</span>) et un <strong>niveau haut</strong> (que l’on associe à <span class="mono">1</span>). Pour les élèves, on peut retenir :</p>
+        <ul class="binaryIntroList">
+          <li><strong>Interrupteur ouvert</strong> → niveau bas → <span class="mono">0</span></li>
+          <li><strong>Interrupteur fermé</strong> → niveau haut → <span class="mono">1</span></li>
+        </ul>
+
+        <div class="threeCols lessonBasics">
+          <div class="miniLessonBox">
+            <h4>1. Faire circuler un signal numérique</h4>
+            <p>Chaque colonne représente un instant. Clique sur les interrupteurs pour fabriquer une suite de <span class="mono">0</span> et de <span class="mono">1</span>.</p>
+            <div id="signalBuilder" class="signalBuilder"></div>
+            <div class="translationBox">
+              <div><strong>Code binaire :</strong> <span id="signalBinary" class="mono">0000</span></div>
+              <div><strong>Lecture :</strong> <span id="signalReading">niveau bas, niveau bas, niveau bas, niveau bas</span></div>
+            </div>
+          </div>
+
+          <div class="miniLessonBox">
+            <h4>2. Compter en binaire sur 4 bits</h4>
+            <p>Avec 4 bits, on peut coder les nombres de 0 à 15. Clique sur les bits pour allumer ou éteindre les valeurs <span class="mono">8 4 2 1</span>.</p>
+            <div id="counterBits" class="counterBits"></div>
+            <div class="translationBox">
+              <div><strong>Code :</strong> <span id="counterBinary" class="mono">0000</span></div>
+              <div><strong>Calcul :</strong> <span id="counterCalc">0</span></div>
+              <div><strong>Valeur décimale :</strong> <span id="counterValue" class="mono">0</span></div>
+            </div>
+          </div>
+
+          <div class="miniLessonBox">
+            <h4>3. Lire un signal</h4>
+            <p>Observe le signal ci-dessous, puis écris le code binaire correspondant.</p>
+            <div id="readSignal" class="signalViewer"></div>
+            <label>Code binaire <input id="readSignalInput" placeholder="ex : 1010"></label>
+            <button class="checkBtn" data-check="signalRead">Vérifier</button>
+            <p class="feedback" id="signalReadFb"></p>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel fullWidthPanel">
+        <div class="panelTitleLine">
+          <h3>Cours animé — que se passe-t-il dans la calculatrice ?</h3>
+          <div class="lessonStateRow">
+            <span class="stepBadge" id="calcGuideBadge">Étape 1 sur 4</span>
+            <span class="guideInstruction" id="calcGuideInstruction">Tape sur <span class="mono">3</span>.</span>
+          </div>
+        </div>
+        <p class="smallMuted">L’élève doit taper les touches demandées. Après chaque bonne touche, de petites étapes s’enchaînent automatiquement avec un délai de lecture.</p>
+
+        <div class="calcCourseStage">
+          <div class="calcUnitLarge">
+            <div class="calcScreen largeDisplay" id="calcCourseScreen">0</div>
+            <div class="keypad guidedPad" id="calcCoursePad"></div>
+          </div>
+
+          <div class="calcInteriorStage">
+            <div class="boardSurface">
+              <div class="chip chipKeyboard" id="chipKeyboard"><span>Clavier</span></div>
+              <div class="chip chipCoding" id="chipCoding"><span>Codage</span></div>
+              <div class="chip chipMemory" id="chipMemory"><span>Mémoire</span></div>
+              <div class="chip chipCpu" id="chipCpu"><span>Processeur</span></div>
+              <div class="chip chipDisplay" id="chipDisplay"><span>Affichage</span></div>
+              <div class="flowLine line1"></div>
+              <div class="flowLine line2"></div>
+              <div class="flowLine line3"></div>
+              <div class="flowLine line4"></div>
+            </div>
+            <div class="calcStatusPanel">
+              <div class="miniInfo"><strong>Touche en cours :</strong> <span id="calcCurrentKey" class="mono">-</span></div>
+              <div class="miniInfo"><strong>Code binaire :</strong> <span id="calcCurrentBinary" class="mono">-</span></div>
+              <div class="miniInfo"><strong>Mémoire :</strong> <span id="calcCurrentMemory" class="mono">-</span></div>
+              <div class="miniInfo"><strong>Opération :</strong> <span id="calcCurrentExpr" class="mono">-</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="translationBox calcGuideExplanation">
+          <div><strong>Mini-étape :</strong> <span id="calcGuideStepTitle">En attente</span></div>
+          <div><strong>Explication :</strong> <span id="calcGuideText">La calculatrice attend la première touche.</span></div>
+        </div>
+
+        <div class="teacherNote explainNote">
+          <h4>À retenir</h4>
+          <p>La calculatrice ne “comprend” pas directement les symboles comme nous. Elle détecte une touche, associe un code, mémorise les informations, puis le processeur traite le calcul au moment voulu.</p>
+        </div>
+
+        <p>Table de correspondance utilisée dans notre modèle simplifié :</p>
+        <table class="codeTable" id="calcTable"></table>
+      </article>
+
+      <div class="twoCols">
+        <article class="panel manipPanel">
+          <h3>Je teste moi-même</h3>
+          <p>Clique sur les touches pour produire automatiquement le code binaire.</p>
+          <div class="calcScreen big" id="calcLiveScreen"></div>
+          <div class="keypad live" id="calcLivePad"></div>
+          <div class="translationBox">
+            <div><strong>Expression :</strong> <span id="calcLiveExpr" class="mono"></span></div>
+            <div><strong>Code binaire :</strong> <span id="calcLiveBinary" class="mono"></span></div>
+            <div><strong>Résultat :</strong> <span id="calcLiveResult" class="mono"></span></div>
+          </div>
+          <button class="smallBtn secondary" id="calcClearBtn">Effacer</button>
+        </article>
+
+        <article class="panel exercisePanel">
+          <h3>Exercices</h3>
+          <div class="exercise" data-ex="calc1">
+            <p><strong>1.</strong> Décode puis calcule : <span class="mono">0111 1011 0010 1110</span></p>
+            <label>Opération <input id="calcEx1Op" placeholder="ex : 7 - 2 ="></label>
+            <label>Résultat <input id="calcEx1Res" placeholder="ex : 5"></label>
+            <button class="checkBtn" data-check="calc1">Vérifier</button>
+            <p class="feedback" id="calcFb1"></p>
+          </div>
+          <div class="exercise" data-ex="calc2">
+            <p><strong>2.</strong> Décode puis calcule : <span class="mono">0100 1100 0011 1110</span></p>
+            <label>Opération <input id="calcEx2Op" placeholder="ex : 4 × 3 ="></label>
+            <label>Résultat <input id="calcEx2Res" placeholder="ex : 12"></label>
+            <button class="checkBtn" data-check="calc2">Vérifier</button>
+            <p class="feedback" id="calcFb2"></p>
+          </div>
+          <div class="exercise" data-ex="calc3">
+            <p><strong>3.</strong> Code l’opération <span class="mono">8 + 1 =</span> en binaire.</p>
+            <label>Code binaire <input id="calcEx3Code" placeholder="ex : 1000 1010 ..."></label>
+            <button class="checkBtn" data-check="calc3">Vérifier</button>
+            <p class="feedback" id="calcFb3"></p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="bitmapNB" class="activity">
+      <div class="activityHeader">
+        <h2>Activité 2 — Image bitmap noir et blanc</h2>
+        <p>Une image peut être découpée en pixels. En noir et blanc, un seul bit suffit pour coder chaque pixel.</p>
+      </div>
+
+      <div class="twoCols">
+        <article class="panel coursePanel">
+          <h3>Cours</h3>
+          <p>Une image bitmap est une grille de pixels. Dans cet exemple simplifié : <span class="mono">0</span> signifie blanc et <span class="mono">1</span> signifie noir.</p>
+          <p>Le code est lu ligne par ligne. Sur une image 8 × 8, chaque ligne contient 8 bits.</p>
+          <div class="legend"><span class="swatch white"></span>0 = blanc <span class="swatch black"></span>1 = noir</div>
+          <pre class="codeBlock">00011000
+00111100
+01111110
+11011011
+11111111
+00100100
+01000010
+10000001</pre>
+        </article>
+
+        <article class="panel demoPanel">
+          <div class="panelTitleLine">
+            <h3>Démonstration animée</h3>
+            <button class="smallBtn" id="bwDemoBtn">Relancer</button>
+          </div>
+          <div class="bitmapWrap">
+            <div id="bwDemoGrid" class="pixelGrid grid8"></div>
+            <div class="scanInfo">
+              <div>Ligne lue : <span id="bwLine" class="mono">-</span></div>
+              <div>Bit lu : <span id="bwBit" class="mono">-</span></div>
+              <div>Pixel : <span id="bwMeaning" class="mono">-</span></div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="twoCols">
+        <article class="panel manipPanel">
+          <h3>Je teste moi-même</h3>
+          <p>Clique sur les cases pour créer une image 8 × 8. Le code binaire se met à jour automatiquement.</p>
+          <div class="bitmapWrap">
+            <div id="bwEditGrid" class="pixelGrid grid8 interactive"></div>
+            <pre id="bwGeneratedCode" class="codeBlock"></pre>
+          </div>
+          <button class="smallBtn secondary" id="bwClearBtn">Effacer</button>
+        </article>
+
+        <article class="panel exercisePanel">
+          <h3>Exercices</h3>
+          <div class="exercise">
+            <p><strong>1.</strong> Reproduis l’image codée ci-dessous en cliquant sur la grille.</p>
+            <pre class="codeBlock small">01110
+10001
+10101
+10001
+01110</pre>
+            <div id="bwExGrid" class="pixelGrid grid5 interactive"></div>
+            <button class="checkBtn" data-check="bw1">Vérifier</button>
+            <p class="feedback" id="bwFb1"></p>
+          </div>
+          <div class="exercise">
+            <p><strong>2.</strong> Observe le motif puis écris son code binaire.</p>
+            <div id="bwTargetGrid" class="pixelGrid grid5"></div>
+            <label>Code <textarea id="bwEx2Code" rows="5" placeholder="5 lignes de 5 bits"></textarea></label>
+            <button class="checkBtn" data-check="bw2">Vérifier</button>
+            <p class="feedback" id="bwFb2"></p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="bitmapCouleur" class="activity">
+      <div class="activityHeader">
+        <h2>Activité 3 — Image bitmap couleur</h2>
+        <p>Pour coder une couleur, il faut plus d’informations qu’un simple 0 ou 1.</p>
+      </div>
+
+      <div class="twoCols">
+        <article class="panel coursePanel">
+          <h3>Cours</h3>
+          <p>Ici, chaque pixel est codé par un groupe de 3 bits. Avec 3 bits, on peut créer 8 codes différents, donc 8 couleurs dans notre palette simplifiée.</p>
+          <p>Dans une vraie image, on utilise souvent le modèle RVB : rouge, vert, bleu. Chaque pixel contient alors beaucoup plus de bits.</p>
+          <table class="codeTable colorTable" id="colorTable"></table>
+        </article>
+
+        <article class="panel demoPanel">
+          <div class="panelTitleLine">
+            <h3>Démonstration animée</h3>
+            <button class="smallBtn" id="colorDemoBtn">Relancer</button>
+          </div>
+          <div class="bitmapWrap">
+            <div id="colorDemoGrid" class="pixelGrid grid5 colorGrid"></div>
+            <div class="scanInfo">
+              <div>Code lu : <span id="colorCode" class="mono">-</span></div>
+              <div>Couleur : <span id="colorMeaning" class="mono">-</span></div>
+            </div>
+          </div>
+          <pre class="codeBlock small">000 000 010 000 000
+000 010 010 010 000
+010 010 010 010 010
+000 011 011 011 000
+000 011 000 011 000</pre>
+        </article>
+      </div>
+
+      <div class="twoCols">
+        <article class="panel manipPanel">
+          <h3>Je teste moi-même</h3>
+          <p>Clique plusieurs fois sur une case pour changer sa couleur. Le code de l’image est généré automatiquement.</p>
+          <div class="bitmapWrap">
+            <div id="colorEditGrid" class="pixelGrid grid5 colorGrid interactive"></div>
+            <pre id="colorGeneratedCode" class="codeBlock"></pre>
+          </div>
+          <button class="smallBtn secondary" id="colorClearBtn">Effacer</button>
+        </article>
+
+        <article class="panel exercisePanel">
+          <h3>Exercices</h3>
+          <div class="exercise">
+            <p><strong>1.</strong> Reproduis l’image codée ci-dessous.</p>
+            <pre class="codeBlock small">000 100 100 100 000
+100 000 101 000 100
+100 101 101 101 100
+100 000 101 000 100
+000 100 100 100 000</pre>
+            <div id="colorExGrid" class="pixelGrid grid5 colorGrid interactive"></div>
+            <button class="checkBtn" data-check="color1">Vérifier</button>
+            <p class="feedback" id="colorFb1"></p>
+          </div>
+          <div class="exercise">
+            <p><strong>2.</strong> Combien de couleurs différentes peut-on coder avec 3 bits ?</p>
+            <label>Réponse <input id="colorEx2" placeholder="nombre de couleurs"></label>
+            <button class="checkBtn" data-check="color2">Vérifier</button>
+            <p class="feedback" id="colorFb2"></p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="ascii" class="activity">
+      <div class="activityHeader">
+        <h2>Activité 4 — Texte en code ASCII</h2>
+        <p>Un ordinateur associe un nombre à chaque caractère. Ce nombre peut ensuite être écrit en binaire.</p>
+      </div>
+
+      <div class="twoCols">
+        <article class="panel coursePanel">
+          <h3>Cours</h3>
+          <p>Le code ASCII est une table de correspondance entre des caractères et des nombres. Par exemple, la lettre <span class="mono">A</span> correspond au nombre <span class="mono">65</span>, qui s’écrit <span class="mono">01000001</span> en binaire sur 8 bits.</p>
+          <p>Pour décoder un mot, on lit chaque bloc de 8 bits.</p>
+          <table class="codeTable" id="asciiTable"></table>
+        </article>
+
+        <article class="panel demoPanel">
+          <div class="panelTitleLine">
+            <h3>Démonstration animée</h3>
+            <button class="smallBtn" id="asciiDemoBtn">Relancer</button>
+          </div>
+          <div class="asciiDemo">
+            <div class="binaryChips" id="asciiBinaryChips"></div>
+            <div class="arrowDown">↓</div>
+            <div class="decimalChips" id="asciiDecimalChips"></div>
+            <div class="arrowDown">↓</div>
+            <div class="letterChips" id="asciiLetterChips"></div>
+            <div class="wordResult" id="asciiWordResult"></div>
+          </div>
+        </article>
+      </div>
+
+      <div class="twoCols">
+        <article class="panel manipPanel">
+          <h3>Je teste moi-même</h3>
+          <p>Écris un mot en majuscules : le site affiche le code ASCII binaire correspondant.</p>
+          <label>Mot <input id="asciiInput" maxlength="20" placeholder="ex : ROBOT"></label>
+          <div class="translationBox">
+            <div><strong>Décimal :</strong> <span id="asciiLiveDecimal" class="mono"></span></div>
+            <div><strong>Binaire :</strong> <span id="asciiLiveBinary" class="mono"></span></div>
+          </div>
+        </article>
+
+        <article class="panel exercisePanel">
+          <h3>Exercices</h3>
+          <div class="exercise">
+            <p><strong>1.</strong> Décode le mot :</p>
+            <p class="mono">01000011 01001111 01000100 01000101</p>
+            <label>Mot <input id="asciiEx1" placeholder="mot décodé"></label>
+            <button class="checkBtn" data-check="ascii1">Vérifier</button>
+            <p class="feedback" id="asciiFb1"></p>
+          </div>
+          <div class="exercise">
+            <p><strong>2.</strong> Décode le mot :</p>
+            <p class="mono">01000010 01001001 01001110 01000001 01001001 01010010 01000101</p>
+            <label>Mot <input id="asciiEx2" placeholder="mot décodé"></label>
+            <button class="checkBtn" data-check="ascii2">Vérifier</button>
+            <p class="feedback" id="asciiFb2"></p>
+          </div>
+          <div class="exercise">
+            <p><strong>3.</strong> Code le mot <span class="mono">PIXEL</span> en binaire ASCII.</p>
+            <label>Code <input id="asciiEx3" placeholder="8 bits par lettre"></label>
+            <button class="checkBtn" data-check="ascii3">Vérifier</button>
+            <p class="feedback" id="asciiFb3"></p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="joystick" class="activity">
+      <div class="activityHeader">
+        <h2>Activité 5 — Stick de manette de jeu</h2>
+        <p>Un stick ne donne pas seulement une direction. Il fournit deux valeurs numériques : une pour l’axe X et une pour l’axe Y.</p>
+      </div>
+
+      <div class="twoCols">
+        <article class="panel coursePanel">
+          <h3>Cours</h3>
+          <p>Un stick analogique mesure une position. Pour simplifier, on transforme cette position en deux nombres de 0 à 7.</p>
+          <p>Chaque nombre de 0 à 7 peut être codé sur 3 bits. La position du stick est donc représentée par deux codes binaires : un pour X et un pour Y.</p>
+          <table class="codeTable">
+            <tr><th>Valeur</th><th>Binaire sur 3 bits</th></tr>
+            <tr><td>0</td><td class="mono">000</td></tr>
+            <tr><td>1</td><td class="mono">001</td></tr>
+            <tr><td>2</td><td class="mono">010</td></tr>
+            <tr><td>3</td><td class="mono">011</td></tr>
+            <tr><td>4</td><td class="mono">100</td></tr>
+            <tr><td>5</td><td class="mono">101</td></tr>
+            <tr><td>6</td><td class="mono">110</td></tr>
+            <tr><td>7</td><td class="mono">111</td></tr>
+          </table>
+        </article>
+
+        <article class="panel demoPanel">
+          <div class="panelTitleLine">
+            <h3>Démonstration animée</h3>
+            <button class="smallBtn" id="joyDemoBtn">Relancer</button>
+          </div>
+          <div class="joyLayout">
+            <div class="joystickPad" id="joyDemoPad">
+              <div class="axis xAxis"></div>
+              <div class="axis yAxis"></div>
+              <div class="joystickKnob" id="joyDemoKnob"></div>
+            </div>
+            <div class="translationBox">
+              <div><strong>X :</strong> <span id="joyDemoX" class="mono">100</span></div>
+              <div><strong>Y :</strong> <span id="joyDemoY" class="mono">100</span></div>
+              <div><strong>Position :</strong> <span id="joyDemoText" class="mono">centre</span></div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="twoCols">
+        <article class="panel manipPanel">
+          <h3>Je teste moi-même</h3>
+          <p>Déplace le stick virtuel. Les valeurs et les codes binaires changent en direct.</p>
+          <div class="joyLayout">
+            <div class="joystickPad interactiveJoy" id="joyLivePad">
+              <div class="axis xAxis"></div>
+              <div class="axis yAxis"></div>
+              <div class="joystickKnob" id="joyLiveKnob"></div>
+            </div>
+            <div class="translationBox">
+              <div><strong>Valeur X :</strong> <span id="joyLiveXVal" class="mono">4</span> → <span id="joyLiveXBin" class="mono">100</span></div>
+              <div><strong>Valeur Y :</strong> <span id="joyLiveYVal" class="mono">4</span> → <span id="joyLiveYBin" class="mono">100</span></div>
+              <div><strong>Interprétation :</strong> <span id="joyLiveText" class="mono">centre</span></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="panel exercisePanel">
+          <h3>Exercices</h3>
+          <div class="exercise">
+            <p><strong>1.</strong> Code reçu : <span class="mono">X = 111 ; Y = 100</span></p>
+            <label>Le stick est plutôt vers <input id="joyEx1" placeholder="ex : droite"></label>
+            <button class="checkBtn" data-check="joy1">Vérifier</button>
+            <p class="feedback" id="joyFb1"></p>
+          </div>
+          <div class="exercise">
+            <p><strong>2.</strong> Code reçu : <span class="mono">X = 001 ; Y = 001</span></p>
+            <label>Le stick est plutôt vers <input id="joyEx2" placeholder="ex : haut gauche"></label>
+            <button class="checkBtn" data-check="joy2">Vérifier</button>
+            <p class="feedback" id="joyFb2"></p>
+          </div>
+          <div class="exercise">
+            <p><strong>3.</strong> Déplace le stick de la zone ci-dessous pour atteindre : <span class="mono">X = 110 ; Y = 010</span></p>
+            <div class="joystickPad smallJoy interactiveJoy" id="joyExPad">
+              <div class="axis xAxis"></div>
+              <div class="axis yAxis"></div>
+              <div class="joystickKnob" id="joyExKnob"></div>
+            </div>
+            <div class="miniValues">Actuel : X=<span id="joyExX" class="mono">100</span> ; Y=<span id="joyExY" class="mono">100</span></div>
+            <button class="checkBtn" data-check="joy3">Vérifier</button>
+            <p class="feedback" id="joyFb3"></p>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Version 1 — Activités sur les codes binaires. Fonctionne sans connexion Internet une fois les fichiers copiés.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

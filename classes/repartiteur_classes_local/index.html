@@ -1,0 +1,1138 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Répartiteur local de classes v9 – association résultats renforcée</title>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const info = document.getElementById('libStatus');
+      const setInfo = txt => { if (info) info.textContent = txt; };
+      const loadScript = (src, onload, onerror) => {
+        const s = document.createElement('script');
+        s.src = src;
+        s.onload = onload;
+        s.onerror = onerror;
+        document.head.appendChild(s);
+      };
+      if (window.XLSX) {
+        setInfo('Bibliothèque Excel chargée.');
+        return;
+      }
+      // On tente d'abord le CDN pour éviter l'erreur console “xlsx.full.min.js introuvable” quand le fichier local n'est pas présent.
+      loadScript(
+        'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js',
+        () => setInfo('Bibliothèque Excel chargée depuis Internet. Les tableurs restent traités localement dans le navigateur.'),
+        () => loadScript(
+          './xlsx.full.min.js',
+          () => setInfo('Bibliothèque Excel chargée localement.'),
+          () => setInfo('Bibliothèque Excel non chargée : place xlsx.full.min.js dans ce dossier ou utilise une connexion Internet.')
+        )
+      );
+    });
+  </script>
+  <style>
+    :root{
+      --bg:#eef3f8; --panel:#ffffff; --ink:#172033; --muted:#5c6b82; --line:#cdd8e8;
+      --blue:#2457e6; --blue2:#eaf0ff; --good:#0b8548; --warn:#8b5d00; --bad:#b42318;
+      --violet:#6c3fd3; --shadow:0 .5rem 1.4rem rgba(23,32,51,.08); --radius:1rem;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#f7f9fd,var(--bg));color:var(--ink)}
+    header{padding:1.2rem 1.5rem;border-bottom:1px solid var(--line);background:#fff;position:sticky;top:0;z-index:5}
+    h1{margin:0;font-size:1.5rem;line-height:1.2}
+    header p{margin:.35rem 0 0;color:var(--muted)}
+    main{padding:1.2rem;display:grid;grid-template-columns:minmax(24rem,34rem) 1fr;gap:1rem;align-items:start}
+    section{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:1rem;margin-bottom:1rem}
+    h2{font-size:1.05rem;margin:0 0 .8rem;border-bottom:1px solid var(--line);padding-bottom:.6rem}
+    h3{font-size:.96rem;margin:.9rem 0 .45rem;color:#263451}
+    label{display:block;font-weight:650;font-size:.9rem;margin:.65rem 0 .25rem}
+    input[type="file"], input[type="text"], input[type="number"], select, textarea{
+      width:100%;padding:.55rem .65rem;border:1px solid var(--line);border-radius:.55rem;background:#fff;font:inherit;color:var(--ink)
+    }
+    textarea{min-height:10rem;resize:vertical;font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;font-size:.84rem;line-height:1.35}
+    select[multiple]{min-height:10rem}
+    .small{font-size:.82rem;color:var(--muted);line-height:1.35}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}
+    .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.65rem}
+    .row{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+    button{border:0;border-radius:.65rem;padding:.65rem .85rem;font-weight:750;cursor:pointer;background:var(--blue);color:#fff;font:inherit}
+    button.secondary{background:#e8edf6;color:#172033;border:1px solid var(--line)}
+    button.good{background:var(--good)}
+    button.violet{background:var(--violet)}
+    button.bad{background:var(--bad)}
+    button:disabled{opacity:.5;cursor:not-allowed}
+    .pill{display:inline-flex;gap:.25rem;align-items:center;padding:.22rem .5rem;border-radius:999px;background:var(--blue2);color:#1f3d91;font-weight:700;font-size:.8rem;margin:.08rem}
+    .status{padding:.7rem;border-radius:.65rem;background:#f5f7fb;border:1px solid var(--line);white-space:pre-wrap;line-height:1.35}
+    .ok{border-color:#b7e4c7;background:#f1fff6;color:#135c34}.ko{border-color:#ffc6bd;background:#fff4f2;color:#7a1e16}.warn{border-color:#ffd99b;background:#fff8e8;color:#6e4300}
+    table{border-collapse:collapse;width:100%;background:#fff;font-size:.9rem}
+    th,td{border:1px solid var(--line);padding:.42rem .5rem;text-align:left;vertical-align:top}
+    th{background:#edf3ff;position:sticky;top:5.1rem;z-index:2}
+    .table-wrap{max-height:34rem;overflow:auto;border:1px solid var(--line);border-radius:.75rem}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:.7rem;margin:.7rem 0}
+    .card{border:1px solid var(--line);border-radius:.75rem;padding:.7rem;background:#fbfcff}
+    .card strong{display:block;font-size:1.05rem;margin-bottom:.35rem}
+    .mono{font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace}
+    .hidden{display:none!important}
+    .tabs{display:flex;gap:.35rem;flex-wrap:wrap;margin:.5rem 0}
+    .tab{background:#edf1f8;color:#172033;border:1px solid var(--line)}
+    .tab.active{background:var(--blue);color:#fff}
+    .constraint-box{border:1px dashed var(--line);border-radius:.75rem;padding:.7rem;margin:.6rem 0;background:#fbfcff}
+    .progress{height:.85rem;background:#e8edf6;border-radius:999px;overflow:hidden;border:1px solid var(--line);margin:.55rem 0}
+    .bar{height:100%;width:0%;background:linear-gradient(90deg,var(--blue),var(--violet));transition:width .1s linear}
+    .weights input{padding:.35rem .45rem}
+    footer{padding:0 1.3rem 1.3rem;color:var(--muted);font-size:.85rem}
+    @media(max-width:68rem){main{grid-template-columns:1fr}th{top:0}}
+  </style>
+</head>
+<body>
+<header>
+  <h1>Répartiteur local de classes v9 – association résultats renforcée</h1>
+  <p>Les fichiers sont lus dans le navigateur. Les noms et résultats ne sont pas envoyés à ChatGPT ni à un serveur par cette page.</p>
+  <p id="libStatus" class="small">Bibliothèque Excel : tentative de chargement local.</p>
+</header>
+<main>
+  <aside>
+    <section>
+      <h2>1. Fichiers</h2>
+      <label>Liste des futurs élèves (.xlsx, .xls, .ods)</label>
+      <input type="file" id="studentsFile" accept=".xlsx,.xls,.ods" />
+      <label>Résultats / punitions / sanctions facultatif (.xlsx, .xls, .ods)</label>
+      <input type="file" id="resultsFile" accept=".xlsx,.xls,.ods" />
+      <p class="small">La liste des futurs élèves reste la référence. Les élèves uniquement présents dans les résultats sont ignorés.</p>
+      <div id="fileStatus" class="status small">Aucun fichier chargé.</div>
+    </section>
+
+    <section>
+      <h2>2. Colonnes détectées</h2>
+      <div class="grid2">
+        <div><label>Nom</label><select id="colNom"></select></div>
+        <div><label>Prénom</label><select id="colPrenom"></select></div>
+        <div><label>Sexe</label><select id="colSexe"></select></div>
+        <div><label>Classe d'origine</label><select id="colOrigine"></select></div>
+        <div><label>Allemand / ALLD</label><select id="colAlld"></select></div>
+        <div><label>Latin</label><select id="colLatin"></select></div>
+      </div>
+      <h3>Résultats facultatifs</h3>
+      <p class="small">Si le fichier résultats contient une seule colonne du type “Élèves” avec NOM Prénom, sélectionne cette colonne dans “Nom résultats” et laisse “Prénom résultats” sur —.</p>
+      <div class="grid2">
+        <div><label>Nom résultats / Élèves</label><select id="resNom"></select></div>
+        <div><label>Prénom résultats (laisser — si nom complet)</label><select id="resPrenom"></select></div>
+        <div><label>Moyenne</label><select id="resMoy"></select></div>
+        <div><label>Punitions</label><select id="resPun"></select></div>
+        <div><label>Sanctions</label><select id="resSan"></select></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>3. Paramètres de classes</h2>
+      <div class="grid2">
+        <div><label>Classes</label><input id="classNames" type="text" value="5e1, 5e2, 5e3, 5e4, 5e5" /></div>
+        <div><label>Itérations d'optimisation</label><input id="iterations" type="number" min="1000" max="3000000" step="1000" value="250000" /></div>
+      </div>
+      <label><input type="checkbox" id="addSpanish" checked /> Ajouter une colonne “Espagnol” pour les élèves ne faisant pas allemand</label>
+      <div class="constraint-box">
+        <h3>Élèves faisant allemand + latin</h3>
+        <p class="small">Ces élèves sont traités comme une contrainte forte : ils ne peuvent aller que dans les classes cochées. La classe par défaut est utilisée en priorité, sauf si cela empêche de respecter les quotas.</p>
+        <label>Classes autorisées</label>
+        <div id="alldLatinAllowedBox" class="checkgrid"></div>
+        <label>Classe par défaut / préférée</label>
+        <select id="alldLatinPreferred"></select>
+        <input id="alldLatinClasses" type="hidden" value="5e1, 5e2" />
+      </div>
+      <label>Quotas / effectifs obligatoires ou très forts</label>
+      <textarea id="quotas">5e1: alld=9; latin=7; effectif=26
+5e2: alld=9; latin=7; effectif=26
+5e3: latin=7; effectif=27
+5e4: effectif=26
+5e5: effectif=26</textarea>
+      <p class="small">Exemples : <span class="mono">5e1: alld=9; latin=7</span> ou <span class="mono">5e3: effectif=27</span>. Ces écarts sont très fortement pénalisés.</p>
+    </section>
+
+    <section>
+      <h2>4. Contraintes par sélection</h2>
+      <div class="constraint-box">
+        <label>Rechercher un élève</label>
+        <input id="studentSearch" type="text" placeholder="Tape quelques lettres du nom ou prénom" />
+        <select id="studentPick" multiple size="9"></select>
+        <div class="row" style="margin-top:.55rem">
+          <button id="addSeparate" class="secondary">Ajouter à séparer</button>
+          <button id="addTogether" class="secondary">Ajouter ensemble</button>
+        </div>
+        <div class="grid2">
+          <div><label>Classe imposée</label><select id="forcedClass"></select></div>
+          <div style="display:flex;align-items:end"><button id="addForced" class="secondary" style="width:100%">Imposer cette classe</button></div>
+        </div>
+      </div>
+      <div class="constraint-box">
+        <h3>Mettre un élève avec au moins un autre</h3>
+        <label>Élève principal</label><select id="oneTarget"></select>
+        <label>Choix possibles</label>
+        <input id="choiceSearch" type="text" placeholder="Filtrer les choix" />
+        <select id="oneChoices" multiple size="6"></select>
+        <button id="addWithOne" class="secondary" style="margin-top:.55rem">Ajouter la contrainte “avec un de ces élèves”</button>
+      </div>
+      <p class="small">Les boutons ajoutent une ligne avec les noms exacts lus dans le fichier. Tu peux aussi modifier le texte manuellement.</p>
+    </section>
+
+    <section>
+      <h2>5. Liste des contraintes</h2>
+      <textarea id="constraints">CLASSE 5e3: Trit Stanislas; Farges Aimé; Pallard Aurelien
+
+SEPARER: Nahel Lotfi; Enzo Persyn
+SEPARER: Candat Lenny; Petitcollo Gabin; Suzzi Eliott; Szkulnik Valentin; Wilson Sacha
+SEPARER: Moreno Nina; Moreno Leonardo
+SEPARER: Blasco Louise; Petitcollo Gabin; Evenn Aveline
+SEPARER: Termeche Farid; Boumeddane Noham; Ben Gaida Salim
+SEPARER: Termeche Farid; Santos Rodriguez Beatrice
+SEPARER: Gugger Gabin; Homo Simon; Passo Matthis; Rusu Luca; Fandom Mathis
+SEPARER: Eliot Revise; Bablon Robin; Roulland Maxime; Michel Marius
+SEPARER: Audrain Sandro; Fouques Tom; Lourenco Pablo
+SEPARER: Weil-Chastel Paul; Michel Marius
+SEPARER: Bablon Robin; Skotarek Sybille
+SEPARER: Le Sage Orso; Pierard Thomas
+SEPARER: Petitcollo Gabin; Pierard Thomas
+
+ENSEMBLE: Crouillere Alix; Crouillere Julie
+ENSEMBLE: Blasco Louise; Chevet Giulia
+ENSEMBLE: Erner Julia; Skotarek Sibylle; Beon Violaine
+ENSEMBLE: Travaillé Stella; Edih Eva
+ENSEMBLE: Croizier Thea; Debled Elise
+ENSEMBLE: Nicolas Charline; Voskanovi Elisabeth
+ENSEMBLE: Zaccherini Maelys; Lopes Eva
+AVEC_UN: Revise Elliot | Cormier Arthur; Erner Julia</textarea>
+      <div class="row" style="margin-top:.65rem">
+        <button id="checkBtn" class="secondary">Vérifier les noms et contraintes</button>
+        <button id="runBtn">Lancer l'optimisation longue</button>
+        <button id="stopBtn" class="bad" disabled>Arrêter</button>
+        <button id="exportBtn" class="good" disabled>Exporter Excel</button>
+      </div>
+      <div class="progress hidden" id="progressWrap"><div class="bar" id="progressBar"></div></div>
+    </section>
+  </aside>
+
+  <section>
+    <h2>Résultat</h2>
+    <div id="runStatus" class="status">Charge les fichiers, vérifie les colonnes, puis lance l’optimisation.</div>
+    <div id="summary" class="cards"></div>
+    <div id="warnings" class="status warn hidden"></div>
+    <div class="tabs hidden" id="tabs"></div>
+    <div class="table-wrap hidden" id="tableWrap"><table id="resultTable"></table></div>
+  </section>
+</main>
+<footer>
+  Pour un usage totalement hors connexion, place <span class="mono">xlsx.full.min.js</span> dans ce dossier. Sans ce fichier, la page peut charger SheetJS depuis Internet, mais les tableurs restent traités localement dans ton navigateur.
+</footer>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  let studentWB=null, studentSheetName='', studentRows=[], studentHeaders=[];
+  let resultRows=[], resultHeaders=[];
+  let students=[], resultIndex=new Map(), lastSolution=null, abortRun=false;
+  let resultLinkInfo={count:0, total:0, source:'aucune'};
+  let currentDisplayedClass=null;
+  const selectIds = ['colNom','colPrenom','colSexe','colOrigine','colAlld','colLatin','resNom','resPrenom','resMoy','resPun','resSan'];
+
+  const avg = arr => arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : null;
+  const sum = arr => arr.reduce((a,b)=>a+b,0);
+  const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+  const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+  function norm(s){
+    return String(s ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()
+      .replace(/[’']/g,' ').replace(/[-_./()]/g,' ').replace(/[^a-z0-9 ]/g,' ')
+      .replace(/\s+/g,' ').trim();
+  }
+  function keyNoSpace(s){return norm(s).replace(/\s+/g,'');}
+  function pretty(v){return String(v ?? '').trim();}
+  function isFilled(v){
+    const s=norm(v);
+    return !!s && !['non','n','false','0','nan','undefined','aucun',''].includes(s);
+  }
+  function num(v){
+    if(v===null || v===undefined || v==='') return null;
+    if(typeof v === 'number') return Number.isFinite(v) ? v : null;
+    const n = Number(String(v).replace(',', '.').replace(/[^0-9.\-]/g,''));
+    return Number.isFinite(n) ? n : null;
+  }
+  function sexVal(v){
+    const s=norm(v);
+    if(['f','fille','feminin','mme','mlle'].includes(s) || s.startsWith('f')) return 'F';
+    if(['m','garcon','masculin','mr'].includes(s) || s.startsWith('m') || s.startsWith('g')) return 'M';
+    return '?';
+  }
+  function parseClassNames(){return $('classNames').value.split(',').map(x=>x.trim()).filter(Boolean);}
+  function downloadName(){
+    const prefix = parseClassNames()[0]?.replace(/[^a-zA-Z0-9éèêëàâîïôöùûüç_-]/g,'') || 'classes';
+    return `repartition_${prefix}_optimisee.xlsx`;
+  }
+  function setStatus(el, txt, cls=''){ el.className = 'status ' + cls; el.textContent = txt; }
+  function fillSelect(id, headers, preferred, fallbackIndex=null){
+    const sel=$(id); sel.innerHTML='';
+    const opt0=document.createElement('option'); opt0.value=''; opt0.textContent='—'; sel.appendChild(opt0);
+    headers.forEach((h,i)=>{
+      const o=document.createElement('option');
+      o.value=String(h);
+      o.textContent=String(h || `Colonne ${i+1}`);
+      sel.appendChild(o);
+    });
+    let wanted='';
+    if(preferred){
+      wanted = headers.find(h => preferred.some(p => norm(h).includes(p))) || '';
+    }
+    if(!wanted && fallbackIndex!==null && headers[fallbackIndex]!==undefined){
+      wanted = headers[fallbackIndex];
+    }
+    if(wanted!=='' && wanted!==undefined && wanted!==null) sel.value = String(wanted);
+  }
+  function refreshClassSelects(){
+    const classes=parseClassNames();
+    ['forcedClass','alldLatinPreferred'].forEach(id=>{
+      const sel=$(id); if(!sel) return;
+      const old=sel.value; sel.innerHTML='';
+      classes.forEach(c=>{const o=document.createElement('option'); o.value=c; o.textContent=c; sel.appendChild(o);});
+      if(classes.includes(old)) sel.value=old;
+      else if(id==='alldLatinPreferred' && classes.includes('5e1')) sel.value='5e1';
+      else if(classes.length) sel.value=classes[0];
+    });
+    const box=$('alldLatinAllowedBox');
+    if(box){
+      const previous = new Set(
+        ($('alldLatinClasses')?.value || '')
+          .split(',')
+          .map(x=>x.trim())
+          .filter(Boolean)
+      );
+      box.innerHTML='';
+      classes.forEach(c=>{
+        const lab=document.createElement('label');
+        const cb=document.createElement('input');
+        cb.type='checkbox'; cb.value=c; cb.className='alldLatinAllowed';
+        cb.checked = previous.size ? previous.has(c) : (c==='5e1' || c==='5e2');
+        cb.addEventListener('change', syncAlldLatinAllowedInput);
+        lab.appendChild(cb); lab.appendChild(document.createTextNode(c)); box.appendChild(lab);
+      });
+      syncAlldLatinAllowedInput();
+    }
+  }
+  function syncAlldLatinAllowedInput(){
+    const checked=[...document.querySelectorAll('.alldLatinAllowed:checked')].map(cb=>cb.value);
+    if($('alldLatinClasses')) $('alldLatinClasses').value=checked.join(', ');
+    const pref=$('alldLatinPreferred');
+    if(pref && checked.length && !checked.includes(pref.value)) pref.value=checked[0];
+    lastSolution=null; if($('exportBtn')) $('exportBtn').disabled=true;
+  }
+  function getAlldLatinConfig(classes){
+    let allowed=[...document.querySelectorAll('.alldLatinAllowed:checked')].map(cb=>cb.value).filter(c=>classes.includes(c));
+    if(!allowed.length){
+      allowed=($('alldLatinClasses')?.value || '').split(',').map(x=>x.trim()).filter(c=>classes.includes(c));
+    }
+    if(!allowed.length && classes.includes('5e1')) allowed=['5e1'];
+    const preferredRaw=$('alldLatinPreferred')?.value || '5e1';
+    const preferred=(classes.includes(preferredRaw) && (!allowed.length || allowed.includes(preferredRaw))) ? preferredRaw : (allowed[0] || null);
+    return {allowed:[...new Set(allowed)], preferred};
+  }
+
+  async function readWorkbook(file){
+    if(!window.XLSX) throw new Error('La bibliothèque Excel SheetJS n’est pas encore chargée.');
+    const data = await file.arrayBuffer();
+    return XLSX.read(data, {type:'array', cellDates:true, cellStyles:true});
+  }
+  function makeUniqueHeaders(rawHeaders){
+    const headers=[]; const seen=new Map();
+    rawHeaders.forEach((h,i)=>{
+      let label=pretty(h);
+      // Cas fréquent dans les exports : la colonne Nom n'a pas d'en-tête, mais la colonne suivante s'appelle Prénom.
+      if(!label && i===0 && rawHeaders[1] && norm(rawHeaders[1]).includes('prenom')) label='Nom';
+      if(!label) label=`Colonne ${i+1}`;
+      let final=label;
+      const n=(seen.get(final)||0)+1; seen.set(final,n);
+      if(n>1) final=`${label} (${n})`;
+      headers.push(final);
+    });
+    return headers;
+  }
+  function rowNonEmptyCount(row){return row.filter(v=>pretty(v)!=='').length;}
+  function headerRowScore(row){
+    const non=rowNonEmptyCount(row); if(!non) return -9999;
+    let score=non;
+    const keys=['eleve','eleves','nom','prenom','moy','moyenne','punition','punitions','sanction','sanctions','sexe','classe','division','latin','alld','allemand'];
+    for(const cell of row){
+      const n=norm(cell);
+      if(!n) continue;
+      if(keys.some(k=>n.includes(k))) score+=12;
+      // Une ligne de données du type NOM Prénom 15.2 - - ne doit pas devenir une ligne d'en-têtes.
+      if(/^[0-9]+([,.][0-9]+)?$/.test(String(cell).trim())) score-=3;
+    }
+    return score;
+  }
+  function detectHeaderRow(aoa){
+    let best=0, bestScore=-9999;
+    const limit=Math.min(20, aoa.length);
+    for(let i=0;i<limit;i++){
+      const sc=headerRowScore(aoa[i]||[]);
+      if(sc>bestScore){best=i; bestScore=sc;}
+    }
+    return best;
+  }
+  function sheetRows(wb){
+    const name=wb.SheetNames[0];
+    const sheet=wb.Sheets[name];
+    // Lecture brute plus fiable que sheet_to_json automatique, surtout pour les .ods avec lignes vides.
+    const aoa=XLSX.utils.sheet_to_json(sheet,{header:1, defval:'', raw:false, blankrows:false});
+    if(!aoa.length) return {name, sheet, rows:[], headers:[]};
+    const headerIndex=detectHeaderRow(aoa);
+    const rawHeader=aoa[headerIndex] || [];
+    const maxCols=Math.max(rawHeader.length, ...aoa.slice(headerIndex+1).map(r=>r.length));
+    const paddedHeader=Array.from({length:maxCols},(_,i)=>rawHeader[i] ?? '');
+    const headers=makeUniqueHeaders(paddedHeader);
+    const rows=[];
+    for(const arr of aoa.slice(headerIndex+1)){
+      if(!arr || rowNonEmptyCount(arr)===0) continue;
+      const obj={};
+      headers.forEach((h,i)=>{ obj[h]=arr[i] ?? ''; });
+      rows.push(obj);
+    }
+    return {name, sheet, rows, headers, headerIndex};
+  }
+  function refreshFileStatus(){
+    const linked = students.filter(s=>s.hasResult).length;
+    const detail = resultRows.length ? `
+Colonne résultats utilisée : ${resultLinkInfo.source || 'non trouvée'}` : '';
+    const headersInfo = resultRows.length && linked===0 ? `
+Colonnes résultats détectées : ${resultHeaders.join(' | ') || 'aucune'}` : '';
+    const cls = students.length ? (resultRows.length && linked===0 ? 'warn' : 'ok') : '';
+    setStatus($('fileStatus'), `Liste élèves : ${studentRows.length} lignes
+Résultats : ${resultRows.length} lignes
+Élèves avec résultats associés : ${linked}/${students.length}${detail}${headersInfo}`, cls);
+  }
+
+  function looksLikeResultNameHeader(h){
+    const n=norm(h);
+    return ['eleve','eleves','élève','élèves','nom','noms','identite','identites'].some(k=>n.includes(norm(k)));
+  }
+  function makeResultRecord(row){
+    const rm=$('resMoy').value, rpu=$('resPun').value, rs=$('resSan').value;
+    return {avg:num(row[rm]), pun:num(row[rpu])||0, san:num(row[rs])||0, raw:row};
+  }
+  function makeResultResolver(baseStudents){
+    const map=new Map();
+    const add=(key,s)=>{
+      const k=norm(key); if(!k) return;
+      const keys=[k,keyNoSpace(k)].filter(Boolean);
+      for(const kk of keys){
+        if(!map.has(kk)) map.set(kk, []);
+        const arr=map.get(kk);
+        if(!arr.some(x=>x.idx===s.idx)) arr.push(s);
+      }
+    };
+    for(const s of baseStudents){
+      [s.id,s.alt,s.nospace,s.altNospace].forEach(k=>add(k,s));
+      for(const a of studentAliases(s)) add(a,s);
+    }
+    const unique=arr=>{
+      const out=[];
+      for(const x of arr||[]) if(!out.some(y=>y.idx===x.idx)) out.push(x);
+      return out;
+    };
+    function direct(text){
+      const k=norm(text), nk=keyNoSpace(text);
+      if(!k) return null;
+      const hits=unique([...(map.get(k)||[]), ...(map.get(nk)||[])]);
+      return hits.length===1 ? hits[0] : null;
+    }
+    return function resolveResultText(text){
+      const raw=pretty(text); if(!raw) return null;
+      let st=direct(raw); if(st) return st;
+      const parts=nameTokens(raw);
+      if(parts.length>=2){
+        st=direct([...parts].reverse().join(' ')); if(st) return st;
+        // Si la cellule contient aussi des notes ou symboles après le nom, on teste les premiers morceaux.
+        for(const take of [2,3,4]){
+          if(parts.length>=take){
+            st=direct(parts.slice(0,take).join(' ')); if(st) return st;
+            st=direct(parts.slice(0,take).reverse().join(' ')); if(st) return st;
+          }
+        }
+      }
+      // Noms composés ou doubles : autorise le premier nom de famille + prénom,
+      // mais uniquement si une seule correspondance est possible.
+      const k=norm(raw), nk=keyNoSpace(raw);
+      if(k.length>=6){
+        const matches=[];
+        for(const s of baseStudents){
+          const aliases=[...new Set([s.id,s.alt,...studentAliases(s)])];
+          if(aliases.some(a=>{
+            const na=norm(a), nsa=keyNoSpace(na);
+            return (na.length>=6 && (na.includes(k)||k.includes(na))) || (nsa.length>=6 && (nsa.includes(nk)||nk.includes(nsa)));
+          })) matches.push(s);
+        }
+        if(matches.length===1) return matches[0];
+      }
+      // Correction orthographique légère, utilisée seulement si elle est vraiment unique.
+      let best=null, bestD=999, tied=false;
+      for(const s of baseStudents){
+        const aliases=[...new Set([s.id,s.alt,s.nospace,s.altNospace,...studentAliases(s)])];
+        for(const a of aliases){
+          const d=Math.min(levenshtein(k,a), levenshtein(nk,keyNoSpace(a)));
+          const limit = k.length<=8 ? 1 : (k.length<=14 ? 2 : 3);
+          if(d<=limit){
+            if(d<bestD){bestD=d; best=s; tied=false;}
+            else if(d===bestD && best && best.idx!==s.idx){tied=true;}
+          }
+        }
+      }
+      return (!tied && best) ? best : null;
+    };
+  }
+  function resultCandidateText(row, cand){
+    if(!cand) return '';
+    if(cand.type==='pair'){
+      const nom=pretty(row[cand.nom]);
+      const pre=pretty(row[cand.prenom]);
+      return `${nom} ${pre}`.replace(/\s+/g,' ').trim();
+    }
+    if(cand.type==='allText'){
+      return Object.values(row).map(pretty).filter(Boolean).join(' ');
+    }
+    return pretty(row[cand.header]);
+  }
+  function detectResultNameCandidate(baseStudents){
+    const resolve=makeResultResolver(baseStudents);
+    const rn=$('resNom').value, rp=$('resPrenom').value;
+    const candidates=[];
+    const addSingle=h=>{ if(h && !candidates.some(c=>c.type==='single'&&c.header===h)) candidates.push({type:'single', header:h, label:h}); };
+    if(rn && rp) candidates.push({type:'pair', nom:rn, prenom:rp, label:`${rn} + ${rp}`});
+    if(rn) addSingle(rn);
+    // Priorité aux colonnes qui ressemblent à une colonne d'identité, puis essai de toutes les colonnes.
+    resultHeaders.filter(looksLikeResultNameHeader).forEach(addSingle);
+    if(resultHeaders[0]) addSingle(resultHeaders[0]);
+    resultHeaders.forEach(addSingle);
+    candidates.push({type:'allText', label:'toutes les colonnes'});
+
+    let best={candidate:null, count:0, sample:[]};
+    for(const cand of candidates){
+      const seen=new Set(); const sample=[];
+      for(const row of resultRows){
+        const text=resultCandidateText(row,cand);
+        const st=resolve(text);
+        if(st && !seen.has(st.idx)){
+          seen.add(st.idx);
+          if(sample.length<5) sample.push(`${text} → ${st.display}`);
+        }
+      }
+      if(seen.size>best.count) best={candidate:cand, count:seen.size, sample};
+    }
+    return {resolve, ...best};
+  }
+  function buildResultLinks(baseStudents){
+    const links=new Map();
+    resultLinkInfo={count:0,total:baseStudents.length,source:'aucune'};
+    if(!resultRows.length || !baseStudents.length) return links;
+    const detected=detectResultNameCandidate(baseStudents);
+    if(!detected.candidate){
+      resultLinkInfo={count:0,total:baseStudents.length,source:'aucune colonne reconnue'};
+      return links;
+    }
+    for(const row of resultRows){
+      const text=resultCandidateText(row, detected.candidate);
+      const st=detected.resolve(text);
+      if(st && !links.has(st.idx)) links.set(st.idx, makeResultRecord(row));
+    }
+    resultLinkInfo={
+      count:links.size,
+      total:baseStudents.length,
+      source:`${detected.candidate.label} (${links.size}/${baseStudents.length})`
+    };
+    return links;
+  }
+  function buildStudents(){
+    const cn=$('colNom').value, cp=$('colPrenom').value, cs=$('colSexe').value, co=$('colOrigine').value, ca=$('colAlld').value, cl=$('colLatin').value;
+    if(!cn || !cp || !studentRows.length) { students=[]; resultLinkInfo={count:0,total:0,source:'aucune'}; refreshFileStatus(); return; }
+    const baseStudents = studentRows.map((r,i)=>{
+      const nom=pretty(r[cn]), prenom=pretty(r[cp]);
+      const display=`${nom} ${prenom}`.replace(/\s+/g,' ').trim();
+      const id=norm(display), alt=norm(`${prenom} ${nom}`);
+      return {
+        originalIndex:i, row:r, nom, prenom, display, id, alt, nospace:keyNoSpace(id), altNospace:keyNoSpace(alt),
+        sex: sexVal(r[cs]), origin: pretty(r[co]) || '?', alld: isFilled(r[ca]), latin: isFilled(r[cl]),
+        avg:null, pun:0, san:0, hasResult:false
+      };
+    }).filter(s=>s.display).map((s,idx)=>({...s, idx}));
+
+    const resultLinks=buildResultLinks(baseStudents);
+    students = baseStudents.map(s=>{
+      const res=resultLinks.get(s.idx);
+      return {...s, avg:res?.avg ?? null, pun:res?.pun ?? 0, san:res?.san ?? 0, hasResult:!!res};
+    });
+    refreshStudentSelectors(); refreshFileStatus();
+  }
+
+  function selectedStudents(selectId){
+    return Array.from($(selectId).selectedOptions).map(o=>students.find(s=>String(s.idx)===o.value)).filter(Boolean);
+  }
+  function optionLabel(s){
+    const opts=[];
+    if(s.origin && s.origin!=='?') opts.push(s.origin);
+    if(s.sex && s.sex!=='?') opts.push(s.sex);
+    if(s.alld) opts.push('ALLD'); else opts.push('ESP');
+    if(s.latin) opts.push('Latin');
+    return `${s.display}${opts.length?' ('+opts.join(' · ')+')':''}`;
+  }
+  function fillStudentSelect(selectId, searchId=null, multiple=true){
+    const sel=$(selectId); const old=new Set(Array.from(sel.selectedOptions).map(o=>o.value));
+    const q=searchId ? norm($(searchId).value) : '';
+    sel.innerHTML='';
+    const filtered = students.filter(s=>!q || norm(optionLabel(s)).includes(q)).sort((a,b)=>a.display.localeCompare(b.display,'fr'));
+    for(const s of filtered){
+      const o=document.createElement('option'); o.value=String(s.idx); o.textContent=optionLabel(s); if(old.has(o.value)) o.selected=true; sel.appendChild(o);
+    }
+    sel.multiple=multiple;
+  }
+  function refreshStudentSelectors(){
+    fillStudentSelect('studentPick','studentSearch',true);
+    fillStudentSelect('oneChoices','choiceSearch',true);
+    const target=$('oneTarget'); const old=target.value; target.innerHTML='';
+    students.slice().sort((a,b)=>a.display.localeCompare(b.display,'fr')).forEach(s=>{const o=document.createElement('option'); o.value=String(s.idx); o.textContent=optionLabel(s); target.appendChild(o);});
+    if(old) target.value=old;
+  }
+  function appendConstraint(line){
+    const ta=$('constraints');
+    ta.value = ta.value.trimEnd() + (ta.value.trim()? '\n':'') + line;
+    ta.scrollTop = ta.scrollHeight;
+  }
+
+  function levenshtein(a,b){
+    a=norm(a); b=norm(b); const m=a.length, n=b.length;
+    if(!m) return n; if(!n) return m; if(Math.abs(m-n)>5) return Math.abs(m-n)+5;
+    let prev=Array.from({length:n+1},(_,j)=>j), cur=new Array(n+1);
+    for(let i=1;i<=m;i++){
+      cur[0]=i;
+      for(let j=1;j<=n;j++) cur[j]=Math.min(prev[j]+1, cur[j-1]+1, prev[j-1]+(a[i-1]===b[j-1]?0:1));
+      [prev,cur]=[cur,prev];
+    }
+    return prev[n];
+  }
+  function nameTokens(s){
+    return norm(s).split(' ').filter(Boolean);
+  }
+  function uniquePush(arr, value){
+    if(value && !arr.includes(value)) arr.push(value);
+  }
+  function studentAliases(s){
+    const aliases=[];
+    const nom=norm(s.nom), prenom=norm(s.prenom);
+    const nomTokens=nameTokens(s.nom), prenomTokens=nameTokens(s.prenom);
+    const firstFamily=nomTokens[0] || '';
+    const firstGiven=prenomTokens[0] || '';
+    const fullGiven=prenom;
+
+    // Formes complètes classiques : NOM Prénom et Prénom NOM.
+    uniquePush(aliases, norm(`${s.nom} ${s.prenom}`));
+    uniquePush(aliases, norm(`${s.prenom} ${s.nom}`));
+
+    // Cas demandé : uniquement le premier nom de famille + le prénom.
+    // Exemples : "Santos Béatrice" peut retrouver "Santos Rodriguez Béatrice".
+    if(firstFamily && fullGiven){
+      uniquePush(aliases, norm(`${firstFamily} ${fullGiven}`));
+      uniquePush(aliases, norm(`${fullGiven} ${firstFamily}`));
+    }
+    if(firstFamily && firstGiven && firstGiven !== fullGiven){
+      uniquePush(aliases, norm(`${firstFamily} ${firstGiven}`));
+      uniquePush(aliases, norm(`${firstGiven} ${firstFamily}`));
+    }
+
+    // Variante avec seulement les deux premiers morceaux du nom composé, utile pour les noms avec tiret.
+    if(nomTokens.length >= 2 && fullGiven){
+      const firstTwoFamilies=nomTokens.slice(0,2).join(' ');
+      uniquePush(aliases, norm(`${firstTwoFamilies} ${fullGiven}`));
+      uniquePush(aliases, norm(`${fullGiven} ${firstTwoFamilies}`));
+    }
+    return aliases;
+  }
+  function addAlias(map, alias, student){
+    if(!alias) return;
+    const current=map.get(alias);
+    if(!current) map.set(alias, [student]);
+    else if(!current.some(s=>s.idx===student.idx)) current.push(student);
+  }
+  function resolveAlias(map, raw, alias, kind){
+    const matches=map.get(alias) || [];
+    if(matches.length===1){
+      const student=matches[0];
+      const warn = kind ? `${kind} : “${raw}” → “${student.display}”.` : null;
+      return {student, warning:warn};
+    }
+    if(matches.length>1){
+      return {student:null, warning:`Nom ambigu : “${raw}” peut correspondre à ${matches.map(s=>'“'+s.display+'”').join(', ')}. Utilise le sélecteur.`};
+    }
+    return null;
+  }
+  function makeNameResolver(){
+    const exact=new Map();
+    const aliasMap=new Map();
+    for(const s of students){
+      [s.id,s.alt,s.nospace,s.altNospace].forEach(k=>{if(k) exact.set(k,s);});
+      for(const a of studentAliases(s)){
+        addAlias(aliasMap, a, s);
+        addAlias(aliasMap, keyNoSpace(a), s);
+      }
+    }
+    return function resolve(name){
+      const raw=String(name||'').trim(); const k=norm(raw), nk=keyNoSpace(raw);
+      if(!k) return {student:null, warning:null};
+      if(exact.has(k)) return {student:exact.get(k), warning:null};
+      if(exact.has(nk)) return {student:exact.get(nk), warning:null};
+
+      // Correspondance par alias : premier nom de famille + prénom, prénom + premier nom, etc.
+      let aliasHit = resolveAlias(aliasMap, raw, k, 'Nom raccourci reconnu');
+      if(aliasHit) return aliasHit;
+      aliasHit = resolveAlias(aliasMap, raw, nk, 'Nom raccourci reconnu');
+      if(aliasHit) return aliasHit;
+
+      // Recherche par inclusion, avec protection contre les correspondances trop courtes ou ambiguës.
+      const contains=students.filter(s=>{
+        if(k.length < 5) return false;
+        const aliases=studentAliases(s);
+        return aliases.some(a=>a.includes(k)||k.includes(a)||keyNoSpace(a).includes(nk)||nk.includes(keyNoSpace(a)));
+      });
+      if(contains.length===1) return {student:contains[0], warning:`Nom approximatif : “${raw}” → “${contains[0].display}”.`};
+      if(contains.length>1) return {student:null, warning:`Nom ambigu : “${raw}” peut correspondre à ${contains.map(s=>'“'+s.display+'”').join(', ')}. Utilise le sélecteur.`};
+
+      // Correction orthographique légère sur toutes les formes acceptées, y compris les noms raccourcis.
+      let best=null, bestD=999, bestAlias='';
+      for(const s of students){
+        const aliases=[...new Set([...studentAliases(s), s.id, s.alt, s.nospace, s.altNospace])];
+        for(const a of aliases){
+          const d=Math.min(levenshtein(k,a), levenshtein(nk,keyNoSpace(a)));
+          if(d<bestD){bestD=d; best=s; bestAlias=a;}
+        }
+      }
+      const limit = k.length<=8 ? 1 : (k.length<=14 ? 2 : 3);
+      if(best && bestD<=limit) return {student:best, warning:`Nom corrigé automatiquement : “${raw}” → “${best.display}”.`};
+      return {student:null, warning:`Nom non trouvé : “${raw}”. Utilise le sélecteur pour éviter l'erreur.`};
+    }
+  }
+  function splitNames(text){
+    return String(text||'').split(';').map(x=>x.trim()).filter(Boolean);
+  }
+  function parseConstraints(){
+    const resolve=makeNameResolver();
+    const constraints={separate:[], together:[], forced:[], withOne:[], warnings:[]};
+    const lines=$('constraints').value.split(/\r?\n/).map(l=>l.replace(/#.*/,'').trim()).filter(Boolean);
+    for(const line of lines){
+      let m;
+      if((m=line.match(/^SEPARER\s*:\s*(.+)$/i))){
+        const group=[]; for(const name of splitNames(m[1])){ const r=resolve(name); if(r.student) group.push(r.student.idx); if(r.warning) constraints.warnings.push(r.warning); }
+        if(group.length>=2) constraints.separate.push([...new Set(group)]);
+      } else if((m=line.match(/^ENSEMBLE\s*:\s*(.+)$/i))){
+        const group=[]; for(const name of splitNames(m[1])){ const r=resolve(name); if(r.student) group.push(r.student.idx); if(r.warning) constraints.warnings.push(r.warning); }
+        if(group.length>=2) constraints.together.push([...new Set(group)]);
+      } else if((m=line.match(/^CLASSE\s+([^:]+)\s*:\s*(.+)$/i))){
+        const cls=m[1].trim(); for(const name of splitNames(m[2])){ const r=resolve(name); if(r.student) constraints.forced.push({idx:r.student.idx, cls}); if(r.warning) constraints.warnings.push(r.warning); }
+      } else if((m=line.match(/^AVEC_UN\s*:\s*(.+?)\s*\|\s*(.+)$/i))){
+        const t=resolve(m[1].trim()); if(t.warning) constraints.warnings.push(t.warning);
+        const choices=[]; for(const name of splitNames(m[2])){ const r=resolve(name); if(r.student) choices.push(r.student.idx); if(r.warning) constraints.warnings.push(r.warning); }
+        if(t.student && choices.length) constraints.withOne.push({target:t.student.idx, choices:[...new Set(choices)]});
+      } else {
+        constraints.warnings.push(`Ligne non comprise : “${line}”.`);
+      }
+    }
+    constraints.warnings=[...new Set(constraints.warnings)];
+    return constraints;
+  }
+
+  function parseQuotas(classes){
+    const quotas={}; for(const c of classes) quotas[c]={};
+    const lines=$('quotas').value.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+    const warnings=[];
+    for(const line of lines){
+      const m=line.match(/^([^:]+):(.+)$/); if(!m){warnings.push(`Quota non compris : ${line}`); continue;}
+      const cls=m[1].trim(); if(!classes.includes(cls)){warnings.push(`Classe inconnue dans les quotas : ${cls}`); continue;}
+      const parts=m[2].split(';').map(x=>x.trim()).filter(Boolean);
+      for(const p of parts){
+        const kv=p.split('=').map(x=>x.trim().toLowerCase()); if(kv.length!==2) continue;
+        const val=Number(kv[1].replace(',','.'));
+        if(Number.isFinite(val)) quotas[cls][kv[0]]=val;
+      }
+    }
+    const targets={};
+    let fixedSum=0, free=[];
+    for(const c of classes){
+      if(Number.isFinite(quotas[c].effectif)){targets[c]=quotas[c].effectif; fixedSum+=quotas[c].effectif;} else free.push(c);
+    }
+    const remaining=students.length-fixedSum;
+    if(free.length){
+      const base=Math.floor(remaining/free.length); let extra=remaining-base*free.length;
+      free.forEach(c=>{targets[c]=base+(extra>0?1:0); extra--;});
+    }
+    return {quotas, targets, warnings};
+  }
+
+  function DSU(n){
+    this.p=Array.from({length:n},(_,i)=>i);
+    this.find=function(x){while(this.p[x]!==x){this.p[x]=this.p[this.p[x]];x=this.p[x];}return x;};
+    this.union=function(a,b){a=this.find(a);b=this.find(b); if(a!==b)this.p[b]=a;};
+  }
+  function buildGroups(classes, constraints){
+    const dsu=new DSU(students.length);
+    for(const g of constraints.together) for(let i=1;i<g.length;i++) dsu.union(g[0],g[i]);
+    const byRoot=new Map();
+    students.forEach(s=>{const r=dsu.find(s.idx); if(!byRoot.has(r)) byRoot.set(r,[]); byRoot.get(r).push(s.idx);});
+    const forcedMap=new Map();
+    for(const f of constraints.forced){
+      if(!forcedMap.has(f.idx)) forcedMap.set(f.idx,new Set());
+      forcedMap.get(f.idx).add(f.cls);
+    }
+    const alldLatinConfig=getAlldLatinConfig(classes);
+    const allowedAlldLatin=alldLatinConfig.allowed;
+    const preferredAlldLatin=alldLatinConfig.preferred;
+    const groups=[]; const idxToGroup=new Map(); const warnings=[];
+    for(const [root, members] of byRoot.entries()){
+      const obj={gid:groups.length, members, size:members.length, forced:null, fixedConflict:false, allowed:null, preferred:null, alldLatin:false,
+        sex:{M:0,F:0,'?':0}, origins:{}, alld:0, latin:0, avgVals:[], pun:0, san:0};
+      const forcedClasses=new Set();
+      for(const idx of members){
+        const s=students[idx]; obj.sex[s.sex]=(obj.sex[s.sex]||0)+1; obj.origins[s.origin]=(obj.origins[s.origin]||0)+1;
+        if(s.alld) obj.alld++; if(s.latin) obj.latin++; if(s.alld&&s.latin) obj.alldLatin=true; if(s.avg!=null) obj.avgVals.push(s.avg); obj.pun+=s.pun; obj.san+=s.san;
+        if(forcedMap.has(idx)) for(const c of forcedMap.get(idx)) forcedClasses.add(c);
+      }
+      if(forcedClasses.size>1){obj.fixedConflict=true; warnings.push(`Conflit de classe imposée dans un groupe ensemble : ${members.map(i=>students[i].display).join(', ')}.`);}
+      if(forcedClasses.size) obj.forced=[...forcedClasses][0];
+      if(obj.alldLatin && allowedAlldLatin.length){
+        obj.allowed=allowedAlldLatin.slice();
+        if(preferredAlldLatin && allowedAlldLatin.includes(preferredAlldLatin)) obj.preferred=preferredAlldLatin;
+      }
+      groups.push(obj); members.forEach(i=>idxToGroup.set(i,obj.gid));
+    }
+    return {groups, idxToGroup, warnings};
+  }
+
+  function precheck(classes, quotas, targets, constraints, groups, idxToGroup){
+    const warnings=[];
+    const totalAlld=sum(students.map(s=>s.alld?1:0)), totalLatin=sum(students.map(s=>s.latin?1:0));
+    const quotaAlld=sum(classes.map(c=>Number.isFinite(quotas[c].alld)?quotas[c].alld:0));
+    const quotaLatin=sum(classes.map(c=>Number.isFinite(quotas[c].latin)?quotas[c].latin:0));
+    if(quotaAlld && quotaAlld!==totalAlld) warnings.push(`Attention : total ALLD = ${totalAlld}, mais quotas ALLD demandés = ${quotaAlld}.`);
+    if(quotaLatin && quotaLatin>totalLatin) warnings.push(`Attention : total latinistes = ${totalLatin}, mais quotas latin demandés = ${quotaLatin}.`);
+    const targetSum=sum(classes.map(c=>targets[c]||0)); if(targetSum!==students.length) warnings.push(`Attention : total des effectifs cibles = ${targetSum}, élèves = ${students.length}.`);
+    for(const sep of constraints.separate){
+      for(let i=0;i<sep.length;i++) for(let j=i+1;j<sep.length;j++) if(idxToGroup.get(sep[i])===idxToGroup.get(sep[j])) warnings.push(`Contrainte impossible : ${students[sep[i]].display} et ${students[sep[j]].display} sont à la fois ensemble et séparés.`);
+    }
+    const cfg=getAlldLatinConfig(classes);
+    if(cfg.allowed.length && cfg.preferred && !cfg.allowed.includes(cfg.preferred)) warnings.push(`La classe par défaut allemand+latin (${cfg.preferred}) n'est pas dans les classes autorisées.`);
+    for(const g of groups){
+      if(g.forced && g.allowed && !g.allowed.includes(g.forced)) warnings.push(`Contrainte impossible probable : ${g.members.map(i=>students[i].display).join(', ')} est imposé en ${g.forced}, mais allemand+latin n'est autorisé que dans ${g.allowed.join(', ')}.`);
+    }
+    return warnings;
+  }
+
+  function makeInitial(classes, quotas, targets, groups, constraints){
+    const classIndex=new Map(classes.map((c,i)=>[c,i]));
+    const stats=classes.map(c=>({count:0, alld:0, latin:0, sex:{M:0,F:0,'?':0}, origins:{}}));
+    const state=new Array(groups.length).fill(0);
+    const order=groups.slice().sort((a,b)=>{
+      const pa=(a.forced?100000:0)+(a.alldLatin?10000:0)+(a.alld?1000:0)+(a.latin?100:0)+a.size;
+      const pb=(b.forced?100000:0)+(b.alldLatin?10000:0)+(b.alld?1000:0)+(b.latin?100:0)+b.size;
+      return pb-pa;
+    });
+    function add(g, ci){
+      state[g.gid]=ci; const st=stats[ci]; st.count+=g.size; st.alld+=g.alld; st.latin+=g.latin;
+      for(const k of Object.keys(g.sex)) st.sex[k]=(st.sex[k]||0)+g.sex[k];
+      for(const [o,v] of Object.entries(g.origins)) st.origins[o]=(st.origins[o]||0)+v;
+    }
+    function rough(g, ci){
+      const c=classes[ci], st=stats[ci]; let sc=0;
+      if(g.forced && c!==g.forced) sc+=1e9;
+      if(g.allowed && !g.allowed.includes(c)) sc+=1e8;
+      if(g.preferred && c!==g.preferred) sc+=25000;
+      const after=st.count+g.size, target=targets[c] ?? Math.ceil(students.length/classes.length);
+      if(after>target) sc+=(after-target)*1000000; else sc+=(target-after)*80;
+      if(Number.isFinite(quotas[c].alld)){
+        const need=quotas[c].alld-st.alld; sc+=Math.abs((st.alld+g.alld)-quotas[c].alld)*8000; if(g.alld && need<=0) sc+=200000;
+      } else if(g.alld) sc+=50000;
+      if(Number.isFinite(quotas[c].latin)){
+        const need=quotas[c].latin-st.latin; sc+=Math.abs((st.latin+g.latin)-quotas[c].latin)*6000; if(g.latin && need<=0) sc+=120000;
+      } else if(g.latin) sc+=20000;
+      sc += Math.pow((st.sex.F+g.sex.F) - (target*globalFemaleRatio),2)*200;
+      for(const [o,v] of Object.entries(g.origins)) sc += Math.pow((st.origins[o]||0)+v,2)*30;
+      return sc + Math.random()*50;
+    }
+    for(const g of order){
+      let candidates=classes.map((c,i)=>i);
+      if(g.forced && classIndex.has(g.forced)) candidates=[classIndex.get(g.forced)];
+      else if(g.allowed) candidates=candidates.filter(i=>g.allowed.includes(classes[i]));
+      if(!candidates.length) candidates=classes.map((c,i)=>i);
+      let best=candidates[0], bestS=Infinity;
+      for(const ci of candidates){ const r=rough(g,ci); if(r<bestS){bestS=r; best=ci;} }
+      add(g,best);
+    }
+    return state;
+  }
+
+  let globalFemaleRatio=0.5;
+  function createScorer(classes, quotas, targets, constraints, groups, idxToGroup){
+    const classIndex=new Map(classes.map((c,i)=>[c,i]));
+    const globalAvg=avg(students.filter(s=>s.avg!=null).map(s=>s.avg));
+    const globalPun=avg(students.map(s=>s.pun||0)) ?? 0;
+    const globalSan=avg(students.map(s=>s.san||0)) ?? 0;
+    const totalOrigins={}; students.forEach(s=>{totalOrigins[s.origin]=(totalOrigins[s.origin]||0)+1;});
+    const hardWeight=100000000;
+    function score(state, detail=false){
+      const stats=classes.map(c=>({cls:c,count:0,M:0,F:0,unknown:0,alld:0,latin:0,avgVals:[],pun:0,san:0,origins:{},students:[]}));
+      let hard=0, soft=0; const violations=[];
+      for(const g of groups){
+        const ci=state[g.gid], st=stats[ci]; if(!st){hard+=hardWeight; continue;}
+        st.count+=g.size; st.M+=g.sex.M||0; st.F+=g.sex.F||0; st.unknown+=g.sex['?']||0; st.alld+=g.alld; st.latin+=g.latin; st.pun+=g.pun; st.san+=g.san;
+        st.avgVals.push(...g.avgVals); for(const [o,v] of Object.entries(g.origins)) st.origins[o]=(st.origins[o]||0)+v;
+        st.students.push(...g.members);
+        const cls=classes[ci];
+        if(g.fixedConflict){hard+=hardWeight; if(detail) violations.push(`Conflit de classe imposée dans un groupe ensemble.`);}
+        if(g.forced && cls!==g.forced){hard+=hardWeight; if(detail) violations.push(`${g.members.map(i=>students[i].display).join(', ')} devrait être en ${g.forced}.`);}
+        if(g.allowed && !g.allowed.includes(cls)){hard+=hardWeight; if(detail) violations.push(`${g.members.map(i=>students[i].display).join(', ')} allemand+latin n'est pas dans ${g.allowed.join('/')} mais en ${cls}.`);}
+        if(g.preferred && cls!==g.preferred){soft+=800000;}
+      }
+      for(let i=0;i<classes.length;i++){
+        const c=classes[i], st=stats[i], target=targets[c];
+        if(Number.isFinite(target)){
+          const d=st.count-target; hard += Math.abs(d)*25000000; if(detail && d!==0) violations.push(`${c}: effectif ${st.count} au lieu de ${target}.`);
+        }
+        for(const q of ['alld','latin']) if(Number.isFinite(quotas[c][q])){
+          const d=st[q]-quotas[c][q]; hard += Math.abs(d)*35000000; if(detail && d!==0) violations.push(`${c}: ${q.toUpperCase()} ${st[q]} au lieu de ${quotas[c][q]}.`);
+        }
+      }
+      for(const sep of constraints.separate){
+        const seen=new Map();
+        for(const idx of sep){const ci=state[idxToGroup.get(idx)]; if(!seen.has(ci)) seen.set(ci,[]); seen.get(ci).push(idx);}
+        for(const [ci, list] of seen.entries()) if(list.length>1){
+          const pairs=list.length*(list.length-1)/2; hard+=pairs*hardWeight;
+          if(detail) violations.push(`À séparer en ${classes[ci]} : ${list.map(i=>students[i].display).join(', ')}.`);
+        }
+      }
+      for(const w of constraints.withOne){
+        const ci=state[idxToGroup.get(w.target)];
+        const ok=w.choices.some(x=>state[idxToGroup.get(x)]===ci);
+        if(!ok){hard+=hardWeight; if(detail) violations.push(`${students[w.target].display} doit être avec au moins un de : ${w.choices.map(i=>students[i].display).join(', ')}.`);}
+      }
+      for(const st of stats){
+        const target=targets[st.cls] || (students.length/classes.length);
+        soft += Math.pow(st.F - target*globalFemaleRatio,2)*2500;
+        if(globalAvg!=null && st.avgVals.length){soft += Math.pow(avg(st.avgVals)-globalAvg,2)*1500;}
+        soft += Math.pow((st.pun/(st.count||1))-globalPun,2)*4500;
+        soft += Math.pow((st.san/(st.count||1))-globalSan,2)*7000;
+        for(const [origin,total] of Object.entries(totalOrigins)){
+          const expected=total*(st.count/students.length); const observed=st.origins[origin]||0;
+          soft += Math.pow(observed-expected,2)*120;
+          if(observed>Math.ceil(total/classes.length)+1) soft += Math.pow(observed-(Math.ceil(total/classes.length)+1),2)*250;
+        }
+      }
+      const total=hard+soft;
+      if(detail) return {total, hard, soft, stats, violations:[...new Set(violations)]};
+      return total;
+    }
+    return score;
+  }
+
+  async function optimise(){
+    buildStudents();
+    if(!students.length) throw new Error('Aucun élève chargé ou colonnes Nom/Prénom non définies.');
+    const classes=parseClassNames(); if(classes.length<2) throw new Error('Indique au moins deux classes.');
+    globalFemaleRatio = students.filter(s=>s.sex==='F').length / Math.max(1, students.filter(s=>s.sex==='F'||s.sex==='M').length);
+    const constraints=parseConstraints();
+    const {quotas, targets, warnings:quotaWarnings}=parseQuotas(classes);
+    const {groups, idxToGroup, warnings:groupWarnings}=buildGroups(classes,constraints);
+    const preWarnings=precheck(classes, quotas, targets, constraints, groups, idxToGroup);
+    const allWarnings=[...constraints.warnings, ...quotaWarnings, ...groupWarnings, ...preWarnings];
+    const score=createScorer(classes, quotas, targets, constraints, groups, idxToGroup);
+    let bestState=null, bestDetail=null, bestScore=Infinity;
+    const totalIter=clamp(Number($('iterations').value)||250000, 1000, 3000000);
+    const restarts=Math.max(4, Math.min(40, Math.floor(totalIter/25000)));
+    const iterPerRestart=Math.floor(totalIter/restarts);
+    let done=0;
+    abortRun=false; $('stopBtn').disabled=false; $('runBtn').disabled=true; $('exportBtn').disabled=true;
+    $('progressWrap').classList.remove('hidden'); $('progressBar').style.width='0%';
+    const alldLatinInfo=getAlldLatinConfig(classes);
+    setStatus($('runStatus'), `Optimisation en cours…
+Groupes liés par contraintes ensemble : ${groups.length} groupes pour ${students.length} élèves.
+Allemand + latin : autorisé en ${alldLatinInfo.allowed.join(', ') || 'toutes les classes'} ; défaut ${alldLatinInfo.preferred || 'aucun'}.
+Itérations prévues : ${totalIter.toLocaleString('fr-FR')}.`, 'warn');
+
+    const classAllowedForGroup = g => {
+      const fixedIdx = g.forced ? classes.indexOf(g.forced) : -1;
+      if(fixedIdx>=0) return [fixedIdx];
+      if(g.allowed){ const arr=g.allowed.map(c=>classes.indexOf(c)).filter(i=>i>=0); if(arr.length) return arr; }
+      return classes.map((_,i)=>i);
+    };
+    const allowedCache=groups.map(classAllowedForGroup);
+
+    for(let r=0;r<restarts && !abortRun;r++){
+      let state=makeInitial(classes, quotas, targets, groups, constraints);
+      let cur=score(state), localBest=cur, localState=state.slice();
+      if(cur<bestScore){bestScore=cur; bestState=state.slice(); bestDetail=score(bestState,true);}
+      let temp0=50000000, tempEnd=20;
+      for(let it=0;it<iterPerRestart && !abortRun;it++){
+        const t = it/Math.max(1,iterPerRestart-1);
+        const temp = temp0 * Math.pow(tempEnd/temp0, t);
+        let next=state.slice();
+        if(Math.random()<0.60){
+          const g=Math.floor(Math.random()*groups.length);
+          const allowed=allowedCache[g];
+          if(allowed.length>1){
+            let ci=allowed[Math.floor(Math.random()*allowed.length)];
+            if(ci===next[g]) ci=allowed[(allowed.indexOf(ci)+1)%allowed.length];
+            next[g]=ci;
+          }
+        } else {
+          const a=Math.floor(Math.random()*groups.length), b=Math.floor(Math.random()*groups.length);
+          if(a!==b){
+            const ca=next[a], cb=next[b];
+            if(allowedCache[a].includes(cb) && allowedCache[b].includes(ca)){ next[a]=cb; next[b]=ca; }
+          }
+        }
+        const ns=score(next); const delta=ns-cur;
+        if(delta<=0 || Math.random()<Math.exp(-delta/temp)){state=next; cur=ns;}
+        if(cur<localBest){localBest=cur; localState=state.slice();}
+        if(cur<bestScore){bestScore=cur; bestState=state.slice(); bestDetail=score(bestState,true);}
+        done++;
+        if(done%1500===0){
+          $('progressBar').style.width = `${Math.round(done/totalIter*100)}%`;
+          const d=bestDetail || score(bestState,true);
+          setStatus($('runStatus'), `Optimisation en cours… ${done.toLocaleString('fr-FR')} / ${totalIter.toLocaleString('fr-FR')} itérations\nMeilleur score : ${Math.round(bestScore).toLocaleString('fr-FR')}\nÉcart contraintes fortes : ${Math.round(d.hard).toLocaleString('fr-FR')}\n${d.hard===0 ? 'Toutes les contraintes fortes sont actuellement respectées.' : 'Je cherche encore une meilleure solution.'}`, d.hard===0?'ok':'warn');
+          await sleep(0);
+        }
+      }
+      if(localBest<bestScore){bestScore=localBest; bestState=localState.slice(); bestDetail=score(bestState,true);}
+    }
+    $('stopBtn').disabled=true; $('runBtn').disabled=false; $('progressBar').style.width='100%';
+    if(!bestState) throw new Error('Aucune solution calculée.');
+    const detail=score(bestState,true);
+    const assignment=new Map();
+    for(const g of groups){ for(const idx of g.members) assignment.set(idx, classes[bestState[g.gid]]); }
+    lastSolution={classes, quotas, targets, constraints, warnings:allWarnings, groups, idxToGroup, state:bestState, assignment, detail};
+    renderSolution();
+    $('exportBtn').disabled=false;
+  }
+
+  function validateCurrent(){
+    buildStudents();
+    if(!students.length){setStatus($('runStatus'),'Charge d’abord la liste des élèves et vérifie les colonnes Nom/Prénom.','ko');return;}
+    const classes=parseClassNames();
+    const constraints=parseConstraints();
+    const {quotas, targets, warnings:quotaWarnings}=parseQuotas(classes);
+    const {groups, idxToGroup, warnings:groupWarnings}=buildGroups(classes,constraints);
+    const warnings=[...constraints.warnings, ...quotaWarnings, ...groupWarnings, ...precheck(classes,quotas,targets,constraints,groups,idxToGroup)];
+    const msg = warnings.length ? warnings.join('\n') : 'Tous les noms des contraintes semblent reconnus. Aucune impossibilité évidente détectée avant calcul.';
+    setStatus($('runStatus'), msg, warnings.length?'warn':'ok');
+  }
+
+  function renderSolution(){
+    const sol=lastSolution; if(!sol) return;
+    const {classes, detail, assignment, warnings}=sol;
+    const summary=$('summary'); summary.innerHTML='';
+    for(const st of detail.stats){
+      const av=avg(st.avgVals);
+      const div=document.createElement('div'); div.className='card';
+      div.innerHTML=`<strong>${st.cls}</strong>
+        <div>Effectif : <b>${st.count}</b></div>
+        <div>Filles/Garçons : <b>${st.F}</b> / <b>${st.M}</b></div>
+        <div>Allemand : <b>${st.alld}</b> · Espagnol : <b>${st.count-st.alld}</b></div>
+        <div>Latin : <b>${st.latin}</b></div>
+        <div>Moyenne : <b>${av==null?'—':av.toFixed(2)}</b></div>
+        <div>Punitions/Sanctions : <b>${st.pun}</b> / <b>${st.san}</b></div>`;
+      summary.appendChild(div);
+    }
+    const hardOK=detail.hard===0;
+    const txt=[
+      hardOK ? 'Répartition calculée : toutes les contraintes fortes sont respectées.' : 'Répartition calculée, mais il reste des contraintes fortes non respectées.',
+      `Score total : ${Math.round(detail.total).toLocaleString('fr-FR')}`,
+      `Contraintes fortes : ${Math.round(detail.hard).toLocaleString('fr-FR')}`,
+      `Équilibres : ${Math.round(detail.soft).toLocaleString('fr-FR')}`
+    ].join('\n');
+    setStatus($('runStatus'), txt, hardOK?'ok':'ko');
+    const warns=[];
+    if(warnings.length) warns.push('Avertissements / corrections de noms :\n' + [...new Set(warnings)].join('\n'));
+    if(detail.violations.length) warns.push('Contraintes non respectées :\n' + detail.violations.join('\n'));
+    if(warns.length){$('warnings').classList.remove('hidden'); $('warnings').textContent=warns.join('\n\n');} else {$('warnings').classList.add('hidden'); $('warnings').textContent='';}
+    renderTabs();
+    currentDisplayedClass=currentDisplayedClass || classes[0];
+    renderTable(currentDisplayedClass);
+  }
+  function renderTabs(){
+    const tabs=$('tabs'); tabs.innerHTML=''; tabs.classList.remove('hidden');
+    for(const c of lastSolution.classes){
+      const b=document.createElement('button'); b.className='tab'+(c===currentDisplayedClass?' active':''); b.textContent=c;
+      b.addEventListener('click',()=>{currentDisplayedClass=c; renderTabs(); renderTable(c);}); tabs.appendChild(b);
+    }
+  }
+  function renderTable(cls){
+    if(!lastSolution) return;
+    const table=$('resultTable'); table.innerHTML=''; $('tableWrap').classList.remove('hidden');
+    const headers=['Classe', ...studentHeaders]; if($('addSpanish').checked && !headers.includes('Espagnol')) headers.push('Espagnol');
+    const trh=document.createElement('tr'); headers.forEach(h=>{const th=document.createElement('th'); th.textContent=h; trh.appendChild(th);}); table.appendChild(trh);
+    const list=students.filter(s=>lastSolution.assignment.get(s.idx)===cls).sort((a,b)=>a.display.localeCompare(b.display,'fr'));
+    for(const s of list){
+      const tr=document.createElement('tr');
+      for(const h of headers){
+        const td=document.createElement('td');
+        if(h==='Classe') td.textContent=cls;
+        else if(h==='Espagnol') td.textContent=s.alld?'':'espagnol';
+        else td.textContent=s.row[h] ?? '';
+        tr.appendChild(td);
+      }
+      table.appendChild(tr);
+    }
+  }
+  function exportWorkbook(){
+    if(!lastSolution || !studentWB) return;
+    const out=XLSX.utils.book_new();
+    const originalName=studentSheetName || 'Liste originale';
+    const originalSheet = studentWB.Sheets[studentSheetName];
+    XLSX.utils.book_append_sheet(out, originalSheet, originalName.substring(0,31));
+    const addEsp=$('addSpanish').checked;
+    let headers=studentHeaders.slice();
+    if(addEsp && !headers.includes('Espagnol')) headers=[...headers,'Espagnol'];
+    for(const cls of lastSolution.classes){
+      const rows=students.filter(s=>lastSolution.assignment.get(s.idx)===cls).sort((a,b)=>a.display.localeCompare(b.display,'fr')).map(s=>{
+        const r={}; for(const h of headers){ if(h==='Espagnol') r[h]=s.alld?'':'espagnol'; else r[h]=s.row[h] ?? ''; } return r;
+      });
+      const ws=XLSX.utils.json_to_sheet(rows,{header:headers});
+      ws['!cols']=headers.map(h=>({wch: Math.min(28, Math.max(10, String(h).length+3))}));
+      XLSX.utils.book_append_sheet(out, ws, cls.substring(0,31));
+    }
+    XLSX.writeFile(out, downloadName());
+  }
+
+  $('studentsFile').addEventListener('change', async e=>{
+    try{
+      const f=e.target.files[0]; if(!f) return; studentWB=await readWorkbook(f); const sh=sheetRows(studentWB);
+      studentSheetName=sh.name; studentRows=sh.rows; studentHeaders=sh.headers;
+      fillSelect('colNom', studentHeaders, ['nom'], 0); fillSelect('colPrenom', studentHeaders, ['prenom','prénom'], 1); fillSelect('colSexe', studentHeaders, ['sexe','genre']); fillSelect('colOrigine', studentHeaders, ['division','classe','origine']); fillSelect('colAlld', studentHeaders, ['alld','allemand']); fillSelect('colLatin', studentHeaders, ['latin']);
+      buildStudents(); setStatus($('fileStatus'), `Liste chargée : ${studentRows.length} élèves.`, 'ok'); refreshClassSelects();
+    }catch(err){setStatus($('fileStatus'), 'Erreur chargement liste : '+err.message, 'ko');}
+  });
+  $('resultsFile').addEventListener('change', async e=>{
+    try{
+      const f=e.target.files[0]; if(!f) return; const wb=await readWorkbook(f); const sh=sheetRows(wb); resultRows=sh.rows; resultHeaders=sh.headers;
+      fillSelect('resNom', resultHeaders, ['nom','eleve','élève','eleves','élèves']); fillSelect('resPrenom', resultHeaders, ['prenom','prénom']); fillSelect('resMoy', resultHeaders, ['moyenne','moy']); fillSelect('resPun', resultHeaders, ['punition','punitions']); fillSelect('resSan', resultHeaders, ['sanction','sanctions']);
+      buildStudents(); refreshFileStatus();
+    }catch(err){setStatus($('fileStatus'), 'Erreur chargement résultats : '+err.message, 'ko');}
+  });
+  selectIds.forEach(id=>$(id).addEventListener('change',()=>{buildStudents(); lastSolution=null; $('exportBtn').disabled=true;}));
+  $('classNames').addEventListener('input', refreshClassSelects);
+  $('alldLatinPreferred').addEventListener('change',()=>{lastSolution=null; $('exportBtn').disabled=true;});
+  $('studentSearch').addEventListener('input',()=>fillStudentSelect('studentPick','studentSearch',true));
+  $('choiceSearch').addEventListener('input',()=>fillStudentSelect('oneChoices','choiceSearch',true));
+  $('addSeparate').addEventListener('click',()=>{const list=selectedStudents('studentPick'); if(list.length>=2) appendConstraint('SEPARER: '+list.map(s=>s.display).join('; '));});
+  $('addTogether').addEventListener('click',()=>{const list=selectedStudents('studentPick'); if(list.length>=2) appendConstraint('ENSEMBLE: '+list.map(s=>s.display).join('; '));});
+  $('addForced').addEventListener('click',()=>{const list=selectedStudents('studentPick'); if(list.length) appendConstraint(`CLASSE ${$('forcedClass').value}: `+list.map(s=>s.display).join('; '));});
+  $('addWithOne').addEventListener('click',()=>{const t=students.find(s=>String(s.idx)===$('oneTarget').value); const choices=selectedStudents('oneChoices'); if(t&&choices.length) appendConstraint('AVEC_UN: '+t.display+' | '+choices.map(s=>s.display).join('; '));});
+  $('checkBtn').addEventListener('click', validateCurrent);
+  $('runBtn').addEventListener('click', async()=>{try{await optimise();}catch(err){$('runBtn').disabled=false; $('stopBtn').disabled=true; setStatus($('runStatus'), 'Erreur : '+err.message, 'ko'); console.error(err);}});
+  $('stopBtn').addEventListener('click',()=>{abortRun=true; $('stopBtn').disabled=true;});
+  $('exportBtn').addEventListener('click', exportWorkbook);
+  refreshClassSelects();
+})();
+</script>
+</body>
+</html>
