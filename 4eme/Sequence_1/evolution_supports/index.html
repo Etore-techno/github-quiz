@@ -80,6 +80,17 @@
     </div><!-- /.total-container -->
   </div><!-- /#cadre-fixe -->
 
+  <!-- Fenêtre d’agrandissement des textes explicatifs -->
+  <div id="texte-zoom-overlay" class="texte-zoom-overlay" hidden aria-hidden="true">
+    <section class="texte-zoom-modal" role="dialog" aria-modal="true"
+             aria-labelledby="texte-zoom-title" aria-describedby="texte-zoom-body">
+      <button id="texte-zoom-close" class="texte-zoom-close" type="button"
+              aria-label="Fermer l’agrandissement du texte" title="Fermer">×</button>
+      <h2 id="texte-zoom-title">Texte agrandi</h2>
+      <div id="texte-zoom-body" class="texte-zoom-body"></div>
+    </section>
+  </div>
+
   <!-- Script d’auto-mise à l’échelle/centrage (comme avant) -->
   <script src="script2.js" defer></script>
   <!-- Mini-SPA -->

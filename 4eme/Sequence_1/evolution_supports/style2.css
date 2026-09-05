@@ -202,6 +202,53 @@ display: flex;
   font-size: 33px;
 }
 
+/* --- Loupe d’agrandissement du texte --- */
+.texte-explicatif {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  padding-right: 5rem; /* réserve la place de la loupe dans le coin du texte */
+}
+
+.texte-zoom-button {
+  position: absolute;
+  top: 0.15rem;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.35rem;
+  height: 3.35rem;
+  padding: 0;
+  border: 3px solid #0f1bc4;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #0f1bc4;
+  cursor: pointer;
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.22);
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.texte-zoom-button svg {
+  width: 2.25rem;
+  height: 2.25rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.texte-zoom-button:hover {
+  background-color: #e9ebff;
+  transform: scale(1.08);
+}
+
+.texte-zoom-button:focus-visible {
+  outline: 4px solid #f0b400;
+  outline-offset: 3px;
+}
+
 .image-colonne {
   display: flex;
   flex-direction: column;
@@ -438,6 +485,83 @@ body.home-accueil #accueil-visuel img {
   max-height: 95vh;
   object-fit: contain;                 /* ne déforme pas l'image */
   cursor: zoom-out;                    /* 🔍- (zoom -) quand on survole l'image zoomée */
+}
+
+/* --- Mini-fenêtre avec le texte deux fois plus grand --- */
+#texte-zoom-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 5vh 5vw;
+  background: rgba(0, 0, 0, 0.72);
+}
+
+#texte-zoom-overlay[hidden] {
+  display: none;
+}
+
+.texte-zoom-modal {
+  position: relative;
+  width: min(1100px, 88vw);
+  max-height: 88vh;
+  overflow: auto;
+  box-sizing: border-box;
+  padding: 58px 60px 60px;
+  border: 8px solid #0f1bc4;
+  border-radius: 24px;
+  background: #ffffff;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
+}
+
+.texte-zoom-modal h2 {
+  margin: 0 55px 30px 0;
+  padding: 0;
+  color: #0f1bc4;
+  font-size: 60px;
+  line-height: 1.15;
+  text-align: left;
+  text-shadow: none;
+}
+
+.texte-zoom-body p {
+  margin: 0;
+  color: #222222;
+  font-family: "Segoe UI", sans-serif;
+  font-size: 42px; /* texte agrandi, mais plus petit que le titre */
+  line-height: 1.35;
+  text-align: left;
+}
+
+.texte-zoom-close {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 0 0 5px;
+  border: 3px solid #0f1bc4;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #0f1bc4;
+  font-size: 42px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.texte-zoom-close:hover {
+  background: #e9ebff;
+}
+
+.texte-zoom-close:focus-visible {
+  outline: 4px solid #f0b400;
+  outline-offset: 3px;
 }
 
 

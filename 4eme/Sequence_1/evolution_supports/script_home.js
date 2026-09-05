@@ -124,6 +124,65 @@ zoomOverlay.addEventListener('click', () => {
   zoomImg.src = '';
 });
 
+/* ======= Agrandissement des textes explicatifs ======= */
+const texteZoomOverlay = document.getElementById('texte-zoom-overlay');
+const texteZoomTitle   = document.getElementById('texte-zoom-title');
+const texteZoomBody    = document.getElementById('texte-zoom-body');
+const texteZoomClose   = document.getElementById('texte-zoom-close');
+let texteZoomButtonToRestore = null;
+
+function ouvrirTexteZoom(button) {
+  if (!texteZoomOverlay || !texteZoomTitle || !texteZoomBody) return;
+
+  const section = button.closest('.bloc-section');
+  const texte = section ? section.querySelector('.texte-explicatif p') : null;
+  if (!texte) return;
+
+  const titre = section.querySelector('h3');
+  texteZoomTitle.textContent = titre ? titre.textContent : 'Texte agrandi';
+  // Le texte provient du contenu pédagogique de cette page et conserve ses retours à la ligne.
+  texteZoomBody.innerHTML = `<p>${texte.innerHTML}</p>`;
+  texteZoomButtonToRestore = button;
+
+  texteZoomOverlay.hidden = false;
+  texteZoomOverlay.setAttribute('aria-hidden', 'false');
+
+  // Le focus est placé sur la fermeture pour faciliter l’utilisation au clavier.
+  requestAnimationFrame(() => {
+    if (texteZoomClose) texteZoomClose.focus();
+  });
+}
+
+function fermerTexteZoom() {
+  if (!texteZoomOverlay) return;
+
+  const buttonToRestore = texteZoomButtonToRestore;
+  texteZoomOverlay.hidden = true;
+  texteZoomOverlay.setAttribute('aria-hidden', 'true');
+  if (texteZoomBody) texteZoomBody.innerHTML = '';
+  texteZoomButtonToRestore = null;
+
+  if (buttonToRestore && buttonToRestore.isConnected) {
+    buttonToRestore.focus();
+  }
+}
+
+if (blocContenu) {
+  // Délégation d’événement : les boutons sont recréés à chaque changement de support.
+  blocContenu.addEventListener('click', (event) => {
+    const cible = event.target;
+    const button = cible && cible.closest ? cible.closest('.texte-zoom-button') : null;
+    if (button) ouvrirTexteZoom(button);
+  });
+}
+
+if (texteZoomClose) texteZoomClose.addEventListener('click', fermerTexteZoom);
+if (texteZoomOverlay) {
+  texteZoomOverlay.addEventListener('click', (event) => {
+    if (event.target === texteZoomOverlay) fermerTexteZoom();
+  });
+}
+
 
 /* === Icônes à gauche et à droite du titre (utilise <img id="icon-left/right">) === */
 function mettreAJourIcones(theme) {
@@ -310,6 +369,11 @@ function enableSwipeOnPanel() {
 
 function enableKeyboardNav() {
   document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && texteZoomOverlay && !texteZoomOverlay.hidden) {
+      fermerTexteZoom();
+      return;
+    }
+    if (texteZoomOverlay && !texteZoomOverlay.hidden) return;
     if (e.key === 'ArrowRight') nextSlide();
     else if (e.key === 'ArrowLeft') prevSlide();
   });
@@ -352,15 +416,42 @@ function afficherTheme(id) {
   blocContenu.innerHTML = `
     <div class="bloc-section" id="sec-1">
       <h3>1. Histoire et capacités</h3>
-      <p>${(d.s1 || '').replaceAll('\n','<br>')}</p>
+      <div class="texte-explicatif">
+        <button class="texte-zoom-button" type="button"
+                aria-label="Agrandir le texte de la partie 1" title="Agrandir le texte">
+          <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+            <circle cx="20" cy="20" r="11"></circle>
+            <line x1="28.5" y1="28.5" x2="41" y2="41"></line>
+          </svg>
+        </button>
+        <p>${(d.s1 || '').replaceAll('\n','<br>')}</p>
+      </div>
     </div>
     <div class="bloc-section" id="sec-2">
       <h3>2. Fonctionnement</h3>
-      <p>${(d.s2 || '').replaceAll('\n','<br>')}</p>
+      <div class="texte-explicatif">
+        <button class="texte-zoom-button" type="button"
+                aria-label="Agrandir le texte de la partie 2" title="Agrandir le texte">
+          <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+            <circle cx="20" cy="20" r="11"></circle>
+            <line x1="28.5" y1="28.5" x2="41" y2="41"></line>
+          </svg>
+        </button>
+        <p>${(d.s2 || '').replaceAll('\n','<br>')}</p>
+      </div>
     </div>
     <div class="bloc-section" id="sec-3">
       <h3>3. Caractéristiques, usages et limites</h3>
-      <p>${(d.s3 || '').replaceAll('\n','<br>')}</p>
+      <div class="texte-explicatif">
+        <button class="texte-zoom-button" type="button"
+                aria-label="Agrandir le texte de la partie 3" title="Agrandir le texte">
+          <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+            <circle cx="20" cy="20" r="11"></circle>
+            <line x1="28.5" y1="28.5" x2="41" y2="41"></line>
+          </svg>
+        </button>
+        <p>${(d.s3 || '').replaceAll('\n','<br>')}</p>
+      </div>
     </div>
   `;
 
