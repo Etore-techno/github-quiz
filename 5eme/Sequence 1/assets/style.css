@@ -61,7 +61,7 @@ button { font: inherit; }
   width: 100%;
   height: 100%;
   display: grid;
-  grid-template-rows: 66px minmax(0, 1fr) 162px;
+  grid-template-rows: 66px 52px minmax(0, 1fr) 162px;
   overflow: hidden;
   border: 10px solid var(--blue);
   border-radius: 24px;
@@ -625,7 +625,7 @@ button { font: inherit; }
 .nonrenewable-zone h3 { color: var(--red); }
 
 .source-columns .group-cards {
-  grid-auto-rows: 68px;
+  grid-auto-rows: 58px;
   gap: 10px 12px;
   align-content: start;
   overflow: hidden;
@@ -634,7 +634,7 @@ button { font: inherit; }
 
 .source-zone .group-cards { grid-template-columns: repeat(3, 92px); }
 .aside-zone .group-cards { grid-template-columns: repeat(4, 92px); }
-.source-columns .card-tile { width: 92px; height: 68px; min-height: 68px; font-size: 30px; }
+.source-columns .card-tile { width: 92px; height: 58px; min-height: 58px; font-size: 28px; }
 .source-columns .family-photos { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
 .finish {
@@ -680,3 +680,22 @@ button { font: inherit; }
   #portrait { display: grid; }
   #frame { display: none; }
 }
+
+/* Identification du groupe et confirmation de sauvegarde. */
+.login-panel { width: 1160px; padding: 70px 80px; border: 10px solid var(--blue); border-radius: 24px; background: #fff; text-align: center; }
+.login-activity { color: var(--blue); font-size: 28px; font-weight: 800; }
+.login-panel h1 { margin: 20px 0 24px; font-size: 52px; }
+.login-panel p { font-size: 27px; line-height: 1.45; }
+.login-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; margin: 40px 0; text-align: left; }
+.login-fields label { display: grid; gap: 12px; font-size: 29px; font-weight: 750; }
+.login-fields select { width: 100%; padding: 18px; border: 3px solid var(--blue); border-radius: 12px; background: #fff; font: inherit; }
+.login-panel .login-note { margin: 22px 0 0; font-size: 23px; color: #555; }
+#quizLoginStatus { min-height: 80px; margin-bottom: 0; font-size: 24px; }
+.save-bar { display: flex; gap: 18px; align-items: center; padding: 6px 22px; font-size: 21px; border-bottom: 1px solid #cbd5ee; background: #edf1ff; }
+.save-bar strong { white-space: nowrap; }
+.save-link { background: #fff; color: #1225a4; border: 1px solid #a6b3db; border-radius: 7px; padding: 5px 10px; cursor: pointer; font-size: 19px; white-space: nowrap; }
+.save-status { margin-left: auto; font-size: 19px; line-height: 1.12; text-align: right; }
+.save-status.ok { color: #12662b; }
+.save-status.error { color: #9b2020; }
+button:disabled { opacity: .55; cursor: default; }
+[inert] { cursor: wait; }

@@ -4,22 +4,73 @@
   const activity = window.ACTIVITY;
   const app = document.getElementById("app");
   const PHOTO = (number) => `assets/images/photo${number}.jpg`;
-  if (activity.randomizeCardQuestions) {
-    const introductions = activity.steps.filter((step) => step.type === "intro");
-    const cardQuestions = activity.steps.filter((step) => step.type === "cards");
-    const remaining = activity.steps.filter((step) => step.type !== "intro" && step.type !== "cards");
-    activity.steps = [...introductions, ...shuffle(cardQuestions), ...remaining];
-  }
-  const scoredSteps = activity.steps.filter((step) => Number(step.points) > 0);
+  const activityId = activity.activity === "Activité 1" ? "activite_1" : "activite_2";
+  const originalSteps = activity.steps.map((step, index) => ({ ...step, id: `step_${index}` }));
+  // Empêche de restaurer une ancienne sauvegarde sur un contenu pédagogique différent.
+  let fingerprint = 2166136261;
+  for (const character of JSON.stringify(activity)) fingerprint = Math.imul(fingerprint ^ character.charCodeAt(0), 16777619);
+  const contentVersion = `quiz-v1-${fingerprint >>> 0}`;
+  let stepIndex = 0, score = 0, currentMaximum = 0, completed = false;
+  let wrongAttempts = {}, states = {}, familyLayout = null, familyGroups = null;
+  let scoredSteps = [];
+  const cloud = new window.QuizSave(activityId, activity.activity, { open: openProgress, snapshot, lock: lockQuiz });
 
-  let stepIndex = 0;
-  let score = 0;
-  let currentMaximum = 0;
-  let completed = false;
-  const wrongAttempts = {};
-  const states = {};
-  let familyLayout = null;
-  let familyGroups = null;
+  function newOrder() {
+    if (!activity.randomizeCardQuestions) return [...originalSteps];
+    return [...originalSteps.filter(step => step.type === "intro"),
+      ...shuffle(originalSteps.filter(step => step.type === "cards")),
+      ...originalSteps.filter(step => step.type !== "intro" && step.type !== "cards")];
+  }
+
+  function snapshot() {
+    const feedback = document.getElementById("feedback");
+    const position = questionPosition();
+    const data = { schema: 1, activityId, contentVersion, order: activity.steps.map(step => step.id),
+      stepIndex, score, currentMaximum, completed, wrongAttempts, states, familyLayout, familyGroups,
+      feedback: { message: feedback?.textContent || "", kind: feedback?.classList.contains("warn") ? "warn" : feedback?.classList.contains("ok") ? "ok" : "info" },
+      progressLabel: stepIndex >= activity.steps.length ? "Activité terminée" : position ? `Question ${position.number} / ${position.total}` : activity.steps[stepIndex].type === "intro" ? "Consignes" : "Fiche d’activité" };
+    return JSON.parse(JSON.stringify(data, (_, value) => value instanceof Set ? { __quizSet: [...value] } : value));
+  }
+
+  function openProgress(saved) {
+    if (saved) {
+      if (saved.schema !== 1 || saved.activityId !== activityId || saved.contentVersion !== contentVersion ||
+          !Array.isArray(saved.order) || saved.order.length !== originalSteps.length || new Set(saved.order).size !== originalSteps.length ||
+          !saved.order.every(id => originalSteps.some(step => step.id === id)) ||
+          !Number.isInteger(saved.stepIndex) || saved.stepIndex < 0 || saved.stepIndex > originalSteps.length) {
+        throw new Error("Cette sauvegarde ne correspond pas à cette version du quiz. Prévenez le professeur.");
+      }
+      const data = JSON.parse(JSON.stringify(saved), (_, value) => value && Array.isArray(value.__quizSet) ? new Set(value.__quizSet) : value);
+      activity.steps = data.order.map(id => originalSteps.find(step => step.id === id));
+      ({stepIndex, score, currentMaximum, completed, wrongAttempts, states, familyLayout, familyGroups} = data);
+    } else {
+      activity.steps = newOrder(); stepIndex = 0; score = 0; currentMaximum = 0; completed = false;
+      wrongAttempts = {}; states = {}; familyLayout = null; familyGroups = null;
+    }
+    scoredSteps = activity.steps.filter(step => Number(step.points) > 0);
+    if (stepIndex >= activity.steps.length) renderFinish();
+    else {
+      render();
+      if (completed) restoreSuccess(activity.steps[stepIndex]);
+      if (saved?.feedback?.message) setFeedback(saved.feedback.message, ["ok", "warn", "info"].includes(saved.feedback.kind) ? saved.feedback.kind : "info");
+    }
+    cloud.mount(); lockQuiz(cloud.blocked);
+  }
+
+  function lockQuiz(locked) {
+    const content = document.getElementById("content"), actions = document.getElementById("actions");
+    if (content) content.inert = locked || completed;
+    if (actions) actions.inert = locked;
+  }
+
+  function restoreSuccess(step) {
+    if (step.type === "cards") showAnswerPhotos(step.correct);
+    if (step.type === "familySort") showFamilySuccess(states[stepIndex], { order: familyLayout });
+    if (step.type === "sourceSort") showSourceSuccess(states[stepIndex]);
+    if (step.type === "titleSort" || step.type === "functionSort") document.querySelectorAll(".label-drop").forEach(drop => { drop.style.borderStyle = "solid"; });
+    document.querySelectorAll(".option, .card-button").forEach(button => { button.disabled = true; });
+    setActions([makeButton(stepIndex === activity.steps.length - 1 ? "Voir le résultat" : "Question suivante", nextStep, true)]);
+  }
 
   function fitFrame() {
     const frame = document.getElementById("frame");
@@ -70,6 +121,7 @@
           <div class="header-activity">${escapeHtml(activity.activity)} : ${escapeHtml(activity.title)}</div>
           <div class="header-question">${screenLabel}</div>
         </header>
+        <div class="save-bar" id="saveBar"></div>
         <main class="content" id="content"></main>
         <footer class="footer">
           <div class="feedback info" id="feedback">Discutez dans le groupe avant de valider.</div>
@@ -78,6 +130,7 @@
         </footer>
       </div>`;
     fitFrame();
+    cloud.mount();
   }
 
   function scoreLabel() {
@@ -102,7 +155,11 @@
     button.type = "button";
     button.className = `action${primary ? " primary" : ""}`;
     button.textContent = text;
-    button.addEventListener("click", handler);
+    button.addEventListener("click", async () => {
+      if (!cloud.identity || cloud.blocked) return;
+      handler();
+      await cloud.save(snapshot());
+    });
     return button;
   }
 
@@ -237,19 +294,21 @@
 
   function renderChoice(step) {
     const content = document.getElementById("content");
-    const options = shuffle(step.options);
+    if (!states[stepIndex]) states[stepIndex] = { selected: [], options: shuffle(step.options) };
+    const selectionState = states[stepIndex];
+    const options = selectionState.options;
     content.innerHTML = `
       <div class="question-layout">
         <div class="prompt">${escapeHtml(step.prompt)}</div>
         <section class="panel selection-panel"><div class="choice-grid" id="choices"></div></section>
         <aside class="panel preview-panel preview-only" id="preview"><img class="preview-image" src="${PHOTO("X")}" alt="Point d’interrogation"></aside>
       </div>`;
-    const selected = new Set();
+    const selected = new Set(selectionState.selected);
     const choices = document.getElementById("choices");
     options.forEach((option) => {
       const button = document.createElement("button");
       button.type = "button";
-      button.className = "option";
+      button.className = "option" + (selected.has(option) ? " selected" : "");
       button.textContent = option;
       button.dataset.value = option;
       button.addEventListener("click", () => {
@@ -259,6 +318,7 @@
           selected.clear();
           selected.add(option);
         }
+        selectionState.selected = [...selected];
         [...choices.children].forEach((item) => item.classList.toggle("selected", selected.has(item.dataset.value)));
       });
       choices.append(button);
@@ -276,12 +336,14 @@
         <section class="panel selection-panel"><div class="card-grid" id="cardGrid"></div></section>
         <aside class="panel preview-panel preview-only" id="preview"><img class="preview-image" id="previewImage" src="${PHOTO("X")}" alt="Point d’interrogation"></aside>
       </div>`;
-    const selected = new Set();
+    if (!states[stepIndex]) states[stepIndex] = { selected: [] };
+    const selectionState = states[stepIndex];
+    const selected = new Set(selectionState.selected);
     const grid = document.getElementById("cardGrid");
     activity.cards.forEach((number) => {
       const button = document.createElement("button");
       button.type = "button";
-      button.className = "card-button";
+      button.className = "card-button" + (selected.has(number) ? " selected" : "");
       button.textContent = number;
       button.dataset.value = String(number);
       const preview = () => {
@@ -301,6 +363,7 @@
         preview();
         if (selected.has(number)) selected.delete(number);
         else selected.add(number);
+        selectionState.selected = [...selected];
         button.classList.toggle("selected", selected.has(number));
       });
       grid.append(button);
@@ -808,5 +871,5 @@
     else throw new Error(`Type d’écran inconnu : ${step.type}`);
   }
 
-  render();
+  cloud.showLogin();
 })();
