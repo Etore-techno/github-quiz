@@ -699,3 +699,60 @@ button { font: inherit; }
 .save-status.error { color: #9b2020; }
 button:disabled { opacity: .55; cursor: default; }
 [inert] { cursor: wait; }
+
+/* Listes de classe/groupe rendues dans le cadre 1920×1080 : elles suivent sa compensation de zoom. */
+.login-dropdown { position: relative; width: 100%; }
+.login-dropdown-toggle {
+  width: 100%;
+  min-height: 68px;
+  padding: 18px 54px 18px 18px;
+  border: 3px solid var(--blue);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  position: relative;
+}
+.login-dropdown-toggle::after {
+  content: "";
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-top: 12px solid #333;
+  transform: translateY(-35%);
+}
+.login-dropdown.open .login-dropdown-toggle::after { transform: translateY(-65%) rotate(180deg); }
+.login-dropdown-menu {
+  position: absolute;
+  z-index: 50;
+  left: 0;
+  right: 0;
+  top: calc(100% + 6px);
+  overflow: hidden;
+  border: 3px solid var(--blue);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, .18);
+}
+.login-dropdown-menu[hidden] { display: none; }
+.login-dropdown-menu button {
+  display: block;
+  width: 100%;
+  padding: 13px 18px;
+  border: 0;
+  border-bottom: 1px solid #d7dcf3;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.login-dropdown-menu button:last-child { border-bottom: 0; }
+.login-dropdown-menu button:hover,
+.login-dropdown-menu button:focus { background: var(--blue-soft); outline: none; }
