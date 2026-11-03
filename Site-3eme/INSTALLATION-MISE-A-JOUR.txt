@@ -1,0 +1,29 @@
+MISE À JOUR DU SITE TECHNOLOGIE 3ème
+
+Cette archive contient uniquement les trois fichiers du site et cette notice.
+Elle ne contient PAS de contenu.txt ni de dossiers documents ou activites.
+
+1. Décompresse l'archive dans un dossier temporaire.
+2. Copie index.html, style.css et app.js dans ton dossier ACTUEL du site,
+   au même endroit que ton contenu.txt déjà rempli.
+3. Accepte le remplacement de ces trois fichiers.
+4. Conserve ton contenu.txt et tous tes dossiers tels quels.
+5. Envoie les trois fichiers mis à jour sur ton hébergement.
+6. Recharge la page avec Ctrl+F5 si l'ancienne présentation apparaît encore.
+
+Aucune modification de contenu.txt n'est nécessaire.
+Le format #, ##, PDF |, WEB |, VIDEO | et LIEN | reste identique.
+Les chemins des documents et activités restent identiques.
+
+Le menu latéral et les cadres de l'accueil se construisent automatiquement.
+Clique sur une séquence dans le menu pour dérouler ses activités.
+Le lien « Vue de la séquence » affiche l'ensemble de ses activités.
+
+Les vidéos utilisent une miniature YouTube quand celle-ci est disponible.
+À défaut, une icône de lecture reste affichée. Les PDF et les pages web
+utilisent des icônes de type de ressource, pas des captures de leur contenu.
+Les documents et les liens s'ouvrent dans un nouvel onglet.
+Les vidéos s'ouvrent dans le lecteur intégré comme dans la version précédente.
+
+En ouverture locale par double-clic, sélectionne ton contenu.txt dans le
+sélecteur prévu. Sur ton hébergement, ce chargement est automatique.

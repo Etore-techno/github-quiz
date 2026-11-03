@@ -1,0 +1,52 @@
+TECHNOLOGIE 3e — INSTALLATION ET UTILISATION
+
+1. Décompresse tout le dossier, ne travaille pas directement dans le ZIP.
+2. Ouvre contenu.txt : l'aide et les modèles sont en haut.
+3. Remplace les titres d'exemple, dépose tes PDF dans documents et ajoute leurs liens.
+4. Pour prévisualiser : ouvre index.html puis choisis contenu.txt.
+5. Envoie le contenu du dossier sur ton hébergement, par exemple dans un
+   sous-dossier technologie-3e de ton dépôt GitHub Pages.
+6. L'adresse à communiquer est alors celle de ton site suivie de
+   /technologie-3e/ (selon l'emplacement que tu as choisi).
+
+FICHIERS
+index.html : page d'accueil (ne pas modifier).
+style.css : apparence (ne pas modifier).
+app.js : fonctionnement (ne pas modifier).
+contenu.txt : titres, descriptions et liens (ton fichier de travail).
+documents/ : tes PDF ; crée de nouveaux sous-dossiers si nécessaire.
+activites/ : tes activités HTML locales avec leurs fichiers associés, si besoin.
+
+AU QUOTIDIEN
+Dépose un document, copie-colle une ligne dans contenu.txt, adapte son nom
+et son chemin, puis mets ces fichiers en ligne. Pas de compilation, pas
+ d'installation, pas de compte supplémentaire pour les élèves.
+Les séquences et activités sont créées automatiquement à partir du texte.
+Les descriptions sont facultatives. Les rubriques vides affichent un message
+indiquant que les ressources seront ajoutées prochainement.
+
+NAVIGATION
+L'élève choisit une séquence, puis une activité, puis une ressource.
+Le fil d'Ariane en haut permet de revenir en arrière, ainsi que le bouton
+Précédent du navigateur. L'adresse d'une activité peut être copiée et partagée.
+Les liens PDF, WEB et LIEN demandent un nouvel onglet ; le navigateur peut
+selon ses réglages ouvrir une fenêtre ou télécharger certains documents.
+
+VIDÉOS
+VIDEO ouvre un lecteur YouTube intégré dans une fenêtre sur la page.
+Fermer la fenêtre ou appuyer sur Échap arrête la lecture.
+Le lecteur n'est chargé qu'au clic ; il utilise youtube-nocookie.com.
+Cela reste un service YouTube externe : connexion Internet nécessaire,
+restrictions, publicités ou liens propres au lecteur possibles.
+Certaines vidéos refusent l'intégration, sont privées, indisponibles ou
+soumises à une limite d'âge. Un lien de secours vers YouTube est proposé.
+Une ouverture locale par double-clic ne permet pas de tester correctement
+le lecteur : teste les vidéos depuis ton hébergement HTTPS.
+
+DÉPANNAGE
+Page sans contenu : vérifie que contenu.txt est à côté de index.html.
+Message « ligne à corriger » : le numéro désigne la ligne de contenu.txt.
+PDF introuvable : vérifie le chemin, les majuscules et l'envoi du fichier.
+Ancien contenu : attends la publication de l'hébergeur puis Ctrl+F5.
+Les erreurs de syntaxe sont signalées ; l'existence des PDF et l'autorisation
+YouTube ne peuvent pas être garanties automatiquement par cette page.

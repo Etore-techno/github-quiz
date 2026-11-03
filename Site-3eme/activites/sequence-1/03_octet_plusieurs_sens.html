@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Activité 2 – Un octet, plusieurs sens</title>
+  <style>
+    :root{--bg:#07111f;--panel:#10243a;--panel2:#162e47;--line:#34516d;--ink:#f6f9fc;--muted:#b2c1cf;--teal:#3bd5d0;--orange:#ff8f5a;--yellow:#ffd166;--green:#4dd59b;--blue:#6eb9ff;--red:#ff717c}
+    *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--bg);font-family:"Liberation Sans",Arial,sans-serif;color:var(--ink)}
+    #viewport{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 75% 10%,#234563,#07111f 53%,#030910)}
+    #app{position:absolute;width:1920px;height:1080px;transform-origin:center center;will-change:transform;padding:26px 34px;display:grid;grid-template-rows:108px 1fr;gap:18px}
+    header{display:flex;align-items:center;gap:24px;border-bottom:2px solid var(--line);padding:0 5px 16px}.brand{flex:1}.kicker{font-size:17px;letter-spacing:2px;font-weight:900;color:var(--teal);margin:0}.brand h1{font-size:44px;margin:5px 0 3px;line-height:1}.brand p{font-size:20px;color:var(--muted);margin:0}.progress{display:flex;align-items:center;gap:10px}.step-dot{width:41px;height:41px;border-radius:50%;display:grid;place-items:center;background:#193047;border:2px solid #385873;color:#8fa6bb;font-size:17px;font-weight:900}.step-dot.current{background:var(--orange);border-color:#ffc0a3;color:#2f1004}.step-dot.done{background:var(--green);border-color:#aaf2d3;color:#07261c}.score{margin-left:12px;padding:13px 18px;border-radius:13px;background:#132a40;border:1px solid var(--line);font-size:20px;font-weight:900;color:var(--yellow)}
+    main{min-height:0;display:grid;grid-template-columns:1182px 1fr;gap:20px}.left{min-height:0;display:grid;grid-template-rows:294px 1fr;gap:17px}.panel,.mission{background:linear-gradient(150deg,#142b42,#0c1d2f);border:1px solid var(--line);border-radius:21px;box-shadow:0 18px 40px #0004}.editor{padding:19px 22px}.panel-head{display:flex;align-items:end;justify-content:space-between}.panel-head h2{font-size:29px;margin:0}.panel-head p{font-size:17px;color:var(--muted);margin:0}.bit-row{display:grid;grid-template-columns:repeat(8,1fr);gap:11px;margin-top:17px}.bit-button{height:126px;border-radius:16px;border:2px solid #49647c;background:#172d43;color:white;cursor:pointer;display:grid;grid-template-rows:auto 1fr auto;place-items:center;padding:10px 6px;transition:.14s}.bit-button:hover{transform:translateY(-2px);border-color:var(--teal)}.bit-button.on{background:linear-gradient(180deg,#ffad76,#e55f31);border-color:#ffd2bc;box-shadow:0 0 18px #ff8f5a55}.bit-button small{font-size:15px;font-weight:900;color:#a9bac9}.bit-button.on small{color:#5a250d}.bit-value{font-size:52px;line-height:1;font-weight:900}.bit-button b{font-size:16px;color:#dce7ef}.bit-button.on b{color:#4f1c08}.editor-footer{display:flex;align-items:center;justify-content:space-between;margin-top:13px}.byte-code{font:900 37px "Liberation Mono",monospace;letter-spacing:8px;color:var(--yellow)}.mini-actions{display:flex;gap:10px}.small-btn{border:1px solid #49647c;background:#142a3e;color:white;border-radius:11px;padding:10px 15px;font-size:17px;font-weight:900;cursor:pointer}
+    .meanings{display:grid;grid-template-columns:1fr 1fr;gap:12px}.meaning-card{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:17px;background:linear-gradient(145deg,#142b42,#0b1b2c);padding:15px 17px;display:grid;grid-template-rows:auto 1fr}.meaning-head{display:flex;align-items:center;gap:12px}.meaning-icon{width:45px;height:45px;border-radius:11px;display:grid;place-items:center;font-size:25px;font-weight:900;flex:0 0 auto}.number .meaning-icon{background:#173e3d;color:var(--teal)}.character .meaning-icon{background:#43351a;color:var(--yellow)}.pixels .meaning-icon{background:#2d284d;color:var(--purple,#b8a2ff)}.controller .meaning-icon{background:#48271f;color:var(--orange)}.meaning-head h3{font-size:29px;margin:0;line-height:1.05}.meaning-head p{font-size:21px;line-height:1.18;color:var(--muted);margin:5px 0 0}.meaning-body{display:grid;place-items:center;min-height:0}.large-result{font-size:72px;line-height:1;font-weight:900}.number .large-result{color:var(--teal)}.character .large-result{color:var(--yellow)}.char-note{font-size:19px;color:var(--muted);text-align:center;margin-top:7px}.pixel-row{display:grid;grid-template-columns:repeat(8,42px);gap:5px}.pixel{width:42px;height:42px;border-radius:5px;border:2px solid #71859a;background:#fff}.pixel.on{background:#050505;border-color:#71859a;box-shadow:none}.button-list{display:grid;grid-template-columns:repeat(4,minmax(120px,1fr));gap:12px;width:min(100%,760px)}.button-pill{padding:11px 13px;border-radius:9px;background:#1a3148;border:1px solid #405d77;color:#9cb0c2;font-weight:900;font-size:18px;text-align:center}.button-pill.on{background:#63311f;border-color:var(--orange);color:#ffe6da}.none{color:#8196a9;font-weight:800}
+    .mission{padding:19px 20px;display:grid;grid-template-rows:auto 1fr auto;gap:12px}.mission-kicker{font-size:14px;color:var(--orange);font-weight:900;letter-spacing:1.5px}.mission h2{font-size:36px;line-height:1.08;margin:7px 0 9px}.mission-intro{font-size:24px;line-height:1.32;color:#d7e1ea;margin:0}.mission-body{align-self:center;min-height:0}.target-box{border-radius:17px;background:#091827;border:2px solid #355673;padding:22px;text-align:center}.target-label{font-size:22px;font-weight:900;color:var(--muted);letter-spacing:1px}.target{font-size:70px;font-weight:900;line-height:1.05;color:var(--yellow);margin:9px 0}.target-sub{font-size:22px;line-height:1.3;color:#c8d4df}.conclusion-options{display:grid;gap:12px}.choice{width:100%;border:1px solid #48657f;background:#142b42;color:#eef5f8;border-radius:12px;padding:15px 17px;text-align:left;font-size:21px;line-height:1.28;font-weight:800;cursor:pointer}.choice.selected{border-color:var(--yellow);background:#443a20}.feedback{min-height:82px;border-radius:12px;background:#14283b;border:1px solid #35526b;padding:14px 17px;font-size:21px;line-height:1.32;color:#bccad6;margin-top:4px}.feedback.good{background:#123b30;border-color:var(--green);color:#c8f7e2;font-size:23px}.feedback.bad{background:#47252a;border-color:var(--red);color:#ffe0e3}.controls{display:flex;gap:10px;align-items:center}.controls button{border:0;border-radius:11px;padding:13px 16px;font-size:19px;font-weight:900;cursor:pointer}.verify{background:var(--green);color:#06241a;flex:1}.next{background:var(--orange);color:#361305;flex:1}.reset{background:#1a3045;color:white;border:1px solid #4a6278!important}.hidden{display:none!important}.rule{margin-top:14px;padding:15px 17px;border-radius:12px;background:#2e2919;border:1px solid #7a6730;color:#ffe5a0;font-size:22px;line-height:1.28;font-weight:900;text-align:center}
+    #app[data-mode="number"] .meaning-card:not(.number),#app[data-mode="character"] .meaning-card:not(.character),#app[data-mode="pixels"] .meaning-card:not(.pixels),#app[data-mode="controller"] .meaning-card:not(.controller){display:none}
+    #app[data-mode="number"] .meanings,#app[data-mode="character"] .meanings,#app[data-mode="pixels"] .meanings,#app[data-mode="controller"] .meanings{grid-template-columns:1fr}
+    #app[data-mode="number"] .meaning-card,#app[data-mode="character"] .meaning-card,#app[data-mode="pixels"] .meaning-card,#app[data-mode="controller"] .meaning-card{padding:24px 28px}
+    #app[data-mode="number"] .large-result,#app[data-mode="character"] .large-result{font-size:118px}
+    #app[data-mode="pixels"] .pixel-row{grid-template-columns:repeat(8,68px);gap:9px}#app[data-mode="pixels"] .pixel{width:68px;height:68px}
+    #app[data-mode="controller"] .button-pill{font-size:21px;padding:13px 18px}
+    #app[data-mode="pixels"] .bit-button small,#app[data-mode="controller"] .bit-button small{visibility:hidden}
+    .code-table{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:13px}.code-table span{border-radius:9px;background:#142b42;border:1px solid #49657e;padding:9px 5px;font-size:15px;font-weight:900;color:#dfe8f0}.code-table b{display:block;color:var(--yellow);font-size:21px}.target-pixels{display:grid;grid-template-columns:repeat(8,42px);justify-content:center;gap:7px;margin:18px 0}.target-pixels i{width:42px;height:42px;border-radius:5px;background:#fff;border:2px solid #71859a}.target-pixels i.on{background:#050505;border-color:#71859a}.meaning-explanation{max-width:620px;text-align:center;font-size:20px;line-height:1.4;color:#dce6ee}.meaning-explanation strong{color:var(--yellow)}
+
+    /* Version équilibrée : une mission lisible et une validation directe. */
+    header{gap:18px}.brand{min-width:0}.kicker{display:none}.brand h1{margin:0;font-size:39px}.progress{margin-left:auto}.mission-status{min-width:150px;border-radius:13px;background:#193047;border:1px solid #46627b;padding:13px 16px;text-align:center;color:#dce8f2;font-size:18px;font-weight:900;white-space:nowrap}.mission-kicker{display:none}
+    /* Lecture confortable sur vidéoprojecteur et postes élèves. */
+    .panel-head h2{font-size:34px}.panel-head p{font-size:21px}.bit-button small{font-size:18px}.bit-button b{font-size:19px}.small-btn{font-size:20px}.ascii-help{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}.ascii-help span{border-radius:10px;background:#142b42;border:1px solid #49657e;padding:11px 6px;font-size:18px;font-weight:900}.ascii-help b{display:block;color:var(--yellow);font-size:23px}.ascii-help code{display:block;margin-top:5px;color:#dce8f2;font-size:17px}.ascii-more{font-size:21px;line-height:1.4;color:#d9e4ec}.ascii-more b{color:var(--yellow)}.explore-note{font-size:23px;line-height:1.5;text-align:left}.explore-note strong{color:var(--yellow);font-size:25px}
+    #app[data-mode="number"] .meaning-head h3,#app[data-mode="character"] .meaning-head h3,#app[data-mode="pixels"] .meaning-head h3,#app[data-mode="controller"] .meaning-head h3{font-size:34px}
+    #app[data-mode="number"] .meaning-head p,#app[data-mode="character"] .meaning-head p,#app[data-mode="pixels"] .meaning-head p,#app[data-mode="controller"] .meaning-head p{font-size:25px}
+    #app[data-mode="controller"] .button-pill{font-size:22px;padding:15px 18px}
+    #app[data-mode="conclusion"] .meaning-head h3,#app[data-mode="explore"] .meaning-head h3{font-size:29px}
+    #app[data-mode="conclusion"] .meaning-head p,#app[data-mode="explore"] .meaning-head p{font-size:20px}
+  </style>
+</head>
+<body>
+  <div id="viewport"><div id="app">
+    <header>
+      <div class="brand"><p class="kicker">ACTIVITÉ 2 · 5 PETITES MISSIONS</p><h1>Un octet, plusieurs significations</h1></div>
+      <div class="progress" id="progress"></div><div class="score" id="score">Score : 0/5</div>
+    </header>
+    <main>
+      <section class="left">
+        <article class="panel editor">
+          <div class="panel-head"><div><h2>Clique sur les bits</h2></div><p>1 = actif · 0 = inactif</p></div>
+          <div class="bit-row" id="bitRow"></div>
+          <div class="editor-footer"><div class="byte-code" id="byteCode">00000000</div><div class="mini-actions"><button class="small-btn" id="zeroBtn">Tout à 0</button><button class="small-btn" id="randomBtn">Au hasard</button></div></div>
+        </article>
+        <section class="meanings">
+          <article class="meaning-card number"><div class="meaning-head"><span class="meaning-icon">#</span><div><h3>Un nombre entier</h3><p>Addition des poids associés aux bits à 1</p></div></div><div class="meaning-body"><div class="large-result" id="decimalValue">0</div></div></article>
+          <article class="meaning-card character"><div class="meaning-head"><span class="meaning-icon">A</span><div><h3>Un caractère</h3><p>Lecture selon la convention ASCII</p></div></div><div class="meaning-body"><div><div class="large-result" id="charValue">—</div><div class="char-note" id="charNote">caractère non affichable</div></div></div></article>
+          <article class="meaning-card pixels"><div class="meaning-head"><span class="meaning-icon">▦</span><div><h3>Une ligne de pixels</h3><p>1 = Noir · 0 = Blanc</p></div></div><div class="meaning-body"><div class="pixel-row" id="pixelRow"></div></div></article>
+          <article class="meaning-card controller"><div class="meaning-head"><span class="meaning-icon">＋</span><div><h3>Des boutons de la manette NES</h3><p>Ordre : A, B, Select, Start, Haut, Bas, Gauche, Droite</p></div></div><div class="meaning-body"><div class="button-list" id="buttonList"></div></div></article>
+        </section>
+      </section>
+      <aside class="mission">
+        <div><div class="mission-kicker" id="missionKicker">MISSION 1 SUR 5</div><h2 id="missionTitle">Fais sauter à droite</h2><p class="mission-intro" id="missionIntro">Retrouve les positions des boutons de la manette NES étudiée dans l’activité 1.</p></div>
+        <div class="mission-body" id="missionBody"></div>
+        <div><div class="feedback" id="feedback">Commence par activer plusieurs bits différents.</div><div class="controls"><button class="reset" id="restartBtn">Recommencer</button><button class="verify" id="verifyBtn">Vérifier</button><button class="next hidden" id="nextBtn">Mission suivante →</button></div></div>
+      </aside>
+    </main>
+  </div></div>
+  <script>
+    (()=>{
+      'use strict';
+      const app=document.getElementById('app');
+      function fitToScreen(){
+        const scale=Math.min(window.innerWidth/1920,window.innerHeight/1080);
+        app.style.transform=`scale(${scale})`;
+      }
+      window.addEventListener('resize',fitToScreen);
+      fitToScreen();
+      const weights=[128,64,32,16,8,4,2,1];
+      const buttons=['A','B','Select','Start','Haut','Bas','Gauche','Droite'];
+      let bits=[0,0,0,0,0,0,0,0],mission=0,score=0,changed=new Set(),choice=null,resolved=false;
+      const missions=[
+        {title:'Fais sauter à droite',intro:'Retrouve les positions des boutons de la manette NES étudiée dans l’activité 1.',kind:'controller',targetBits:'10000001'},
+        {title:'Reproduis les pixels',intro:'Lis la ligne de gauche à droite : 1 = Noir et 0 = Blanc.',kind:'pixels',targetBits:'10100101'},
+        {title:'Construis le nombre 13',intro:'Active les bits qui permettent d’obtenir 13.',kind:'number',target:13},
+        {title:'Affiche la lettre M',intro:'Retrouve d’abord le nombre associé à M dans la table ASCII, puis construis son octet.',kind:'character',target:77},
+        {title:'Choisis la bonne règle',intro:'Pourquoi le même octet peut-il avoir plusieurs sens ?',kind:'conclusion'},
+        {title:'Test libre',intro:'Teste maintenant les octets de ton choix et observe leurs quatre interprétations.',kind:'explore'}
+      ];
+      const bitRow=document.getElementById('bitRow'),byteCode=document.getElementById('byteCode'),decimalValue=document.getElementById('decimalValue'),charValue=document.getElementById('charValue'),charNote=document.getElementById('charNote'),pixelRow=document.getElementById('pixelRow'),buttonList=document.getElementById('buttonList'),feedback=document.getElementById('feedback'),verifyBtn=document.getElementById('verifyBtn'),nextBtn=document.getElementById('nextBtn');
+      bitRow.innerHTML=weights.map((w,i)=>`<button class="bit-button" data-index="${i}"><small>poids ${w}</small><span class="bit-value">0</span><b>bit ${i+1}</b></button>`).join('');
+      pixelRow.innerHTML=bits.map(()=>'<span class="pixel"></span>').join('');
+      buttonList.innerHTML=buttons.map((b,i)=>`<span class="button-pill" data-button-index="${i}">${b}</span>`).join('');
+      function value(){return bits.reduce((sum,bit,i)=>sum+bit*weights[i],0)}
+      function code(){return bits.join('')}
+      function update(){
+        const v=value();byteCode.textContent=code();decimalValue.textContent=v;
+        document.querySelectorAll('.bit-button').forEach((el,i)=>{el.classList.toggle('on',bits[i]===1);el.querySelector('.bit-value').textContent=bits[i]});
+        document.querySelectorAll('.pixel').forEach((el,i)=>el.classList.toggle('on',bits[i]===1));
+        document.querySelectorAll('.button-pill').forEach((el,i)=>el.classList.toggle('on',bits[i]===1));
+        if(v>=32&&v<=126){charValue.textContent=String.fromCharCode(v);charNote.textContent=`ASCII ${v}`}else{charValue.textContent='—';charNote.textContent=`ASCII ${v} : caractère non affichable`}
+      }
+      function setBitsFromValue(v){bits=weights.map(w=>v&w?1:0);update()}
+      bitRow.addEventListener('click',e=>{const btn=e.target.closest('[data-index]');if(!btn||resolved||missions[mission].kind==='conclusion')return;const i=Number(btn.dataset.index);bits[i]=bits[i]?0:1;changed.add(i);update()});
+      document.getElementById('zeroBtn').addEventListener('click',()=>{if(resolved||missions[mission].kind==='conclusion')return;bits.fill(0);changed.clear();update()});
+      document.getElementById('randomBtn').addEventListener('click',()=>{if(resolved||missions[mission].kind==='conclusion')return;setBitsFromValue(Math.floor(Math.random()*256));changed=new Set([0,1,2]);update()});
+      function progress(){document.getElementById('progress').innerHTML=`<span class="mission-status">${mission===missions.length-1?'Test libre':`Mission ${mission+1} / 5`}</span>`;document.getElementById('score').textContent=`Score : ${score}/5`}
+      function renderMission(){
+        resolved=false;choice=null;changed.clear();verifyBtn.classList.remove('hidden');nextBtn.classList.add('hidden');feedback.className='feedback';feedback.textContent='Construis ta réponse puis clique sur « Vérifier ».';
+        const m=missions[mission];app.dataset.mode=m.kind;if(m.kind==='conclusion'){bits='01000001'.split('').map(Number);feedback.textContent='Observe les quatre lectures du même octet 01000001, puis choisis la bonne conclusion.'}
+        if(m.kind==='explore'){verifyBtn.classList.add('hidden');nextBtn.classList.add('hidden');feedback.className='feedback good';feedback.innerHTML='<strong>À toi d’expérimenter.</strong> Modifie les bits et relève plusieurs résultats sur ta fiche.'}
+        document.getElementById('missionKicker').textContent=`MISSION ${mission+1} SUR ${missions.length}`;document.getElementById('missionTitle').textContent=m.title;document.getElementById('missionIntro').textContent=m.intro;
+        const body=document.getElementById('missionBody');
+        if(m.kind==='number')body.innerHTML='<div class="target-box"><div class="target-label">NOMBRE À OBTENIR</div><div class="target">13</div><div class="target-sub">À toi de trouver les bons poids.</div></div>';
+        if(m.kind==='character')body.innerHTML='<div class="target-box"><div class="target-label">COMMENT FONCTIONNE ASCII ?</div><div class="ascii-more">ASCII est une table commune : chaque caractère est associé à un nombre, puis ce nombre est écrit en binaire. Les majuscules se suivent dans l’ordre.</div><div class="ascii-help"><span><b>A = 65</b><code>01000001</code></span><span><b>Z = 90</b><code>01011010</code></span><span><b>a = 97</b><code>01100001</code></span><span><b>z = 122</b><code>01111010</code></span><span><b>0 = 48</b><code>00110000</code></span><span><b>? = 63</b><code>00111111</code></span></div><div class="ascii-more">Une majuscule, une minuscule, un chiffre ou un signe n’ont donc pas le même code. Quelle valeur correspond à la 13e majuscule, <b>M</b> ? Construis ensuite son octet.</div></div>';
+        if(m.kind==='pixels')body.innerHTML='<div class="target-box"><div class="target-label">LIGNE À REPRODUIRE</div><div class="target-pixels"><i class="on"></i><i></i><i class="on"></i><i></i><i></i><i class="on"></i><i></i><i class="on"></i></div><div class="target-sub"><b>1 = Noir</b> · <b>0 = Blanc</b></div></div>';
+        if(m.kind==='controller')body.innerHTML='<div class="target-box"><div class="target-label">ACTION À COMMANDER</div><div class="target" style="font-size:44px">A + Droite</div><div class="target-sub">Sauter vers la droite</div></div>';
+        if(m.kind==='conclusion'){
+          body.innerHTML='<div class="conclusion-options"><button class="choice" data-choice="0">Les huit bits indiquent eux-mêmes s’ils représentent un nombre, une lettre, des pixels ou des boutons.</button><button class="choice" data-choice="1">Pour comprendre l’octet, l’émetteur et le récepteur doivent utiliser la même règle de codage.</button><button class="choice" data-choice="2">La table ASCII doit être utilisée pour décoder toutes les informations numériques.</button></div><div class="rule">Un octet transporte des bits. La convention donne leur signification.</div>';
+          body.querySelectorAll('.choice').forEach(btn=>btn.addEventListener('click',()=>{if(resolved)return;choice=Number(btn.dataset.choice);body.querySelectorAll('.choice').forEach(b=>b.classList.toggle('selected',b===btn))}));
+        }
+        if(m.kind==='explore')body.innerHTML='<div class="target-box explore-note"><strong>Mode d’emploi</strong><br>1. Choisis un octet en cliquant sur les huit bits.<br>2. Observe le nombre, le caractère ASCII, la ligne de pixels et les boutons.<br>3. Teste au moins trois octets pour compléter ta fiche.</div>';
+        progress();update();
+      }
+      function verify(){
+        if(resolved)return;const m=missions[mission];let good=false;
+        if(m.kind==='number'||m.kind==='character')good=value()===m.target;
+        if(m.kind==='pixels'||m.kind==='controller')good=code()===m.targetBits;
+        if(m.kind==='conclusion')good=choice===1;
+        if(!good){feedback.className='feedback bad';const hints={number:'Additionne uniquement les poids situés au-dessus des bits à 1.',character:'A vaut 65 et les majuscules se suivent. Compte jusqu’à la 13e lettre, puis construis ce nombre avec les poids.',pixels:'Compare chaque pixel, de gauche à droite : Noir vaut 1 et Blanc vaut 0.',controller:'Repère les positions A et Droite dans l’ordre indiqué.',conclusion:'Cherche la réponse qui explique pourquoi le même octet peut avoir plusieurs significations.'};feedback.textContent=hints[m.kind];return}
+        resolved=true;score++;feedback.className='feedback good';
+        const messages={controller:'10000001 active A et Droite dans la convention choisie.',pixels:'La ligne demandée donne 10100101.',number:'13 = 8 + 4 + 1, donc 00001101.',character:'La table ASCII associe M au nombre 77, codé ici 01001101.',conclusion:'Exact : les bits sont identiques, mais leur sens dépend de la convention connue par l’émetteur et le récepteur.'};
+        feedback.innerHTML=`<strong>Réussi.</strong> ${messages[m.kind]}`;verifyBtn.classList.add('hidden');nextBtn.classList.remove('hidden');nextBtn.textContent=mission===missions.length-2?'Test libre →':'Mission suivante →';progress();
+      }
+      function next(){mission++;bits.fill(0);renderMission()}
+      verifyBtn.addEventListener('click',verify);nextBtn.addEventListener('click',next);document.getElementById('restartBtn').addEventListener('click',()=>{bits.fill(0);changed.clear();renderMission()});
+      renderMission();
+    })();
+  </script>
+</body>
+</html>

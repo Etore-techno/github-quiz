@@ -1,0 +1,111 @@
+// =====================================================================
+// TECHNOLOGIE 3e — SEUL FICHIER À MODIFIER POUR ORGANISER LE CONTENU
+// =====================================================================
+// Ouvre ce fichier avec le Bloc-notes, VS Code ou Acode (pas Word).
+// Enregistre en UTF-8 et garde le nom exact : contenu.txt
+// Les lignes commençant par // sont des commentaires invisibles aux élèves.
+// Les lignes vides sont ignorées. L'ordre ici est l'ordre sur la page.
+//
+// 1. UNE SÉQUENCE : # suivi d'un espace puis le titre.
+// 2. UNE ACTIVITÉ : ## suivi d'un espace puis le titre.
+//    Une rubrique « Synthèses » ou « Corrections » fonctionne de même.
+// 3. UNE RESSOURCE : TYPE | Texte du bouton | Adresse ou chemin du fichier
+//    PDF = document ; WEB = activité ; VIDEO = YouTube ; LIEN = autre lien.
+//    Les espaces autour de | sont facultatifs. Ne mets pas | dans un titre.
+// 4. Une ligne de texte simple sous un titre ajoute une description.
+//    Toute activité appartient à la dernière séquence écrite au-dessus.
+//    Tout lien appartient à la dernière activité écrite au-dessus.
+//
+// MODÈLE DE NOUVELLE SÉQUENCE (copie les lignes puis retire les // au début) :
+// # Séquence 2 — Mon titre
+// Une courte présentation facultative.
+// ## Activité 1 — Mon titre
+// Une consigne ou description facultative.
+// PDF | Fiche d’activité | documents/sequence-2/activite-1.pdf
+// PDF | Correction | documents/sequence-2/activite-1-correction.pdf
+// WEB | Faire l’activité | activites/mon-activite/index.html
+// VIDEO | Regarder la vidéo | COLLER_ICI_LE_LIEN_YOUTUBE
+// ## Synthèses
+// PDF | Synthèse à retenir | documents/sequence-2/synthese.pdf
+//
+// MODÈLE D'ACTIVITÉ SUPPLÉMENTAIRE :
+// ## Activité 2 — Mon titre
+// PDF | Fiche d’activité | documents/sequence-2/activite-2.pdf
+// WEB | Faire l’activité | https://adresse-de-ton-site.fr
+//
+// MODÈLES DE LIENS À COPIER SOUS UNE ACTIVITÉ :
+// PDF | Fiche d’activité | documents/sequence-1/activite-1.pdf
+// PDF | Correction | documents/sequence-1/activite-1-correction.pdf
+// PDF | Synthèse | documents/sequence-1/synthese.pdf
+// WEB | Faire l’activité | https://adresse-de-ton-activite.fr
+// VIDEO | Regarder la vidéo | COLLER_ICI_LE_LIEN_YOUTUBE
+// LIEN | Ressource complémentaire | https://adresse-du-site.fr
+//
+// DOCUMENTS : dépose les PDF dans documents/sequence-1/, sequence-2/, etc.
+// Crée autant de dossiers que nécessaire. Ils ne sont pas créés par le texte.
+// Utilise / dans les chemins, jamais un chemin Windows tel que C:\...
+// Respecte exactement les noms et les majuscules (conseil : noms simples,
+// sans accents ni espaces, par exemple activite-1-correction.pdf).
+// Pour un PDF déjà en ligne, son adresse https://... convient aussi.
+// Pour une activité locale, conserve tous ses fichiers et sous-dossiers.
+// Aucun lien de démonstration n'est activé : ajoute uniquement tes vrais liens.
+//
+// VIDÉOS : colle une adresse YouTube complète (watch?v=..., youtu.be/..., 
+// shorts/... ou live/...). Les listes de lecture seules ne sont pas acceptées.
+// La vidéo s'affiche dans la page après un clic, sans lecture automatique.
+// La lecture dépend de YouTube, des restrictions du réseau et de l'auteur.
+// Un lien de secours permet de l'ouvrir dans un nouvel onglet sur YouTube.
+// Les paramètres de début de lecture ne sont pas repris : début à 0 seconde.
+//
+// MODIFIER : change les titres, supprime ou déplace des blocs complets.
+// MASQUER : ajoute // au début de CHAQUE ligne du bloc à masquer.
+// Masquer un lien ne sécurise pas un document déjà déposé sur un site public.
+// N'envoie donc une correction sur l'hébergement que lorsque tu veux la publier.
+// Il n'y a pas de nombre maximum prédéfini de séquences ou d'activités.
+//
+// MISE EN LIGNE : envoie contenu.txt ET les nouveaux documents sur ton site.
+// Ajouter un document dans un dossier ne suffit pas : ajoute sa ligne ici.
+// Recharge ensuite la page. Si nécessaire : Ctrl+F5, puis attends la fin
+// du déploiement de ton hébergement (GitHub Pages, par exemple).
+// APERÇU LOCAL : double-clique index.html puis sélectionne ce contenu.txt.
+// Après toute modification, sélectionne-le de nouveau pour actualiser l'aperçu.
+// Les vidéos intégrées se testent sur le site en ligne.
+// =====================================================================
+// CONTENU AFFICHÉ AUX ÉLÈVES — PERSONNALISE LES TITRES CI-DESSOUS
+// =====================================================================
+
+# Séquence 1 — Coder et communiquer l'information
+Retrouve les activités et les documents de cette séquence.
+
+## Activité 1 — Le langage binaire
+VIDEO | Vidéo | https://youtu.be/VRdp_vaNRoY?si=zNPBnaWv5m23y9Gh
+PDF | Questionnaire | documents/sequence-1/Activite 1 - Sequence 1.pdf
+PDF | Questionnaire corrigé | documents/sequence-1/Activite 1 - Sequence 1 - correction.pdf
+
+## Activité 2 — De l'information à l'action (console NES)
+WEB | Activité | activites/sequence-1/02_manette_nes.html
+PDF | Document à compléter | documents/sequence-1/activite_2_manette_nes_eleve.pdf
+PDF | Document corrigé | documents/sequence-1/activite_2_manette_nes_corrige.pdf
+
+## Activité 3 — Un octet, plusieurs significations
+WEB | Activité | activites/sequence-1/03_octet_plusieurs_sens.html
+PDF | Document à compléter | documents/sequence-1/activite_3_octet_plusieurs_sens_eleve
+PDF | Document corrigé | documents/sequence-1/activite_3_octet_plusieurs_sens_correction
+
+## Synthèse
+PDF | Synthèse à compléter | documents/sequence-1/synthese.pdf
+PDF | Synthèse corrigé | documents/sequence-1/synthese_corrigé.pdf
+
+# Séquence 2 — Réseau informatique
+Retrouve les activités et les documents de cette séquence.
+
+## Activité 1 — Le fonctionnement d'un réseau
+VIDEO | Vidéo 1 - Internet | https://youtu.be/L1Uz-46m2eI?si=6y85wAKWPM9_Wlbd
+PDF | Questionnaire 1 | documents/sequence-2/Activite 1 - video 1.pdf
+PDF | Questionnaire 1 corrigé | documents/sequence-2/Activite 1 - video 1 - correction.pdf
+VIDEO | Vidéo 2 - La notion de réseau | https://youtu.be/g_C2QPCyLNY?si=ILSt4yrNOMJzTGrB
+PDF | Questionnaire 2 | documents/sequence-2/Activite 1 - video 2.pdf
+PDF | Questionnaire 2 corrigé | documents/sequence-2/Activite 1 - video 2 - correction.pdf
+
+// Pour ajouter la séquence 2, copie le modèle du haut à la fin de ce fichier,
+// retire les // du bloc copié et remplace les titres et les adresses.

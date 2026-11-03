@@ -1,0 +1,477 @@
+/* Activité 3 : scènes photographiques et animations d'énergie */
+.a3-intro-grid { grid-template-columns: 0.84fr 1.16fr; }
+.a3-intro-grid .intro-instructions { padding: 20px 32px; }
+.a3-intro-grid .intro-instructions h2 { margin-bottom: 22px; font-size: 44px; }
+.a3-intro-grid .intro-lines p { margin-bottom: 20px; font-size: 31px; line-height: 1.2; }
+
+/* Le retour de ce quiz tient sur deux lignes : la place gagnée reste dans la zone d'activité. */
+#shell { grid-template-rows: 66px minmax(0, 1fr) 112px; }
+
+.a3-intro-visual {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: 12px;
+  padding: 16px;
+  overflow: hidden;
+  border: 4px solid var(--blue);
+  border-radius: 20px;
+  background: linear-gradient(145deg, #f8faff, #e7edff);
+}
+
+.intro-scene-card {
+  position: relative;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 3px solid #7e8cff;
+  border-radius: 16px;
+  background: #fff;
+}
+
+.intro-scene-card img {
+  position: absolute;
+  inset: 3%;
+  display: block;
+  width: 94%;
+  height: 94%;
+  object-fit: contain;
+}
+.intro-radiator img {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+.source-match-board {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 22px;
+  padding: 18px 24px 8px;
+}
+
+.source-form-palette {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+  padding: 16px;
+  border: 4px solid var(--blue);
+  border-radius: 17px;
+  background: #eef2ff;
+}
+
+.form-chip {
+  flex: 0 0 auto;
+  min-height: 70px;
+  padding: 9px 13px;
+  border: 3px solid var(--blue);
+  border-radius: 12px;
+  background: #fff;
+  color: #111;
+  font-size: 23px;
+  line-height: 1.08;
+  font-weight: 850;
+  cursor: grab;
+}
+
+.form-chip:hover { background: #e7ecff; }
+.form-chip.selected { background: #9fb0ff; border-color: var(--blue-dark); }
+
+.source-pair-grid {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(3, 1fr);
+  gap: 13px 18px;
+}
+
+.source-pair {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 145px minmax(170px, 1fr) 34px minmax(238px, .95fr);
+  align-items: center;
+  gap: 9px;
+  padding: 8px;
+  overflow: hidden;
+  border: 3px solid #8391ea;
+  border-radius: 15px;
+  background: #fff;
+}
+
+.source-pair.correct-pair { border-color: var(--green); box-shadow: inset 0 0 0 2px #bce8c8; }
+.source-thumb { position: relative; height: 100%; min-height: 118px; display: block; overflow: hidden; border: 2px solid #d6dcff; border-radius: 11px; background-repeat: no-repeat; background-size: 300% 200%; }
+.source-sun,.source-wind,.source-water,.source-wood,.source-food,.source-ethanol { background-image: url("../images/source_atlas_renewable.png"); }
+.source-oil,.source-coal,.source-gas,.source-uranium,.source-catenary,.source-battery { background-image: url("../images/source_atlas_nonrenewable.png"); }
+.source-dam {
+  background-image: url("../images/source_dam.png");
+  background-size: cover;
+  background-position: center;
+}
+.source-sun,.source-oil { background-position: 0 0; }
+.source-wind,.source-coal { background-position: 50% 0; }
+.source-water,.source-gas { background-position: 100% 0; }
+.source-wood,.source-uranium { background-position: 0 100%; }
+.source-food,.source-catenary { background-position: 50% 100%; }
+.source-ethanol,.source-battery { background-position: 100% 100%; }
+.source-name { font-size: 24px; font-weight: 850; line-height: 1.12; }
+.pair-arrow { color: var(--blue); font-size: 34px; font-weight: 900; }
+.source-answer-slots { min-width: 0; display: grid; grid-template-columns: 1fr; gap: 7px; }
+.source-pair.double-answer .source-answer-slots {
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+.source-form-slot {
+  min-height: 82px;
+  padding: 6px 5px;
+  border: 3px dashed var(--blue);
+  border-radius: 11px;
+  background: #fff;
+  color: var(--blue-dark);
+  font-size: 22px;
+  line-height: 1.08;
+  font-weight: 850;
+  cursor: pointer;
+}
+.source-form-slot.filled { border-style: solid; background: #e8edff; }
+
+.energy-drag-preview {
+  position: fixed;
+  left: -1000px;
+  top: -1000px;
+  z-index: 9999;
+  width: 226px;
+  height: 68px;
+  display: grid;
+  place-items: center;
+  border: 3px solid var(--blue);
+  border-radius: 12px;
+  background: #fff;
+  color: #111;
+  font: 850 22px/1.08 Arial, sans-serif;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0,0,0,.25);
+}
+
+.animated-question {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 680px minmax(0, 1fr);
+  gap: 20px;
+  padding: 16px 0 4px;
+}
+
+.answer-zone {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 18px;
+  border: 3px solid #7587ef;
+  border-radius: 16px;
+  background: #f8f9ff;
+}
+
+.scene-options { width: 100%; display: grid; gap: 15px; }
+.scene-option {
+  min-height: 76px;
+  padding: 13px 18px;
+  border: 4px solid var(--blue);
+  border-radius: 14px;
+  background: #fff;
+  color: #111;
+  font-size: 25px;
+  font-weight: 800;
+  line-height: 1.2;
+  cursor: pointer;
+}
+.scene-option:hover { background: #e9edff; }
+.scene-option.selected { background: #9eafff; border-color: var(--blue-dark); }
+.scene-option:disabled { cursor: default; opacity: 1; }
+
+.cinema-scene {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border: 4px solid var(--blue);
+  border-radius: 18px;
+  background: #dce8f6;
+  box-shadow: 0 8px 20px rgba(0, 0, 80, .14);
+}
+
+.scene-stage { position: absolute; inset: 0 0 72px; overflow: hidden; background: #d9e7f5; }
+.photo-background { position: absolute; inset: 0; background-position: center; background-size: cover; }
+.photo-vehicle { position: absolute; display: block; object-fit: contain; filter: drop-shadow(0 8px 9px rgba(0,0,0,.35)); }
+.scene-caption { position: absolute; left: 0; right: 0; bottom: 0; height: 72px; display: grid; place-items: center; padding: 8px 120px 8px 18px; background: rgba(255,255,255,.96); color: #07158b; font-size: 19px; font-weight: 850; text-align: center; line-height: 1.15; }
+.replay-scene { display: none; position: absolute; z-index: 20; right: 13px; bottom: 14px; min-width: 150px; min-height: 43px; padding: 5px 10px; border: 2px solid var(--blue); border-radius: 9px; background: #fff; color: var(--blue-dark); font-size: 17px; font-weight: 850; cursor: pointer; }
+.cinema-scene.running .replay-scene { display: block; }
+
+.light-particle,
+.electric-particle,
+.kinetic-particle,
+.wind-streak,
+.smoke-puff,
+.speed-line,
+.water-splash { position: absolute; z-index: 12; opacity: 0; }
+.light-particle { width: 15px; height: 15px; border-radius: 50%; background: #ffe229; box-shadow: 0 0 16px 7px rgba(255,226,41,.75); }
+.electric-particle { width: 17px; height: 17px; border-radius: 50%; background: #1479ff; box-shadow: 0 0 18px 7px rgba(20,121,255,.78); }
+.kinetic-particle { width: 16px; height: 16px; border-radius: 50%; background: #22b95c; box-shadow: 0 0 17px 6px rgba(34,185,92,.76); }
+
+.mechanical-zoom {
+  position: absolute;
+  z-index: 16;
+  opacity: 0;
+  overflow: hidden;
+  border: 4px solid #fff;
+  border-radius: 15px;
+  background: rgba(8,16,48,.94);
+  box-shadow: 0 6px 20px rgba(0,0,0,.45);
+}
+.mechanical-zoom strong { position: absolute; z-index: 4; left: 0; right: 0; top: 0; min-height: 36px; display: grid; place-items: center; padding: 4px; background: rgba(6,21,139,.94); color: #fff; font-size: 17px; }
+.mechanical-zoom img { position: absolute; width: 100%; height: 100%; object-fit: contain; }
+
+/* Avion solaire */
+.solar-background { background-image: url("../images/solar_background.png"); }
+.solar-plane { z-index: 7; left: 33%; top: 34%; width: 64%; height: 52%; }
+.solar-propeller { position: absolute; z-index: 10; left: 34.8%; top: 57%; width: 17px; height: 110px; transform-origin: center; opacity: .2; }
+.solar-propeller i { position: absolute; left: 5px; top: 0; width: 7px; height: 100%; border-radius: 70%; background: rgba(25,35,50,.86); }
+.solar-propeller i:nth-child(2) { transform: rotate(90deg); }
+.sun-rays .light-particle { left: 7%; top: 12%; }
+.solar-electric .electric-particle { left: 67%; top: 46%; }
+.solar-zoom { right: 18px; bottom: 18px; width: 400px; height: 225px; }
+.panel-photo-crop { position: absolute; inset: 36px 0 0; overflow: hidden; background: #dbeeff; }
+.panel-photo-crop img { width: 260%; height: 260%; max-width: none; object-fit: contain; transform: translate(-40%, -38%); }
+.solar-zoom .zoom-flow { position: absolute; inset: 36px 0 0; z-index: 6; }
+.solar-zoom .light-particle { left: 10%; top: 20%; }
+.solar-zoom .electric-particle { left: 58%; top: 62%; }
+.solar-cinema.running .light-particle { animation: sunlight-flow 2.1s ease-in infinite; animation-delay: calc(var(--i, 0) * .18s); }
+.solar-cinema.running[data-phase="panel"] .electric-particle,
+.solar-cinema.running[data-phase="full"] .electric-particle { animation: solar-electric-flow 2s ease-in-out infinite; animation-delay: calc(var(--i, 0) * .2s + 1.15s); }
+.solar-cinema.running[data-phase="panel"] .solar-zoom,
+.solar-cinema.running[data-phase="full"] .solar-zoom { animation: zoom-show 5.5s ease both 1.05s; }
+.solar-cinema.running[data-phase="full"] .solar-propeller { opacity: .85; animation: propeller-spin .18s linear infinite 2.7s; }
+.solar-cinema.running[data-phase="full"] .solar-plane { animation: plane-flight 6s ease-in-out both 3.2s; }
+
+@keyframes sunlight-flow { 0% { opacity: 0; transform: translate(0,0) scale(.7); } 20% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; transform: translate(570px,255px) scale(1); } }
+@keyframes solar-electric-flow { 0% { opacity: 0; transform: translate(0,0); } 20% { opacity: 1; } 100% { opacity: 0; transform: translate(-300px,150px); } }
+@keyframes propeller-spin { to { transform: rotate(360deg); } }
+@keyframes plane-flight { 0% { transform: translate(0,0); } 45% { transform: translate(45px,-25px); } 100% { transform: translate(120px,-58px); } }
+
+/* Tramway électrique */
+.tram-background { background-image: url("../images/tram_background.png"); }
+.tram-vehicle { position: absolute; z-index: 8; left: 4%; right: 4%; bottom: 6%; height: 61%; }
+.tram-photo { inset: 0; width: 100%; height: 100%; }
+.photo-wheel { position: absolute; z-index: 11; width: 44px; height: 44px; border: 5px solid #2a2a2a; border-radius: 50%; background: conic-gradient(#ddd 0 10deg,#333 10deg 45deg,#ddd 45deg 55deg,#333 55deg 90deg,#ddd 90deg 100deg,#333 100deg 135deg,#ddd 135deg 145deg,#333 145deg 180deg,#ddd 180deg 190deg,#333 190deg 225deg,#ddd 225deg 235deg,#333 235deg 270deg,#ddd 270deg 280deg,#333 280deg 315deg,#ddd 315deg 325deg,#333 325deg 360deg); box-shadow: 0 0 0 2px #111; opacity: .94; }
+.photo-wheel i { position: absolute; inset: 12px; border-radius: 50%; background: #202020; }
+.tram-wheel { bottom: 12%; }
+.tram-wheel.wheel-1 { left: 18.6%; }.tram-wheel.wheel-2 { left: 29.2%; }.tram-wheel.wheel-3 { left: 75.6%; }.tram-wheel.wheel-4 { left: 86%; }
+.tram-electric .electric-particle { left: 82%; top: 0; }
+.motor-zoom { right: 18px; top: 20px; width: 440px; height: 272px; }
+.motor-zoom img { inset: 22px 0 -10px; }
+.rotor-ring { position: absolute; z-index: 5; left: 46%; top: 45%; width: 92px; height: 92px; border: 7px dashed rgba(20,121,255,.85); border-radius: 50%; opacity: 0; }
+.shaft-motion { position: absolute; z-index: 5; left: 68%; top: 62%; width: 120px; height: 9px; border-radius: 6px; background: #44a4ff; opacity: 0; }
+.motor-zoom .electric-particle { left: 6%; top: 55%; }
+.tram-cinema.running .tram-electric .electric-particle { animation: tram-electric-flow 2.5s ease-in-out infinite; animation-delay: calc(var(--i, 0) * .2s); }
+.tram-cinema.running .motor-zoom { animation: zoom-show 5.4s ease both 1.1s; }
+.tram-cinema.running .motor-zoom .electric-particle { animation: motor-electric-flow 1.3s linear infinite 1.2s; animation-delay: calc(var(--i, 0) * .18s + 1.2s); }
+.tram-cinema.running .rotor-ring { opacity: 1; animation: propeller-spin .75s linear infinite 2.2s; }
+.tram-cinema.running .shaft-motion { opacity: 1; animation: shaft-pulse .5s ease-in-out infinite alternate 2.4s; }
+.tram-cinema.running .photo-wheel { animation: wheel-spin .65s linear infinite 2.5s; }
+.tram-cinema.running .tram-vehicle { animation: tram-travel 6s ease-in-out both 2.8s; }
+@keyframes tram-electric-flow { 0% { opacity: 0; transform: translate(0,0); } 15% { opacity: 1; } 55% { opacity: 1; transform: translate(0,210px); } 100% { opacity: 0; transform: translate(-80px,390px); } }
+@keyframes motor-electric-flow { 0% { opacity: 0; transform: translate(0,0); } 20% { opacity: 1; } 100% { opacity: 0; transform: translate(210px,10px); } }
+@keyframes shaft-pulse { to { transform: translateX(18px); filter: brightness(1.6); } }
+@keyframes wheel-spin { to { transform: rotate(360deg); } }
+@keyframes tram-travel { from { transform: translateX(-35px); } to { transform: translateX(90px); } }
+
+/* Voilier */
+.sea-background { background-image: url("../images/sea_background.png"); }
+.sailboat-photo { z-index: 8; left: 26%; bottom: -2%; width: 56%; height: 88%; }
+.wind-streak { left: -18%; width: 150px; height: 6px; border-radius: 50%; background: linear-gradient(90deg, transparent, rgba(255,255,255,.98)); box-shadow: 0 0 5px rgba(255,255,255,.8); }
+.wind-streak.p1 { top: 18%; }.wind-streak.p2 { top: 26%; }.wind-streak.p3 { top: 34%; }.wind-streak.p4 { top: 43%; }.wind-streak.p5 { top: 52%; }.wind-streak.p6 { top: 62%; }.wind-streak.p7 { top: 70%; }.wind-streak.p8 { top: 79%; }
+.sail-pressure { position: absolute; z-index: 9; left: 52%; top: 13%; width: 220px; height: 330px; border-radius: 50%; background: radial-gradient(ellipse, rgba(255,255,255,.35), transparent 68%); opacity: 0; }
+.wake { position: absolute; z-index: 10; bottom: 8%; width: 190px; height: 18px; border-bottom: 5px solid rgba(255,255,255,.9); border-radius: 50%; opacity: 0; }
+.wake-one { left: 30%; }.wake-two { left: 19%; bottom: 4%; }
+.sail-cinema.running .wind-streak { animation: wind-blow 2s linear infinite; animation-delay: calc(var(--i, 0) * .16s); }
+.sail-cinema.running .sail-pressure { animation: sail-fill 1.1s ease-in-out infinite alternate .8s; }
+.sail-cinema.running .sailboat-photo { animation: boat-travel 6s ease-in-out both 1.4s; }
+.sail-cinema.running .wake { animation: wake-show 1.5s ease-in-out infinite 1.5s; }
+@keyframes wind-blow { 0% { opacity: 0; transform: translateX(0) scaleX(.6); } 20% { opacity: 1; } 100% { opacity: 0; transform: translateX(860px) scaleX(1.5); } }
+@keyframes sail-fill { from { opacity: .2; transform: scaleX(.86); } to { opacity: .9; transform: scaleX(1.08); } }
+@keyframes boat-travel { 0% { transform: translate(-45px,5px) rotate(-1deg); } 50% { transform: translate(35px,-5px) rotate(1deg); } 100% { transform: translate(105px,2px) rotate(-1deg); } }
+@keyframes wake-show { 0%,100% { opacity: .2; transform: scaleX(.7); } 50% { opacity: 1; transform: scaleX(1.2); } }
+
+/* Kayakiste et pagaie */
+.kayak-vehicle { position: absolute; z-index: 8; left: 7%; right: 6%; bottom: 2%; height: 64%; }
+.kayak-photo { inset: 0; width: 100%; height: 100%; }
+.photo-paddle { position: absolute; z-index: 13; left: 41%; top: -13%; width: 52%; height: 102%; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,.4)); transform-origin: 50% 50%; }
+.kayak-energy .kinetic-particle { left: 58%; top: 28%; }
+.water-splash { bottom: 1%; width: 24px; height: 24px; border: 5px solid rgba(228,250,255,.95); border-left-color: transparent; border-bottom-color: transparent; border-radius: 50%; }
+.water-splash.p1,.water-splash.p3,.water-splash.p5 { left: 38%; }
+.water-splash.p2,.water-splash.p4,.water-splash.p6 { left: 73%; }
+.kayak-cinema.running .photo-paddle { animation: paddle-stroke 1.4s ease-in-out infinite; }
+.kayak-cinema.running .kayak-energy .kinetic-particle { animation: kayak-energy-flow 1.4s ease-in-out infinite; animation-delay: calc(var(--i, 0) * .13s); }
+.kayak-cinema.running .water-splash { animation: water-splash 1.4s ease-out infinite; animation-delay: calc(var(--i, 0) * .2s); }
+.kayak-cinema.running .kayak-vehicle { animation: kayak-travel 6s ease-in-out both 1.2s; }
+@keyframes paddle-stroke { 0%,100% { transform: rotate(-16deg); } 50% { transform: rotate(18deg); } }
+@keyframes kayak-energy-flow { 0% { opacity: 0; transform: translate(0,0) scale(.5); } 25% { opacity: 1; } 55% { opacity: 1; transform: translate(120px,80px); } 100% { opacity: 0; transform: translate(-120px,170px) scale(1.2); } }
+@keyframes water-splash { 0% { opacity: 0; transform: translateY(0) scale(.4) rotate(20deg); } 35% { opacity: 1; } 100% { opacity: 0; transform: translateY(-95px) scale(1.5) rotate(140deg); } }
+@keyframes kayak-travel { 0% { transform: translate(-45px,5px) rotate(-1deg); } 50% { transform: translate(35px,-4px) rotate(1deg); } 100% { transform: translate(115px,2px) rotate(-1deg); } }
+
+/* Locomotive à vapeur */
+.steam-background { background-image: url("../images/steam_background.png"); }
+.steam-vehicle { position: absolute; z-index: 8; left: 3%; right: 3%; bottom: 4%; height: 65%; }
+.locomotive-photo { inset: 0; width: 100%; height: 100%; }
+.steam-wheel { bottom: 17%; width: 72px; height: 72px; border-color: #9b1717; background: conic-gradient(#d92525 0 9deg,#3b0b0b 9deg 40deg,#d92525 40deg 49deg,#3b0b0b 49deg 80deg,#d92525 80deg 89deg,#3b0b0b 89deg 120deg,#d92525 120deg 129deg,#3b0b0b 129deg 160deg,#d92525 160deg 169deg,#3b0b0b 169deg 200deg,#d92525 200deg 209deg,#3b0b0b 209deg 240deg,#d92525 240deg 249deg,#3b0b0b 249deg 280deg,#d92525 280deg 289deg,#3b0b0b 289deg 320deg,#d92525 320deg 329deg,#3b0b0b 329deg); }
+.steam-wheel.wheel-1 { left: 36.5%; }.steam-wheel.wheel-2 { left: 47.2%; }.steam-wheel.wheel-3 { left: 59.1%; }
+.smoke-puff { left: 13%; top: -5%; width: 35px; height: 35px; border-radius: 50%; background: radial-gradient(circle, rgba(35,35,35,.82), rgba(110,110,110,.5) 55%, transparent 70%); }
+.steam-zoom { right: 18px; top: 18px; width: 470px; height: 270px; }
+.steam-zoom img { inset: 30px 0 0; }
+.fire-glow { position: absolute; z-index: 5; left: 4%; bottom: 8%; width: 100px; height: 72px; border-radius: 50%; background: radial-gradient(circle, #fff36b, #ff6817 45%, transparent 75%); opacity: 0; }
+.piston-marker { position: absolute; z-index: 6; left: 34%; top: 48%; width: 56px; height: 50px; border: 6px solid rgba(30,140,255,.9); border-radius: 8px; opacity: 0; }
+.flywheel-ring { position: absolute; z-index: 6; right: 4%; top: 29%; width: 160px; height: 160px; border: 7px dashed #ffce33; border-radius: 50%; opacity: 0; }
+.steam-cinema.running .fire-glow { opacity: 1; animation: fire-pulse .45s ease-in-out infinite alternate; }
+.steam-cinema.running[data-phase="fire"] .steam-zoom { animation: zoom-show 4.2s ease both .2s; }
+.steam-cinema.running[data-phase="fire"] .smoke-puff { animation: smoke-rise 2.5s ease-out infinite; animation-delay: calc(var(--i, 0) * .36s); }
+.steam-cinema.running[data-phase="full"] .steam-zoom { animation: zoom-show 5.6s ease both 1.05s; }
+.steam-cinema.running[data-phase="full"] .piston-marker { opacity: 1; animation: piston-slide .8s ease-in-out infinite alternate 1.7s; }
+.steam-cinema.running[data-phase="full"] .flywheel-ring { opacity: 1; animation: wheel-spin 1.05s linear infinite 2.2s; }
+.steam-cinema.running[data-phase="full"] .photo-wheel { animation: wheel-spin .9s linear infinite 2.5s; }
+.steam-cinema.running[data-phase="full"] .smoke-puff { animation: smoke-rise 2.5s ease-out infinite; animation-delay: calc(var(--i, 0) * .36s); }
+.steam-cinema.running[data-phase="full"] .steam-vehicle { animation: steam-travel 6s ease-in-out both 3s; }
+@keyframes fire-pulse { to { transform: scale(1.18); filter: brightness(1.3); } }
+@keyframes piston-slide { from { transform: translateX(-45px); } to { transform: translateX(62px); } }
+@keyframes smoke-rise { 0% { opacity: 0; transform: translate(0,0) scale(.55); } 20% { opacity: .85; } 100% { opacity: 0; transform: translate(90px,-210px) scale(2.2); } }
+@keyframes steam-travel { from { transform: translateX(-35px); } to { transform: translateX(95px); } }
+
+/* Voiture sur une pente */
+
+.slope-car { position: absolute; z-index: 9; left: 24%; top: 34%; width: 31%; height: 34%; transform: rotate(7deg); }
+.car-photo { inset: 0; width: 100%; height: 100%; }
+.car-wheel { bottom: 21%; width: 46px; height: 46px; }
+.car-wheel.wheel-1 { left: 17%; }.car-wheel.wheel-2 { left: 73%; }
+.height-energy { position: absolute; z-index: 13; left: 8%; top: 18%; display: flex; align-items: center; gap: 10px; color: #fff; font-size: 20px; font-weight: 900; text-shadow: 0 2px 6px #000; }
+.height-energy i { width: 10px; height: 260px; border-radius: 8px; background: linear-gradient(#ffc72c, rgba(255,199,44,.2)); }
+.speed-line { left: 28%; top: 52%; width: 110px; height: 7px; border-radius: 5px; background: linear-gradient(90deg, transparent, #51e3ff); }
+.slope-cinema.running .height-energy { animation: potential-fade 3.2s ease both; }
+.slope-cinema.running .slope-car { animation: car-downhill 6s ease-in both 1.1s; }
+.slope-cinema.running .car-wheel { animation: wheel-spin .48s linear infinite 1.2s; }
+.slope-cinema.running .speed-line { animation: speed-stream 1.2s linear infinite 2.2s; animation-delay: calc(var(--i, 0) * .16s + 2.2s); }
+@keyframes potential-fade { 0%,35% { opacity: 1; } 100% { opacity: .15; transform: translateY(40px); } }
+@keyframes car-downhill { 0% { transform: translate(0,0) rotate(7deg) scale(.75); } 100% { transform: translate(590px,250px) rotate(4deg) scale(1.08); } }
+@keyframes speed-stream { 0% { opacity: 0; transform: translate(0,0); } 30% { opacity: 1; } 100% { opacity: 0; transform: translate(-240px,-70px) scaleX(1.8); } }
+
+@keyframes zoom-show { 0% { opacity: 0; transform: scale(.74); } 12%,82% { opacity: 1; transform: scale(1); } 100% { opacity: .18; transform: scale(.96); } }
+
+/* Chaînes de conversion */
+.conversion-answer { flex-direction: column; justify-content: flex-start; gap: 34px; padding: 24px 18px; }
+.conversion-palette { width: 100%; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 9px 12px; }
+.conversion-palette .form-chip {
+  grid-column: span 2;
+  min-width: 0;
+  min-height: 80px;
+  padding: 8px 8px;
+  font-size: 22px;
+  line-height: 1.08;
+}
+.conversion-palette .form-chip:nth-child(4) { grid-column: 2 / span 2; }
+.conversion-palette .form-chip:nth-child(5) { grid-column: 4 / span 2; }
+.photo-conversion-chain { width: 100%; flex: 1; display: flex; flex-flow: column nowrap; align-items: center; justify-content: center; gap: 3px; }
+.conversion-slot { min-width: 350px; min-height: 70px; padding: 8px 11px; border: 4px dashed var(--blue); border-radius: 14px; background: #fff; color: var(--blue-dark); font-size: 23px; font-weight: 850; line-height: 1.12; cursor: pointer; }
+.conversion-slot.filled { border-style: solid; background: #e8edff; }
+.conversion-component { min-width: 310px; min-height: 62px; display: grid; place-items: center; padding: 7px 10px; border: 4px solid #111; border-radius: 14px; background: #fff; font-size: 22px; font-weight: 850; text-align: center; }
+.conversion-arrow { height: 24px; color: var(--blue); font-size: 28px; font-weight: 900; line-height: 24px; transform: rotate(90deg); }
+
+/* Généralisation */
+.general-grid { min-height: 0; display: grid; grid-template-columns: 270px minmax(0, 1fr) 340px; gap: 18px; padding: 18px 24px 6px; }
+.general-grid > .conversion-palette { display: flex; flex-direction: column; justify-content: center; padding: 15px; border: 4px solid var(--blue); border-radius: 15px; background: #eef2ff; }
+.general-grid > .conversion-palette .form-chip { min-height: 66px; font-size: 20px; }
+.general-table { align-self: center; display: grid; border: 3px solid #333; border-radius: 12px; overflow: hidden; }
+.general-row { display: grid; grid-template-columns: 1.25fr 1fr 1fr; min-height: 110px; }
+.general-row > * { display: grid; place-items: center; margin: 0; padding: 10px; border: 0; border-right: 2px solid #555; border-bottom: 2px solid #555; background: #fff; font-size: 20px; text-align: center; }
+.general-row > *:last-child { border-right: 0; }
+.general-row:last-child > * { border-bottom: 0; }
+.general-row.head { min-height: 65px; }
+.general-row.head > * { background: #eee; }
+.general-row button { color: var(--blue-dark); font-weight: 850; cursor: pointer; }
+.general-animation { display: grid; grid-template-rows: repeat(3, 1fr); gap: 15px; padding: 16px; border: 4px solid var(--blue); border-radius: 16px; background: #eaf1ff; }
+.lamp-object,.radiator-object,.generator-object { position: relative; display: flex; align-items: center; justify-content: center; gap: 12px; overflow: hidden; border-radius: 13px; background: #fff; color: #111; font-size: 58px; font-weight: 850; }
+.lamp-object span { position: absolute; width: 100px; height: 100px; border-radius: 50%; background: #ffe25c; opacity: 0; }
+.radiator-object { font-size: 76px; }
+.radiator-object span { width: 10px; height: 60px; border-radius: 50%; background: #ff692f; opacity: 0; }
+.generator-object { flex-direction: column; font-size: 18px; }
+.generator-wheel { font-size: 72px; }
+.general-animation.running .lamp-object span { animation: lamp-glow 1s ease-in-out infinite; }
+.general-animation.running .radiator-object span { animation: heat-rise 1.4s ease-out infinite; }
+.general-animation.running .radiator-object span:nth-child(2) { animation-delay: .25s; }.general-animation.running .radiator-object span:nth-child(3) { animation-delay: .5s; }
+.general-animation.running .generator-wheel { animation: wheel-spin 1s linear infinite; }
+@keyframes lamp-glow { 0%,100% { opacity: .15; transform: scale(.7); } 50% { opacity: .8; transform: scale(1.4); } }
+@keyframes heat-rise { 0% { opacity: 0; transform: translateY(35px); } 40% { opacity: .8; } 100% { opacity: 0; transform: translateY(-50px); } }
+
+/* Délais différents pour les particules, sans générer de dessin du véhicule. */
+.p1 { --i: 0; }.p2 { --i: 1; }.p3 { --i: 2; }.p4 { --i: 3; }.p5 { --i: 4; }.p6 { --i: 5; }.p7 { --i: 6; }.p8 { --i: 7; }
+
+/* Moteur de démonstration v2 : rendu sur un canevas unique et précisément calé. */
+.canvas-cinema {
+  position: relative;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+  border: 4px solid var(--blue);
+  border-radius: 18px;
+  background: #eaf1ff;
+}
+
+.energy-canvas {
+  position: absolute;
+  inset: 0 0 62px;
+  width: 100%;
+  height: calc(100% - 62px);
+  display: block;
+  background: #eaf1ff;
+}
+
+.canvas-cinema .scene-caption {
+  z-index: 5;
+  height: 62px;
+  padding: 8px 178px 8px 18px;
+  border-top: 3px solid var(--blue);
+  font-size: 21px;
+  line-height: 1.12;
+}
+
+.canvas-cinema .replay-scene {
+  z-index: 7;
+  right: 12px;
+  bottom: 9px;
+  min-width: 158px;
+  min-height: 44px;
+  font-size: 18px;
+}
+
+.source-visual-wrap { position: relative; height: 100%; min-height: 92px; }
+.source-visual-wrap .source-thumb { height: 100%; }
+.source-clue {
+  position: absolute;
+  z-index: 3;
+  left: 5px;
+  right: 5px;
+  bottom: 5px;
+  padding: 3px 5px;
+  border-radius: 7px;
+  background: rgba(255,255,255,.94);
+  color: #172273;
+  font-size: 13px;
+  font-weight: 850;
+  text-align: center;
+}
+
+.source-form-slot { min-height: 82px; font-size: 22px; line-height: 1.08; }

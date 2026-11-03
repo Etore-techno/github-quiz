@@ -1,0 +1,5 @@
+ACTIVITÉ 3
+
+Ouvrir index.html dans un navigateur récent, en mode paysage.
+Ce dossier fonctionne seul et sans connexion à Internet.
+Vous pouvez le déplacer ou le renommer : conserver index.html et le dossier assets ensemble.

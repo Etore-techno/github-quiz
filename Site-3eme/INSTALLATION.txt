@@ -1,0 +1,3 @@
+Remplace uniquement index.html, style.css et app.js dans ton dossier actuel.
+Conserve contenu.txt et tous tes dossiers. Aucune image supplémentaire à installer : les illustrations vectorielles sont intégrées.
+Après mise en ligne : Ctrl+F5.
