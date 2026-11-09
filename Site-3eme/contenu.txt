@@ -96,16 +96,16 @@ PDF | Document corrigé | documents/sequence-1/activite_3_octet_plusieurs_sens_c
 PDF | Synthèse à compléter | documents/sequence-1/synthese.pdf
 PDF | Synthèse corrigé | documents/sequence-1/synthese_corrigé.pdf
 
-# Séquence 2 — Réseau informatique
-Retrouve les activités et les documents de cette séquence.
+//# Séquence 2 — Réseau informatique
+//Retrouve les activités et les documents de cette séquence.
 
-## Activité 1 — Le fonctionnement d'un réseau
-VIDEO | Vidéo 1 - Internet | https://youtu.be/L1Uz-46m2eI?si=6y85wAKWPM9_Wlbd
-PDF | Questionnaire 1 | documents/sequence-2/Activite 1 - video 1.pdf
-PDF | Questionnaire 1 corrigé | documents/sequence-2/Activite 1 - video 1 - correction.pdf
-VIDEO | Vidéo 2 - La notion de réseau | https://youtu.be/g_C2QPCyLNY?si=ILSt4yrNOMJzTGrB
-PDF | Questionnaire 2 | documents/sequence-2/Activite 1 - video 2.pdf
-PDF | Questionnaire 2 corrigé | documents/sequence-2/Activite 1 - video 2 - correction.pdf
+//## Activité 1 — Le fonctionnement d'un réseau
+//VIDEO | Vidéo 1 - Internet | https://youtu.be/L1Uz-46m2eI?si=6y85wAKWPM9_Wlbd
+//PDF | Questionnaire 1 | documents/sequence-2/Activite 1 - video 1.pdf
+//PDF | Questionnaire 1 corrigé | documents/sequence-2/Activite 1 - video 1 - correction.pdf
+//VIDEO | Vidéo 2 - La notion de réseau | https://youtu.be/g_C2QPCyLNY?si=ILSt4yrNOMJzTGrB
+//PDF | Questionnaire 2 | documents/sequence-2/Activite 1 - video 2.pdf
+//PDF | Questionnaire 2 corrigé | documents/sequence-2/Activite 1 - video 2 - correction.pdf
 
 // Pour ajouter la séquence 2, copie le modèle du haut à la fin de ce fichier,
 // retire les // du bloc copié et remplace les titres et les adresses.
